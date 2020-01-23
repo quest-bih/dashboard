@@ -108,7 +108,15 @@ body <- dashboardBody(
             box(title = "Open Access",
                 plotOutput('plot_OA')),
             box(title = "Open Data & Code",
-                plotOutput('plot_oddpub'))
+                plotOutput('plot_oddpub')),
+            box(title = "Preprints",
+                plotOutput('plot_preprints')),
+            box(title = "Clinical trials",
+                plotOutput('plot_CTgov')),
+            box(title = "Policy citations",
+                plotOutput('plot_policy_citations')),
+            box(title = "Vizualizations",
+                plotOutput('plot_barzooka'))
             )
     )
   )
@@ -166,6 +174,90 @@ server <- function(input, output)
             legend.title=element_text(size=16),
             legend.text=element_text(size=14))
 
+  }, )
+
+
+
+  preprints_plot_data <- dashboard_metrics_aggregate %>%
+    select(year, preprints) %>%
+    filter(!is.na(preprints))
+
+  output$plot_preprints <- renderPlot({
+    ggplot(preprints_plot_data, aes(x=year, y=preprints)) +
+      geom_bar(stat="identity") +
+      theme_minimal() +
+      xlab("Year") +
+      ylab("Number of preprints") +
+      theme(axis.text=element_text(size=16),
+            axis.title=element_text(size=18),
+            legend.title=element_text(size=16),
+            legend.text=element_text(size=14))
+
+  }, )
+
+  CTgov_plot_data <- dashboard_metrics_aggregate %>%
+    select(year, perc_prosp_reg, perc_sum_res_12, perc_sum_res_24) %>%
+    filter(!is.na(perc_prosp_reg)) %>%
+    rename(`Prospective registration` = perc_prosp_reg) %>%
+    rename(`Summary results 12 month` = perc_sum_res_12) %>%
+    rename(`Summary results 24 month` = perc_sum_res_24) %>%
+    gather(`Prospective registration`, `Summary results 12 month`, `Summary results 24 month`, key="category", value="perc")
+
+  output$plot_CTgov <- renderPlot({
+    ggplot(CTgov_plot_data, aes(x=year, y=perc, fill=category)) +
+      geom_bar(stat="identity", position=position_dodge()) +
+      theme_minimal() +
+      xlab("Year") +
+      ylab("Percentage of trials") +
+      theme(axis.text=element_text(size=16),
+            axis.title=element_text(size=18),
+            legend.title=element_text(size=16),
+            legend.text=element_text(size=14))
+
+  }, )
+
+
+  policy_citations_plot_data <- dashboard_metrics_aggregate %>%
+    select(year, policy_citations, total_publ_dimensions) %>%
+    filter(!is.na(policy_citations)) %>%
+    mutate(policy_citations_per_1000_publ = policy_citations/total_publ_dimensions*1000)
+
+  output$plot_policy_citations <- renderPlot({
+    ggplot(policy_citations_plot_data, aes(x=year, y=policy_citations_per_1000_publ)) +
+      geom_bar(stat="identity") +
+      theme_minimal() +
+      xlab("Year") +
+      ylab("Number of policy citations per 1000 publications") +
+      theme(axis.text=element_text(size=16),
+            axis.title=element_text(size=18),
+            legend.title=element_text(size=16),
+            legend.text=element_text(size=14))
+
+  }, )
+
+
+  barzooka_plot_data <- barzooka_data %>%
+    rename(bar_graph = has_bar) %>%
+    rename(pie_chart = has_pie) %>%
+    rename(bargraph_dots = has_bardot) %>%
+    rename(box_plot = has_box) %>%
+    rename(dot_plot = has_dot) %>%
+    rename(histogram = has_hist) %>%
+    rename(violin_plot = has_violin) %>%
+    gather(key, value, -year, -total)
+
+  output$plot_barzooka <- renderPlot({
+    ggplot(barzooka_plot_data, aes(x=year, y=value, color = key)) +
+      geom_line(aes(color=key), size=1.2) +
+      geom_point(size=3) +
+      scale_color_brewer(palette="Paired") +
+      theme_minimal() +
+      xlab("Year") +
+      ylab("Number of publications with graph type") +
+      theme(axis.text=element_text(size=16),
+            axis.title=element_text(size=18),
+            legend.title=element_text(size=16),
+            legend.text=element_text(size=14))
   }, )
 
 }
