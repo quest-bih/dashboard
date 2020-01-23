@@ -2,6 +2,20 @@
 # Open Access data loading & preprocessing functions
 #----------------------------------------------------------------------
 
+make_OA_plot_data <- function(data_table)
+{
+  OA_plot_data <- data_table %>%
+    filter(!is.na(OA_color)) %>%
+    group_by(year, OA_color) %>%
+    summarize(count = n()) %>%
+    calculate_OA_percentages() #%>%
+  #set_OA_colors(TRUE) %>%
+  #mutate(year = as.factor(year))
+
+  return(OA_plot_data)
+}
+
+
 calculate_OA_percentages <- function(OA_data)
 {
   #number of publications
