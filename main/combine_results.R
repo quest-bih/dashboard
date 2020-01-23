@@ -79,3 +79,29 @@ shiny_table <- dashboard_metrics %>%
          bar, pie, bardot, box, dot, hist, violin)
 
 write_csv(shiny_table, "shiny_app/data/dashboard_metrics.csv")
+
+
+#----------------------------------------------------------------------------------------
+# now for the metrics that are already aggregated by year
+#----------------------------------------------------------------------------------------
+
+preprints <- read_csv("./results/preprints.csv") %>%
+  group_by(year) %>%
+  summarize(preprints = n())
+
+policy_citations <- read_csv("./results/policy_citations.csv") %>%
+  group_by(year) %>%
+  summarize(policy_citations = n())
+
+prospective_registration <- read_csv("./results/prospective_registration.csv")
+summary_results_12_month <- read_csv("./results/summary_results_12_month.csv")
+summary_results_24_month <- read_csv("./results/summary_results_24_month.csv")
+
+
+shiny_table_aggregate_metrics <- prospective_registration %>%
+  left_join(summary_results_12_month) %>%
+  left_join(summary_results_24_month) %>%
+  left_join(policy_citations) %>%
+  left_join(preprints)
+
+write_csv(shiny_table_aggregate_metrics, "shiny_app/data/dashboard_metrics_aggregate.csv")
