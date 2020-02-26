@@ -4,7 +4,7 @@
 
 make_oddpub_plot_data <- function(data_table)
 {
-  oddpub_plot_data <- dashboard_metrics %>%
+  oddpub_plot_data <- data_table %>%
     filter(!is.na(is_open_data)) %>%
     group_by(year) %>%
     summarize(open_data_count = sum(is_open_data),
