@@ -95,11 +95,6 @@ body <- dashboardBody(
                        "publications with histograms", icon = icon("th"), color = "green"),
               valueBox(barzooka_data$has_violin,
                        "publications with violin plots", icon = icon("th"), color = "green")
-            ),
-            h3("Other"),
-            fluidRow(
-              valueBox(round(metrics_show_year$policy_citations/metrics_show_year$total_publ_dimensions * 1000, 2),
-                       "policy citations per 1000 publications", icon = icon("th"), color = "red")
             )
     ),
     tabItem(tabName = "plots",
@@ -113,8 +108,6 @@ body <- dashboardBody(
                 plotOutput('plot_preprints')),
             box(title = "Clinical trials",
                 plotOutput('plot_CTgov')),
-            box(title = "Policy citations",
-                plotOutput('plot_policy_citations')),
             box(title = "Vizualizations",
                 plotOutput('plot_barzooka'))
             )
