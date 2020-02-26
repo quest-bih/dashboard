@@ -4,7 +4,7 @@ library(tidyverse)
 load("./main/status_quo_table.RData")
 
 #filter dataset for all relevant Charité publications
-years <- c(2015, 2016, 2017, 2018)
+years <- c(2015, 2016, 2017, 2018, 2019)
 publications <- status_quo_table_save %>%
   filter(e_pub_year %in% years) %>%
   filter(Article == TRUE) %>%
