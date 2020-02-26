@@ -100,15 +100,15 @@ body <- dashboardBody(
     tabItem(tabName = "plots",
             h2("Charité Metrics Overview"),
             fluidRow(
-            box(title = "Open Access",
+            box(title = p("Open Access", style = "font-size: 150%;"),
                 plotOutput('plot_OA')),
-            box(title = "Open Data & Code",
+            box(title = p("Open Data & Code", style = "font-size: 150%;"),
                 plotOutput('plot_oddpub')),
-            box(title = "Preprints",
+            box(title = p("Preprints", style = "font-size: 150%;"),
                 plotOutput('plot_preprints')),
-            box(title = "Clinical trials",
+            box(title = p("Clinical trials", style = "font-size: 150%;"),
                 plotOutput('plot_CTgov')),
-            box(title = "Vizualizations",
+            box(title = p("Vizualizations", style = "font-size: 150%;"),
                 plotOutput('plot_barzooka'))
             )
     )
@@ -130,13 +130,15 @@ ui <- dashboardPage(dashboardHeader(title = "Charité Dashboard"),
 server <- function(input, output)
 {
 
+  color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050")
+
   OA_plot_data <- dashboard_metrics %>%
     make_OA_plot_data()
 
   output$plot_OA <- renderPlot({
     ggplot(OA_plot_data, aes(x=year, y=perc, fill = OA_color)) +
-      geom_bar(stat="identity", color = "#3C5D70", width = 0.8, alpha = 0.6, size = 0.8) +
-      scale_fill_manual(values=c("#f7be16", "#008950", "#410b5b")) +
+      geom_bar(stat="identity", color = "#3C5D70", width = 0.8, size = 0.8) +
+      scale_fill_manual(values=color_palette[c(3,6,7)]) +
       theme_minimal() +
       xlab("Year") +
       ylab("Percentage Open Access publications") +
@@ -158,7 +160,8 @@ server <- function(input, output)
 
   output$plot_oddpub <- renderPlot({
     ggplot(oddpub_plot_data, aes(x=year, y=perc, fill=category)) +
-      geom_bar(stat="identity", position=position_dodge()) +
+      geom_bar(stat="identity", position=position_dodge(), color = "black", size = 0.8) +
+      scale_fill_manual(values = color_palette[c(2,3)]) +
       theme_minimal() +
       xlab("Year") +
       ylab("Percentage of publications") +
@@ -177,7 +180,7 @@ server <- function(input, output)
 
   output$plot_preprints <- renderPlot({
     ggplot(preprints_plot_data, aes(x=year, y=preprints)) +
-      geom_bar(stat="identity") +
+      geom_bar(stat="identity", fill = color_palette[2], color = "black", size = 0.8) +
       theme_minimal() +
       xlab("Year") +
       ylab("Number of preprints") +
@@ -198,7 +201,8 @@ server <- function(input, output)
 
   output$plot_CTgov <- renderPlot({
     ggplot(CTgov_plot_data, aes(x=year, y=perc, fill=category)) +
-      geom_bar(stat="identity", position=position_dodge()) +
+      geom_bar(stat="identity", position=position_dodge(), color = "black", size = 0.6) +
+      scale_fill_manual(values = color_palette[2:4]) +
       theme_minimal() +
       xlab("Year") +
       ylab("Percentage of trials") +
@@ -243,7 +247,7 @@ server <- function(input, output)
     ggplot(barzooka_plot_data, aes(x=year, y=value, color = key)) +
       geom_line(aes(color=key), size=1.2) +
       geom_point(size=3) +
-      scale_color_brewer(palette="Paired") +
+      scale_color_manual(values = color_palette) +
       theme_minimal() +
       xlab("Year") +
       ylab("Number of publications with graph type") +
