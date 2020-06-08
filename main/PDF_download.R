@@ -7,7 +7,7 @@ email <- "nico.riedel@bihealth.de"
 load("./main/status_quo_table.RData")
 
 #filter dataset
-year <- 2016
+year <- 2018
 publications <- status_quo_table_save %>%
   filter(e_pub_year == year) %>%
   filter(Article == TRUE) %>%

@@ -137,7 +137,7 @@ server <- function(input, output)
 
   output$plot_OA <- renderPlot({
     ggplot(OA_plot_data, aes(x=year, y=perc, fill = OA_color)) +
-      geom_bar(stat="identity", color = "#3C5D70", width = 0.8, size = 0.8) +
+      geom_bar(stat="identity", color = "black", width = 0.8, size = 0.8) +
       scale_fill_manual(values=color_palette[c(3,6,7)]) +
       theme_minimal() +
       xlab("Year") +
