@@ -4,6 +4,7 @@ library(tidyverse)
 library(ggvis)
 library(ggplot2)
 library(shinythemes)
+library(gridExtra)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -186,8 +187,12 @@ ui <- navbarPage(
              ),
              fluidRow(
                column(4,
-                      h4(strong("Clinical trials")),
-                      plotOutput('plot_CTgov')
+                      h4(strong(HTML("Clinical trials - <br> Timely reporting"))),
+                      plotOutput('plot_CTgov_1')
+               ),
+               column(4,
+                      h4(strong(HTML("Clinical trials - <br> Prospective registration"))),
+                      plotOutput('plot_CTgov_2')
                ),
                column(4,
                       h4(strong("Vizualizations")),
@@ -212,6 +217,8 @@ server <- function(input, output)
 {
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050")
+  background_color <- "#ecf0f1"
+
 
   OA_plot_data <- dashboard_metrics %>%
     make_OA_plot_data()
@@ -229,9 +236,10 @@ server <- function(input, output)
             legend.title=element_text(size=14, face = "bold"),
             legend.text=element_text(size=12, face = "bold"),
             panel.grid=element_blank(),
-            plot.background = element_rect(fill = "#F3F6F6", colour = "#F3F6F6"))
+            plot.background = element_rect(fill = background_color, colour = background_color))
 
-  }, height = 300)
+  }, height = 300, type = "cairo")
+
 
 
   oddpub_plot_data <- dashboard_metrics %>%
@@ -240,7 +248,6 @@ server <- function(input, output)
     rename(`Open Code` = open_code_perc) %>%
     gather(`Open Data`, `Open Code`, key="category", value="perc")
 
-
   output$plot_oddpub <- renderPlot({
     ggplot(oddpub_plot_data, aes(x=year, y=perc, fill=category)) +
       geom_bar(stat="identity", position=position_dodge(), color = "black", size = 0.8) +
@@ -248,20 +255,22 @@ server <- function(input, output)
       theme_minimal() +
       xlab("Year") +
       ylab("Percentage of publications") +
+      ylim(0, 1) +
       theme(axis.text=element_text(size=14, face = "bold"),
             axis.title=element_text(size=16, face = "bold"),
             legend.title=element_text(size=14, face = "bold"),
             legend.text=element_text(size=12, face = "bold"),
             panel.grid=element_blank(),
-            plot.background = element_rect(fill = "#F3F6F6", colour = "#F3F6F6"))
+            plot.background = element_rect(fill = background_color, colour = background_color))
 
-  }, height = 300)
+  }, height = 300, type = "cairo")
 
 
 
   preprints_plot_data <- dashboard_metrics_aggregate %>%
     select(year, preprints) %>%
-    filter(!is.na(preprints))
+    filter(!is.na(preprints)) %>%
+    filter(year >= 2015)
 
   output$plot_preprints <- renderPlot({
     ggplot(preprints_plot_data, aes(x=year, y=preprints)) +
@@ -274,64 +283,95 @@ server <- function(input, output)
             legend.title=element_text(size=14, face = "bold"),
             legend.text=element_text(size=12, face = "bold"),
             panel.grid=element_blank(),
-            plot.background = element_rect(fill = "#F3F6F6", colour = "#F3F6F6"))
+            plot.background = element_rect(fill = background_color, colour = background_color))
 
-  }, height = 300)
+  }, height = 300, type = "cairo")
 
-  CTgov_plot_data <- dashboard_metrics_aggregate %>%
-    select(year, perc_prosp_reg, perc_sum_res_12, perc_sum_res_24) %>%
-    filter(!is.na(perc_prosp_reg)) %>%
-    rename(`Prospective registration` = perc_prosp_reg) %>%
-    rename(`Summary results 12 month` = perc_sum_res_12) %>%
-    rename(`Summary results 24 month` = perc_sum_res_24) %>%
-    gather(`Prospective registration`, `Summary results 12 month`, `Summary results 24 month`, key="category", value="perc")
 
-  output$plot_CTgov <- renderPlot({
-    ggplot(CTgov_plot_data, aes(x=year, y=perc, fill=category)) +
+
+  CTgov_plot_data_1 <- dashboard_metrics_aggregate %>%
+    select(year, perc_sum_res_12, perc_sum_res_24) %>%
+    filter(!is.na(perc_sum_res_12)) %>%
+    filter(year >= 2015) %>%
+    rename(`12 month` = perc_sum_res_12) %>%
+    rename(`24 month` = perc_sum_res_24) %>%
+    gather(`12 month`, `24 month`, key="category", value="perc")
+
+  output$plot_CTgov_1 <- renderPlot({
+    ggplot(CTgov_plot_data_1, aes(x=year, y=perc, fill=category)) +
       geom_bar(stat="identity", position=position_dodge(), color = "black", size = 0.6) +
       scale_fill_manual(values = color_palette[2:4]) +
       theme_minimal() +
       xlab("Year") +
       ylab("Percentage of trials") +
+      ylim(0, 1) +
       theme(axis.text=element_text(size=14, face = "bold"),
             axis.title=element_text(size=16, face = "bold"),
             legend.title=element_text(size=14, face = "bold"),
             legend.text=element_text(size=12, face = "bold"),
             panel.grid=element_blank(),
-            plot.background = element_rect(fill = "#F3F6F6", colour = "#F3F6F6"))
+            plot.background = element_rect(fill = background_color, colour = background_color))
 
-  }, height = 300)
+  }, height = 300, type = "cairo")
 
 
-  policy_citations_plot_data <- dashboard_metrics_aggregate %>%
-    select(year, policy_citations, total_publ_dimensions) %>%
-    filter(!is.na(policy_citations)) %>%
-    mutate(policy_citations_per_1000_publ = policy_citations/total_publ_dimensions*1000)
 
-  output$plot_policy_citations <- renderPlot({
-    ggplot(policy_citations_plot_data, aes(x=year, y=policy_citations_per_1000_publ)) +
-      geom_bar(stat="identity") +
+  CTgov_plot_data_2 <- dashboard_metrics_aggregate %>%
+    select(year, perc_prosp_reg, perc_sum_res_12, perc_sum_res_24) %>%
+    filter(!is.na(perc_prosp_reg)) %>%
+    filter(year >= 2015) %>%
+    rename(`Prospective registration` = perc_prosp_reg) %>%
+    gather(`Prospective registration`, key="category", value="perc")
+
+  output$plot_CTgov_2 <- renderPlot({
+    ggplot(CTgov_plot_data_2, aes(x=year, y=perc)) +
+      geom_bar(stat="identity", position=position_dodge(), color = "black", size = 0.6) +
+      scale_fill_manual(values = color_palette[2:4]) +
       theme_minimal() +
       xlab("Year") +
-      ylab("Number of policy citations per 1000 publications") +
+      ylab("Percentage of trials") +
+      ylim(0, 1) +
       theme(axis.text=element_text(size=14, face = "bold"),
             axis.title=element_text(size=16, face = "bold"),
             legend.title=element_text(size=14, face = "bold"),
             legend.text=element_text(size=12, face = "bold"),
             panel.grid=element_blank(),
-            plot.background = element_rect(fill = "#F3F6F6", colour = "#F3F6F6"))
+            plot.background = element_rect(fill = background_color, colour = background_color))
 
-  }, height = 300)
+  }, height = 300, type = "cairo")
+
+
+
+  # policy_citations_plot_data <- dashboard_metrics_aggregate %>%
+  #   select(year, policy_citations, total_publ_dimensions) %>%
+  #   filter(!is.na(policy_citations)) %>%
+  #   mutate(policy_citations_per_1000_publ = policy_citations/total_publ_dimensions*1000)
+  #
+  # output$plot_policy_citations <- renderPlot({
+  #   ggplot(policy_citations_plot_data, aes(x=year, y=policy_citations_per_1000_publ)) +
+  #     geom_bar(stat="identity") +
+  #     theme_minimal() +
+  #     xlab("Year") +
+  #     ylab("Number of policy citations per 1000 publications") +
+  #     theme(axis.text=element_text(size=14, face = "bold"),
+  #           axis.title=element_text(size=16, face = "bold"),
+  #           legend.title=element_text(size=14, face = "bold"),
+  #           legend.text=element_text(size=12, face = "bold"),
+  #           panel.grid=element_blank(),
+  #           plot.background = element_rect(fill = background_color, colour = background_color))
+  #
+  # }, height = 300, type = "cairo")
+
 
 
   barzooka_plot_data <- barzooka_data %>%
-    rename(bar_graph = has_bar) %>%
-    rename(pie_chart = has_pie) %>%
-    rename(bargraph_dots = has_bardot) %>%
-    rename(box_plot = has_box) %>%
-    rename(dot_plot = has_dot) %>%
-    rename(histogram = has_hist) %>%
-    rename(violin_plot = has_violin) %>%
+    rename(`bar graph` = has_bar) %>%
+    rename(`pie chart` = has_pie) %>%
+    rename(`bar graph with dots` = has_bardot) %>%
+    rename(`box plot` = has_box) %>%
+    rename(`dot plot` = has_dot) %>%
+    rename(`histogram` = has_hist) %>%
+    rename(`violin plot` = has_violin) %>%
     gather(key, value, -year, -total)
 
   output$plot_barzooka <- renderPlot({
@@ -347,8 +387,8 @@ server <- function(input, output)
             legend.title=element_text(size=14, face = "bold"),
             legend.text=element_text(size=12, face = "bold"),
             panel.grid=element_blank(),
-            plot.background = element_rect(fill = "#F3F6F6", colour = "#F3F6F6"))
-  }, height = 300)
+            plot.background = element_rect(fill = background_color, colour = background_color))
+  }, height = 300, type = "cairo")
 
 }
 
