@@ -57,3 +57,19 @@ metric_box <- function(title, value, value_text)
             h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text))
 
 }
+
+
+methods_panel <- function(title, what_text, how_text, limit_text, style = "default")
+{
+  bsCollapsePanel(strong(title),
+                  strong("What it measures:"),
+                  br(),
+                  p(what_text),
+                  strong("How it was calculated:"),
+                  br(),
+                  p(how_text),
+                  strong("Limitations:"),
+                  br(),
+                  p(limit_text),
+                  style = style)
+}

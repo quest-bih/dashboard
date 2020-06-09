@@ -4,7 +4,7 @@ library(tidyverse)
 library(ggvis)
 library(ggplot2)
 library(shinythemes)
-library(gridExtra)
+library(shinyBS)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -46,162 +46,146 @@ barzooka_data <- dashboard_metrics %>%
             has_hist = sum(hist > 0, na.rm = TRUE),
             has_violin = sum(violin > 0, na.rm = TRUE))
 
+
 #----------------------------------------------------------------------------------------------------------------------
 # ui
 #----------------------------------------------------------------------------------------------------------------------
-
-# sidebar <- dashboardSidebar(
-#   sidebarMenu(
-#     menuItem("Overview", tabName = "overview", icon = icon("th")),
-#     menuItem("Plots", tabName = "plots", icon = icon("th"))
-#   )
-# )
-#
-#
-# body <- dashboardBody(
-#   tabItems(
-#     tabItem(tabName = "overview",
-#             h2("Charité Metrics Overview 2018"),
-#             h3("Open Science"),
-#             fluidRow(
-#               valueBox(metrics_show_year$preprints,
-#                        "preprints published", icon = icon("unlock-alt"), color = "yellow"),
-#               valueBox(paste(round(OA_data[[4,"OA_perc"]] *100, 0), "%"),
-#                        "Open Access articles", icon = icon("unlock-alt"), color = "yellow"),
-#               valueBox(paste(round(oddpub_data[[4,"open_data_perc"]] *100, 0), "%"),
-#                        "of publications have Open Data", icon = icon("unlock-alt"), color = "yellow"),
-#               valueBox(paste(round(oddpub_data[[4,"open_code_perc"]] *100, 0), "%"),
-#                        "of publications have Open Code", icon = icon("unlock-alt"), color = "yellow")
-#             ),
-#             h3("Clinical trials"),
-#             fluidRow(
-#               valueBox(paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_12"]] *100, 0), "%"),
-#                        "of completed trials clinical trials posted summary results on CT.gov within 12 month", icon = icon("th")),
-#               valueBox(paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]] *100, 0), "%"),
-#                        "of completed trials clinical trials posted summary results on CT.gov within 24 month", icon = icon("th")),
-#               valueBox(paste(round(metrics_show_year$perc_prosp_reg *100, 0), "%"),
-#                        "of clinical trials prospectively registered on CT.gov", icon = icon("th"))
-#             ),
-#             h3("Vizualizations"),
-#             fluidRow(
-#               valueBox(barzooka_data$has_bar %>% last(),
-#                        "publications with bar graphs", icon = icon("th"), color = "green"),
-#               valueBox(barzooka_data$has_pie %>% last(),
-#                        "publications with pie graphs", icon = icon("th"), color = "green"),
-#               valueBox(barzooka_data$has_bardot %>% last(),
-#                        "publications with bar graphs with dots", icon = icon("th"), color = "green"),
-#               valueBox(barzooka_data$has_box %>% last(),
-#                        "publications with box plots", icon = icon("th"), color = "green"),
-#               valueBox(barzooka_data$has_dot %>% last(),
-#                        "publications with dot plots", icon = icon("th"), color = "green"),
-#               valueBox(barzooka_data$has_hist %>% last(),
-#                        "publications with histograms", icon = icon("th"), color = "green"),
-#               valueBox(barzooka_data$has_violin %>% last(),
-#                        "publications with violin plots", icon = icon("th"), color = "green")
-#             )
-#     ),
-#     tabItem(tabName = "plots",
-#             h2("Charité Metrics Overview"),
-#             fluidRow(
-#             box(title = p("Open Access", style = "font-size: 150%;"),
-#                 plotOutput('plot_OA')),
-#             box(title = p("Open Data & Code", style = "font-size: 150%;"),
-#                 plotOutput('plot_oddpub')),
-#             box(title = p("Preprints", style = "font-size: 150%;"),
-#                 plotOutput('plot_preprints')),
-#             box(title = p("Clinical trials", style = "font-size: 150%;"),
-#                 plotOutput('plot_CTgov')),
-#             box(title = p("Vizualizations", style = "font-size: 150%;"),
-#                 plotOutput('plot_barzooka'))
-#             )
-#     )
-#   )
-# )
-#
-#
-# ui <- dashboardPage(dashboardHeader(title = "Charité Dashboard"),
-#                     sidebar,
-#                     body,
-#                     skin = "yellow")
-#
 
 ui <- navbarPage(
   "Charité Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
   tabPanel("Start page",
            #overall_design_options,
            wellPanel(
-                     br(),
-                     h1(style = "margin-left:10cm", strong("Charité Dashboard"), align = "left"),
-                     h4(style = "font-size:24px;margin-left:10cm", "This dashboard gives an overview over ..."),
-                     br(),
-                     actionButton(style = "margin-left:10cm; color: white; background-color: #aa1c7d;",
-                                   'buttonLearnMore',
-                                   'Learn more',
-                                  onclick ="window.open('https://www.bihealth.org/en/research/quest-center/projects/projects-of-the-research-group-translational-bioethics/bravo/', '_blank')"),
-                     #h4(style = "margin-left:10cm", HTML(paste0(a(href = 'https://osf.io/fh426/', "Learn more")))),
-                     br()),
+             br(),
+             fluidRow(
+               column(6,
+                      h1(style = "margin-left:0cm", strong("Charité Dashboard"), align = "left"),
+                      h4(style = "margin-left:0cm",
+                         "This dashboard gives an overview over several metrics of open and responsible
+                        research at the Charité. For more detailed information on the methods used to
+                        calculate those metrics or for ressources to improve your own research practices
+                        click one of the following buttons."),
+                      br()),
+               column(6,
+                      hr(),
+                      br(),
+                      actionButton(style = "color: white; background-color: #aa1c7d;",
+                                   'buttonMethods',
+                                   'See methods',
+                                   onclick ="window.open('https://www.bihealth.org/quest-center/', '_blank')"),
+                      actionButton(style = "color: white; background-color: #aa1c7d;",
+                                   'buttonResources',
+                                   'See resources',
+                                   onclick ="window.open('https://www.bihealth.org/quest-center/', '_blank')"),
+                      #h4(style = "margin-left:10cm", HTML(paste0(a(href = 'https://osf.io/fh426/', "Learn more")))),
+                      br())
+             )
+           ),
 
            wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
-             h2(strong("Open Science"), align = "left"),
-             h4("Explanation on Open Science ..."),
-             fluidRow(
-               column(3, metric_box("Open Access", paste(round(OA_data[[4,"OA_perc"]] *100, 0), "%"),
-                                    "Open Access articles")),
-               column(3, metric_box("Open Data", paste(round(oddpub_data[[4,"open_data_perc"]] *100, 0), "%"),
-                                    "of publications have Open Data")),
-               column(3, metric_box("Open Code", paste(round(oddpub_data[[4,"open_code_perc"]] *100, 0), "%"),
-                                    "of publications have Open Code")),
-               column(3, metric_box("Preprints", metrics_show_year$preprints,
-                                    "preprints published"))
-             )
+                     h2(strong("Open Science"), align = "left"),
+                     p("These metrics show Open Science practices at Charité. The proportion of Charité
+                publications that are published as Open Access articles are mesured as well as
+                the proportion of publications that share their research data or analysis code.
+                Additionally, we count articles published on preprint servers like bioRxiv."),
+                     fluidRow(
+                       column(3, metric_box("Open Access", paste(round(OA_data[[4,"OA_perc"]] *100, 0), "%"),
+                                            "Open Access articles")),
+                       column(3, metric_box("Open Data", paste(round(oddpub_data[[4,"open_data_perc"]] *100, 0), "%"),
+                                            "of publications have Open Data")),
+                       column(3, metric_box("Open Code", paste(round(oddpub_data[[4,"open_code_perc"]] *100, 0), "%"),
+                                            "of publications have Open Code")),
+                       column(3, metric_box("Preprints", metrics_show_year$preprints,
+                                            "preprints published"))
+                     )
            ),
 
            wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-             h2(strong("Clinical trials"), align = "left"),
-             h4("Explanation on clinical trials ..."),
-             fluidRow(
-               column(3, metric_box("Summary Results", paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_12"]] *100, 0), "%"),
-                                    "of completed trials posted summary results on CT.gov within 12 month")),
-               column(3, metric_box("Summary Results", paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]] *100, 0), "%"),
-                                    "of completed trials posted summary results on CT.gov within 24 month")),
-               column(3, metric_box("Prospective registration", paste(round(metrics_show_year$perc_prosp_reg *100, 0), "%"),
-                                    "of clinical trials prospectively registered on CT.gov"))
-             )
+                     h2(strong("Clinical trials"), align = "left"),
+                     p("These metrics look at clinical trials that are registered on ClinicalTrials.gov
+                with Charité as the sponsor or with a priniciple investigator from Charité. We look
+                both at the timely reporting of summary results (within 12 or 24 month) on
+                ClinicalTrials.gov as well as prospective registration of the trials."),
+                     fluidRow(
+                       column(3, metric_box("Summary Results", paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_12"]] *100, 0), "%"),
+                                            "of completed trials posted summary results on CT.gov within 12 month")),
+                       column(3, metric_box("Summary Results", paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]] *100, 0), "%"),
+                                            "of completed trials posted summary results on CT.gov within 24 month")),
+                       column(3, metric_box("Prospective registration", paste(round(metrics_show_year$perc_prosp_reg *100, 0), "%"),
+                                            "of clinical trials prospectively registered on CT.gov"))
+                     )
            ),
 
            wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-             h2(strong("Development over time"), align = "left"),
-             fluidRow(
-               column(4,
-                      h4(strong("Open Access")),
-                      plotOutput('plot_OA')
-               ),
-               column(4,
-                      h4(strong("Open Data & Code")),
-                      plotOutput('plot_oddpub')
-               ),
-               column(4,
-                      h4(strong("Preprints")),
-                      plotOutput('plot_preprints')
-               )
-             ),
-             fluidRow(
-               column(4,
-                      h4(strong(HTML("Clinical trials - <br> Timely reporting"))),
-                      plotOutput('plot_CTgov_1')
-               ),
-               column(4,
-                      h4(strong(HTML("Clinical trials - <br> Prospective registration"))),
-                      plotOutput('plot_CTgov_2')
-               ),
-               column(4,
-                      h4(strong("Vizualizations")),
-                      plotOutput('plot_barzooka')
-               )
-             )
+                     h2(strong("Development over time"), align = "left"),
+                     fluidRow(
+                       column(4,
+                              h4(strong("Open Access")),
+                              plotOutput('plot_OA')
+                       ),
+                       column(4,
+                              h4(strong("Open Data & Code")),
+                              plotOutput('plot_oddpub')
+                       ),
+                       column(4,
+                              h4(strong("Preprints")),
+                              plotOutput('plot_preprints')
+                       )
+                     ),
+                     fluidRow(
+                       column(4,
+                              h4(strong(HTML("Clinical trials - <br> Timely reporting"))),
+                              plotOutput('plot_CTgov_1')
+                       ),
+                       column(4,
+                              h4(strong(HTML("Clinical trials - <br> Prospective registration"))),
+                              plotOutput('plot_CTgov_2')
+                       ),
+                       column(4,
+                              h4(strong("Vizualizations")),
+                              plotOutput('plot_barzooka')
+                       )
+                     )
            )
   ),
   tabPanel("Detailed Methods",
+           h1("Detailed Methods"),
+           h4("You can extend the panels to view the detailed methods for
+              the individual metrics. The code for the actual implementation
+              of the methods can be found on ... (Link)"),
+           h2("Open Science"),
+           bsCollapse(id = "methodsPanels_OpenScience",
+                      methods_panel("Open Access",
+                                    "text",
+                                    "text",
+                                    "text"),
+                      methods_panel("Open Data and Open Code",
+                                    "text",
+                                    "text",
+                                    "text"),
+                      methods_panel("Preprints",
+                                    "text",
+                                    "text",
+                                    "text")),
+
+           hr(),
+           h2("Clinical trials"),
+           bsCollapse(id = "methodsPanels_ClinicalTrials",
+                      methods_panel("Timely reporting",
+                                    "text",
+                                    "text",
+                                    "text"),
+                      methods_panel("Prospective registration",
+                                    "text",
+                                    "text",
+                                    "text")),
+           hr(),
+           h2("Visualizations"),
+           bsCollapse(id = "methodsPanels_visualizations",
+                      methods_panel("Timely reporting",
+                                    "text",
+                                    "text",
+                                    "text")),
 
   ),
   tabPanel("Educational tools",
@@ -213,8 +197,17 @@ ui <- navbarPage(
 # server
 #----------------------------------------------------------------------------------------------------------------------
 
-server <- function(input, output)
+server <- function(input, output, session)
 {
+
+  #output$genericPlot <- renderPlot(plot(rnorm(100)))
+  # observeEvent(input$p1Button, ({
+  #   updateCollapse(session, "methodsPanels", open = "Panel Open Access")
+  # }))
+  # observeEvent(input$styleSelect, ({
+  #   updateCollapse(session, "methodsPanels", style = list("Panel Open Access" = input$styleSelect))
+  # }))
+
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050")
   background_color <- "#ecf0f1"
