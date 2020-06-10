@@ -1,4 +1,4 @@
-methods_panels <- tabPanel("Detailed Methods",
+methods_panels <- tabPanel("Detailed Methods",  value = "tabMethods",
          h1("Detailed Methods"),
          h4("You can extend the panels to view the detailed methods for
               the individual metrics. The code for the actual implementation

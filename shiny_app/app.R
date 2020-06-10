@@ -59,7 +59,7 @@ ui <- navbarPage(
            wellPanel(
              br(),
              fluidRow(
-               column(6,
+               column(8,
                       h1(style = "margin-left:0cm", strong("Charité Dashboard"), align = "left"),
                       h4(style = "margin-left:0cm",
                          "This dashboard gives an overview over several metrics of open and responsible
@@ -67,17 +67,15 @@ ui <- navbarPage(
                         calculate those metrics or for ressources to improve your own research practices
                         click one of the following buttons."),
                       br()),
-               column(6,
+               column(4,
                       hr(),
                       br(),
                       actionButton(style = "color: white; background-color: #aa1c7d;",
                                    'buttonMethods',
-                                   'See methods',
-                                   onclick ="window.open('https://www.bihealth.org/quest-center/', '_blank')"),
+                                   'See methods'),
                       actionButton(style = "color: white; background-color: #aa1c7d;",
                                    'buttonResources',
-                                   'See resources',
-                                   onclick ="window.open('https://www.bihealth.org/quest-center/', '_blank')"),
+                                   'See resources'),
                       #h4(style = "margin-left:10cm", HTML(paste0(a(href = 'https://osf.io/fh426/', "Learn more")))),
                       br())
              )
@@ -150,7 +148,7 @@ ui <- navbarPage(
            )
   ),
   methods_panels,
-  tabPanel("Educational tools",
+  tabPanel("Educational tools", value = "tabRessources",
 
   )
 )
@@ -162,13 +160,17 @@ ui <- navbarPage(
 server <- function(input, output, session)
 {
 
-  #output$genericPlot <- renderPlot(plot(rnorm(100)))
-  # observeEvent(input$p1Button, ({
-  #   updateCollapse(session, "methodsPanels", open = "Panel Open Access")
-  # }))
-  # observeEvent(input$styleSelect, ({
-  #   updateCollapse(session, "methodsPanels", style = list("Panel Open Access" = input$styleSelect))
-  # }))
+  #actionButton to switch tabs
+  observeEvent(input$buttonMethods, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+  })
+
+  observeEvent(input$buttonResources, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabRessources")
+  })
+
 
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050")
