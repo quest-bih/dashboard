@@ -13,7 +13,7 @@ library(shinyBS)
 source("app_functions_OA.R")
 source("app_functions_oddpub.R")
 source("ui_elements.R")
-source("methods_descriptions.R")
+source("methods_descriptions.R", encoding = "UTF-8")
 
 dashboard_metrics <- read_csv("data/dashboard_metrics.csv") %>%
   rename(year = e_pub_year)
@@ -148,7 +148,24 @@ ui <- navbarPage(
            )
   ),
   methods_panels,
-  tabPanel("Educational tools", value = "tabRessources",
+  tabPanel("Educational resources", value = "tabRessources",
+           h1("Educational resources"),
+           h4("If you want to improve your own research practices related to the topics
+             of Open Science, clinical trials or visualizations, you can
+             have a look at the following resources."),
+           br(),
+           h2("Open Science"),
+           p(HTML('- <a href="https://www.bihealth.org/de/forschung/quest-center/mission-ansaetze/open-science/quest-toolbox/">
+                  The QUEST Toolbox </a>')),
+           h2("Clinical trials"),
+           p("???"),
+           h2("Visualizations"),
+           p(HTML('- <a href="http://statistika.mfub.bg.ac.rs/interactive-dotplot/">
+                  Interactive dotplot tool </a>')),
+           p(HTML('- <a href="https://doi.org/10.1371/journal.pbio.1002128">
+                  Beyond Bar and Line Graphs: Time for a New Data Presentation Paradigm </a>')),
+           p(HTML('- <a href="https://doi.org/10.1161/CIRCULATIONAHA.118.037777">
+                  Reveal, Don’t Conceal - Transforming Data Visualization to Improve Transparency</a>'))
 
   )
 )
