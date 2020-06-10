@@ -152,40 +152,110 @@ ui <- navbarPage(
            h1("Detailed Methods"),
            h4("You can extend the panels to view the detailed methods for
               the individual metrics. The code for the actual implementation
-              of the methods can be found on ... (Link)"),
+              of the methods can be found on Github (Link)"),
+           h2("Publication search"),
+           bsCollapse(id = "methodsPanels_PublicationSearch",
+                      bsCollapsePanel(strong("Publication Search"),
+                        p("Many of the assessed metrics are publication-based metrics. To assess those metrics
+                        on the institutional level, we first need to identify the publications that
+                        can be assigned to the Charité. For this, we search the publication databases
+                        Pubmed and Embase for biomedical publications with at least one of the
+                        authors affiliated to the Charité or the Berlin Insitute of Health.
+                        Subsequently, the search results from both databases were merged and deduplicated.
+                        After a final filtering step for the publication year (2015 - 2019) and for
+                        research articles, we obtained a list of institutional publications that
+                        was used to calculate the publication-based metrics."),
+                                      style = "default")),
            h2("Open Science"),
            bsCollapse(id = "methodsPanels_OpenScience",
                       methods_panel("Open Access",
-                                    "text",
-                                    "text",
-                                    "text"),
+                        "The Open Access metric measures the degree of openness of the
+                        publications published by the Charité researchers. Open Access
+                        publications are freely and (usually) immediately available
+                        to all other researchers in the world and thus help to distribute
+                        research results transparently, openly and fast.",
+                        "Using the obtained list of institutional publications, we query the
+                        unpaywall database via its API (https://unpaywall.org/products/api)
+                        to obtain information on the Open Access (OA) status of the publications.
+                        Unpaywall is today the most comprehensive database of Open Access
+                        information on research articles. It can be queried using publication
+                        DOIs. There are different Open Access statuses a publication can have,
+                        which are color-coded. Gold OA denotes publication in a pure OA journal.
+                        Green OA denotes a freely available repository version. Hybrid OA denotes
+                        an OA publication in a journal with offers both a subscription based model
+                        as well as an Open Access option. Bronze OA denotes a publication which is
+                        freely available on the journal page, but without a clear open license.
+                        Those can be articles in a non-OA journal which have been made available
+                        voluntarily by the journal but which might lose its OA status again.
+                        Thus we only consider the OA categories gold, green and hybrid here.
+                        As one publication can have several OA versions (e.g. a gold version
+                        in an OA journal as well as a green version in a repository), we define
+                        a hierarchy of the OA categories and for each publication only assign
+                        the OA catagory with the highest priority. We use a hierarchy of
+                        gold - hybrid - green (journal version before repository version),
+                        as also implemented in the unpaywall database itself.
+                        After querying the unpaywall API for all publication DOIs, we group
+                        the results by OA status and publication year.",
+                        "The unpaywall only stores information for publications that have
+                        a DOI assigend by crossref. Articles without crossref DOI have to
+                        be excluded from the OA analysis. However, in the most recent years
+                        this is the case for a tiny minority (<1%) of the publications."),
                       methods_panel("Open Data and Open Code",
-                                    "text",
-                                    "text",
-                                    "text"),
+                        "The Open Data and Open Code metric measure how many publications
+                        share their raw research data or analysis code with the publication.
+                        Openly shared data and code makes research more transparent,
+                        as research findings can be reproduced. Additionally, shared datasets
+                        can be reused and combined by other scientists to answer new research
+                        questions. Note however, that data sharing is not possible for all
+                        studies, as there is either no dataset to share or as the data
+                        cannot be shared, e.g. due to privacy concerns for patient data.",
+                        "To identify publications that share research data or analysis code,
+                        we use the text-mining algorithm ODDPub
+                        (Code: https://github.com/quest-bih/oddpub,
+                        preprint: https://doi.org/10.1101/2020.05.11.088021),
+                        which was developed by QUEST. ODDPub searches the publication full-text
+                        for statements indicating sharing of raw data or analysis code. A
+                        text-mining approach is necessary, as there is not yet a standardized
+                        way of sharing and reporting Open Data, and no database offers
+                        comprehensive information on shared datasets or code.
+                        To assess data and code sharing for the Charité publications,
+                        we first downloaded the full-texts of the publications that were
+                        accessible to us. Then we screened those full-texts with ODDPub and
+                        summarized the results for each publication year.",
+                        "Several limitations apply:
+                        Only full texts for Open Access publications or publications in journals
+                        that are subscribed by the Charité could be retrieved
+                        (~90% of all detected publications).ODDPub only finds ~75% of all Open Data
+                        publications and finds false positive cases (no manual check of the results
+                        is done). Open Data is not relevant for all publications, so we would not
+                        expect 100% of the publications to contain Open Data, even not in an ideal case.
+                        We considered all publications that had at least one author affiliated
+                        with the Charité – in some cases where those were only middle authors
+                        with minor contributions to the project, they might have little impact
+                        on the decision if data were made available."),
                       methods_panel("Preprints",
-                                    "text",
-                                    "text",
-                                    "text")),
+                        "text",
+                        "text",
+                        "text")),
 
            hr(),
            h2("Clinical trials"),
            bsCollapse(id = "methodsPanels_ClinicalTrials",
                       methods_panel("Timely reporting",
-                                    "text",
-                                    "text",
-                                    "text"),
+                        "text",
+                        "text",
+                        "text"),
                       methods_panel("Prospective registration",
-                                    "text",
-                                    "text",
-                                    "text")),
+                        "text",
+                        "text",
+                        "text")),
            hr(),
            h2("Visualizations"),
            bsCollapse(id = "methodsPanels_visualizations",
                       methods_panel("Timely reporting",
-                                    "text",
-                                    "text",
-                                    "text")),
+                        "text",
+                        "text",
+                        "text")),
 
   ),
   tabPanel("Educational tools",
