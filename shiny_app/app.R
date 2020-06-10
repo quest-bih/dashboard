@@ -295,10 +295,24 @@ ui <- navbarPage(
            hr(),
            h2("Visualizations"),
            bsCollapse(id = "methodsPanels_visualizations",
-                      methods_panel("Timely reporting",
-                        "text",
-                        "text",
-                        "text")),
+                      methods_panel("Graph types",
+                        "This metric measures how often different graph types appear in the publications.
+                        Especially bar graphs for continuous data are common in the biomedical literature
+                        but are considered a suboptimal practice, as they conceal the underlying data
+                        points and since many different data distributions can lead to the same bar graph.
+                        Different alternative graph types like dot plots, violin plots, box plots or
+                        histograms can be used instead. The best choice of graph type depends among other
+                        things on the size of the dataset.",
+                        "To detect graph types from publications we used the Barzooka algorithm (unpublished),
+                        a deep neural network that was trained to detect graph types on publication pages and
+                        that was developed by QUEST. Barzooka screens each page of the publication PDFs
+                        and reports if one or several graph types were detected. The results were then
+                        combined for each publication. For each publication we then report if a certain is
+                        present (at least once) or not present. The number of publications with each
+                        graph types are then summarized for each publication year.",
+                        "Barzooka detects the graph types with different accuracies and in particular
+                        for the categories of bar graphs for continuous data and appropriate bar graphs
+                        (for count data) there can be errornous assignments.")),
 
   ),
   tabPanel("Educational tools",
