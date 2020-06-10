@@ -165,7 +165,7 @@ ui <- navbarPage(
                         After a final filtering step for the publication year (2015 - 2019) and for
                         research articles, we obtained a list of institutional publications that
                         was used to calculate the publication-based metrics."),
-                                      style = "default")),
+                        style = "default")),
            h2("Open Science"),
            bsCollapse(id = "methodsPanels_OpenScience",
                       methods_panel("Open Access",
@@ -234,21 +234,64 @@ ui <- navbarPage(
                         with minor contributions to the project, they might have little impact
                         on the decision if data were made available."),
                       methods_panel("Preprints",
-                        "text",
-                        "text",
-                        "text")),
+                        "This metric measures how many preprints with authors from the Charité
+                        have been published on a range of preprint servers. Preprints allow
+                        rapid and transparent communication of preliminary research results
+                        before publication in a peer-reviewed journal.",
+                        "To identify preprints published by Charité authors we used the dimensions
+                        database (www.dimensions.ai), which indexes many preprint servers, including
+                        arXiv and bioRxiv. We searched for articles of the type 'preprint' and
+                        with authors assigned to the Charité via its Grid ID. The number of preprints
+                        found by this search are then summarized by year.",
+                        "Not all relevant preprint servers are currently indexed by dimensions,
+                        including some of the bigger preprint servers like OSF preprints or medRxiv.
+                        Thus we likely underestimate the number of published preprints.")),
 
            hr(),
            h2("Clinical trials"),
            bsCollapse(id = "methodsPanels_ClinicalTrials",
                       methods_panel("Timely reporting",
-                        "text",
-                        "text",
-                        "text"),
+                        "This metric measures how often clinical trials registered at ClinicalTrials.gov
+                        share their results in the form of summary results within 12 or 24 month.
+                        Clinical trials are expensive and have often many contributing patients.
+                        A fast dissemination of the trial results is crucial to make the evidence gained
+                        in those trials available. The World Health organization recommends publishing
+                        clinical trial results within one year after the end of a study.",
+                        "We identified clinical trials associated to the Charité by searching the
+                        AACT database (which aggregates the data from ClinicalTrials.gov) for trials
+                        mentioning the Charité as either sponsor, responsible party or
+                        with a priniciple investigator from Charité. We additionally filtered
+                        for interventional trials and for the study status as either
+                        completed, terminated, Suspended or unknown (which means that the estimated study
+                        completion data has already passed, but the registry entry has not been updated
+                        for more than 2 years). For the identified trials we calculated the time to
+                        summary results reporting by comparing the completion date to the date
+                        of results submission (if any were submitted), which are both included
+                        in the AACT dataset. We then grouped the results by the completion year
+                        of the studies.",
+                        "While ClinicalTrials.gov is the largest trial registry, it is not the only
+                        available registry. There are other registries like the EU Clinical Trials Register
+                        or the German Clinical Trials Registry, which are not considered here.
+                        Additionally, the completion dates given in the CT.gov registry can also
+                        be planned completion dates (if the record is not updated after study
+                        completion or if the study runs for longer), which can lead to inaccurate
+                        measurement of time to reporting."),
                       methods_panel("Prospective registration",
-                        "text",
-                        "text",
-                        "text")),
+                        "This metric measures if the clinical trials are registered before the
+                        start date of the study, according to the information given on ClinicalTrials.gov.
+                        The idea of prospective registration of studies is to make the trail specifications,
+                        including primary and secondary outcomes, publically available before study start.
+                        Prospective registration adds transparency, helps protect against outcome switching.",
+                        "We used the same methods as for the timely reporting metric to identify Charité
+                        trials. To assess if a study has been prospecively registered, we compare
+                        the date the study was first submitted to the registry with the
+                        start date given in the registry. As some of the earlier dates in the database
+                        only stated the month but not the exact day and to account for other possible delays
+                        we chose a conservative estimate of prospective registration and allow for a delay
+                        between start and registration date of up to 60 days.",
+                        "Like in the case of the summary results metric, we only focussed on the
+                        ClinicalTrials.gov while there are other available registries as well.
+                        Also, we rely on the information on ClinicalTrials.gov being accurate.")),
            hr(),
            h2("Visualizations"),
            bsCollapse(id = "methodsPanels_visualizations",
