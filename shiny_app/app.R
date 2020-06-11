@@ -299,8 +299,7 @@ server <- function(input, output, session)
 
   output$plot_CTgov_2 <- renderPlot({
     ggplot(CTgov_plot_data_2, aes(x=year, y=perc)) +
-      geom_bar(stat="identity", position=position_dodge(), color = "black", size = 0.6) +
-      scale_fill_manual(values = color_palette[2:4]) +
+      geom_bar(stat="identity", fill = color_palette[2], color = "black", size = 0.8) +
       theme_minimal() +
       xlab("Year") +
       ylab("Percentage of trials") +
