@@ -113,7 +113,8 @@ CTgov_sample_full <- CTgov_sample_full %>%
 #now filter the trials for each institution into separate tables to summarize the results
 CTgov_sample_Charite <- list()
 CTgov_sample_Charite[[1]] <- CTgov_sample_full %>%
-  filter(nct_id %in% institutions_ncts_primary)
+  filter(nct_id %in% institutions_ncts_primary) %>%
+  filter(study_type == "Interventional")
 
 
 #results for the prospective registration metric

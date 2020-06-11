@@ -107,7 +107,8 @@ methods_panels <- tabPanel("Detailed Methods",  value = "tabMethods",
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.",
-                                  "We identified clinical trials associated to the Charité by searching the
+                                  "We identified interventional clinical trials associated to the Charité
+                                  by searching the
                         AACT database (which aggregates the data from ClinicalTrials.gov) for trials
                         mentioning the Charité as either sponsor, responsible party or
                         with a priniciple investigator from Charité. We additionally filtered
