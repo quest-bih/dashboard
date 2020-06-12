@@ -25,7 +25,7 @@ dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv")
 # preprocessing, need to move somewhere else later
 #----------------------------------------------------------------------------------------------------------------------
 
-show_year <- "2018"
+show_year <- "2019"
 metrics_show_year <- dashboard_metrics_aggregate %>% filter(year == show_year)
 
 OA_data <- dashboard_metrics %>%
@@ -83,16 +83,17 @@ ui <- navbarPage(
 
            wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
                      h2(strong("Open Science"), align = "left"),
-                     p("These metrics show Open Science practices at Charité. The proportion of Charité
+                     p(paste0("These metrics show Open Science practices at Charité. The proportion of Charité
                 publications that are published as Open Access articles are mesured as well as
                 the proportion of publications that share their research data or analysis code.
-                Additionally, we count articles published on preprint servers like bioRxiv."),
+                Additionally, we count articles published on preprint servers like bioRxiv.
+                The data are shown for the year ", show_year, ".")),
                      fluidRow(
-                       column(3, metric_box("Open Access", paste(round(OA_data[[4,"OA_perc"]] *100, 0), "%"),
+                       column(3, metric_box("Open Access", paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]] *100, 0), "%"),
                                             "Open Access articles")),
-                       column(3, metric_box("Open Data", paste(round(oddpub_data[[4,"open_data_perc"]] *100, 0), "%"),
+                       column(3, metric_box("Open Data", paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_perc"]] *100, 0), "%"),
                                             "of publications have Open Data")),
-                       column(3, metric_box("Open Code", paste(round(oddpub_data[[4,"open_code_perc"]] *100, 0), "%"),
+                       column(3, metric_box("Open Code", paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_perc"]] *100, 0), "%"),
                                             "of publications have Open Code")),
                        column(3, metric_box("Preprints", metrics_show_year$preprints,
                                             "preprints published"))
@@ -106,12 +107,12 @@ ui <- navbarPage(
                 both at the timely reporting of summary results (within 12 or 24 month) on
                 ClinicalTrials.gov as well as prospective registration of the trials."),
                      fluidRow(
-                       column(3, metric_box("Summary Results", paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_12"]] *100, 0), "%"),
-                                            "of completed trials posted summary results on CT.gov within 12 month")),
+                       column(3, metric_box("Summary Results", paste(round(dashboard_metrics_aggregate[[13,"perc_sum_res_12"]] *100, 0), "%"),
+                                            "of trials completed in 2018 posted summary results on CT.gov within 12 month")),
                        column(3, metric_box("Summary Results", paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]] *100, 0), "%"),
-                                            "of completed trials posted summary results on CT.gov within 24 month")),
+                                            "of trials completed in 2017 posted summary results on CT.gov within 24 month")),
                        column(3, metric_box("Prospective registration", paste(round(metrics_show_year$perc_prosp_reg *100, 0), "%"),
-                                            "of clinical trials prospectively registered on CT.gov"))
+                                            "of clinical trials started in 2019 are prospectively registered on CT.gov"))
                      )
            ),
 
