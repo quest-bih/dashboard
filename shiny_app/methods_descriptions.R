@@ -45,7 +45,14 @@ methods_panels <- tabPanel("Detailed Methods",  value = "tabMethods",
                         gold - hybrid - green (journal version before repository version),
                         as also implemented in the unpaywall database itself.
                         After querying the unpaywall API for all publication DOIs, we group
-                        the results by OA status and publication year.",
+                        the results by OA status and publication year.
+                        One important point that has to be considered with OA data is, that
+                        the OA percentage is not a fixed number but is changing over time.
+                        This comes from the repository versions that are often made available
+                        with a delay, such that the OA percentage for a given year is typically
+                        rising retrospectively. Thus the timepoint of data retrieval important
+                        for the OA percentage. The current OA data were retrieved on the
+                        11.06.2020.",
                                   "The unpaywall only stores information for publications that have
                         a DOI assigend by crossref. Articles without crossref DOI have to
                         be excluded from the OA analysis. However, in the most recent years
