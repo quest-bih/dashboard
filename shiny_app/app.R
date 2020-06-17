@@ -37,15 +37,16 @@ oddpub_data <- dashboard_metrics %>%
   make_oddpub_plot_data()
 
 barzooka_data <- dashboard_metrics %>%
+  filter(pdf_downloaded) %>%
   group_by(year) %>%
   summarize(total = n(),
-            has_bar = sum(bar > 0, na.rm = TRUE),
-            has_pie = sum(pie > 0, na.rm = TRUE),
-            has_bardot = sum(bardot > 0, na.rm = TRUE),
-            has_box = sum(box > 0, na.rm = TRUE),
-            has_dot = sum(dot > 0, na.rm = TRUE),
-            has_hist = sum(hist > 0, na.rm = TRUE),
-            has_violin = sum(violin > 0, na.rm = TRUE))
+            has_bar = sum(bar > 0, na.rm = TRUE)/total*1000,
+            has_pie = sum(pie > 0, na.rm = TRUE)/total*1000,
+            has_bardot = sum(bardot > 0, na.rm = TRUE)/total*1000,
+            has_box = sum(box > 0, na.rm = TRUE)/total*1000,
+            has_dot = sum(dot > 0, na.rm = TRUE)/total*1000,
+            has_hist = sum(hist > 0, na.rm = TRUE)/total*1000,
+            has_violin = sum(violin > 0, na.rm = TRUE)/total*1000)
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -140,6 +141,7 @@ ui <- navbarPage(
                        column(4,
                               h4(strong(HTML("Clinical trials - <br> Prospective registration"))),
                               plotOutput('plot_CTgov_2')
+                              #ggvisOutput('plot_prospective')
                        ),
                        column(4,
                               h4(strong("Vizualizations")),
@@ -298,6 +300,7 @@ server <- function(input, output, session)
     rename(`Prospective registration` = perc_prosp_reg) %>%
     gather(`Prospective registration`, key="category", value="perc")
 
+
   output$plot_CTgov_2 <- renderPlot({
     ggplot(CTgov_plot_data_2, aes(x=year, y=perc)) +
       geom_bar(stat="identity", fill = color_palette[2], color = "black", size = 0.8) +
@@ -313,6 +316,28 @@ server <- function(input, output, session)
             plot.background = element_rect(fill = background_color, colour = background_color))
 
   }, height = 300, type = "cairo")
+
+
+  vis_prospective <- reactive({
+    CTgov_plot_data_2 %>%
+      ggvis(x=~year, y=~perc) %>%
+      layer_bars(fill := "#879C9D", stroke := "#3C5D70", fillOpacity := 0.5, fillOpacity.hover := 0.8,
+                 width = 0.8) %>%
+      hide_legend("fill") %>%
+      add_axis("x", title = "Year",
+               properties = axis_props(
+                 labels = list(angle = -90, align = "right", baseline = "middle", fontSize = 15))) %>%
+      add_axis("y", title = "Percentage of trials", title_offset = 60,
+               format = "%",
+               properties = axis_props(
+                 labels = list(fontSize = 14),
+                 title = list(fontSize = 16))) %>%
+      add_tooltip(function(data){
+        as.character(data$perc)
+      }, "hover") %>%
+      scale_numeric("y", domain = c(0, 1))
+  })
+  vis_prospective %>% bind_shiny("plot_prospective")
 
 
 
@@ -355,7 +380,7 @@ server <- function(input, output, session)
       scale_color_manual(values = color_palette) +
       theme_minimal() +
       xlab("Year") +
-      ylab("Publications with graph type") +
+      ylab("Graph types per 1000 publications") +
       theme(axis.text=element_text(size=14, face = "bold"),
             axis.title=element_text(size=16, face = "bold"),
             legend.title=element_text(size=14, face = "bold"),

@@ -1,7 +1,7 @@
 #use the cantaloupe server to serve images to the ML model
 
 #need to store the server files in dir that is on C:, without whitespace and not too deep (i.e. not in S: project repos), otherwise server does not work
-cd C:\Users\riedeln\flask\cantaloupe_dashboard
+cd C:\Datenablage\charite_dashboard\cantaloupe_dashboard
 C:
 
 java -Dcantaloupe.config=cantaloupe.properties -Xmx2g -jar cantaloupe-4.0.3.war
