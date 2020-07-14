@@ -67,6 +67,8 @@ ui <- navbarPage(
                         research at the Charité. For more detailed information on the methods used to
                         calculate those metrics or for ressources to improve your own research practices
                         click one of the following buttons."),
+                      h4(style = "margin-left:0cm",
+                         "This dashboard is still under development. More metrics will be added in the future."),
                       br()),
                column(4,
                       hr(),
@@ -86,16 +88,16 @@ ui <- navbarPage(
                      h2(strong("Open Science"), align = "left"),
                      p(paste0("These metrics show Open Science practices at Charité. The proportion of Charité
                 publications that are published as Open Access articles are mesured as well as
-                the proportion of publications that share their research data or analysis code.
+                the proportion of publications that state that they share their research data or analysis code.
                 Additionally, we count articles published on preprint servers like bioRxiv.
                 The data are shown for the year ", show_year, ".")),
                      fluidRow(
                        column(3, metric_box("Open Access", paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]] *100, 0), "%"),
                                             "Open Access articles")),
                        column(3, metric_box("Open Data", paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_perc"]] *100, 0), "%"),
-                                            "of publications have Open Data")),
+                                            "of publications mention sharing of research data")),
                        column(3, metric_box("Open Code", paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_perc"]] *100, 0), "%"),
-                                            "of publications have Open Code")),
+                                            "of publications mention sharing of code")),
                        column(3, metric_box("Preprints", metrics_show_year$preprints,
                                             "preprints published"))
                      )
@@ -119,6 +121,7 @@ ui <- navbarPage(
 
            wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
                      h2(strong("Development over time"), align = "left"),
+                     h2(strong("Open Science"), align = "left"),
                      fluidRow(
                        column(4,
                               h4(strong("Open Access")),
@@ -133,6 +136,7 @@ ui <- navbarPage(
                               plotOutput('plot_preprints')
                        )
                      ),
+                     h2(strong("Clincal trials"), align = "left"),
                      fluidRow(
                        column(4,
                               h4(strong(HTML("Clinical trials - <br> Timely reporting"))),
@@ -142,7 +146,10 @@ ui <- navbarPage(
                               h4(strong(HTML("Clinical trials - <br> Prospective registration"))),
                               plotOutput('plot_CTgov_2')
                               #ggvisOutput('plot_prospective')
-                       ),
+                       )
+                     ),
+                     h2(strong("Vizualisations"), align = "left"),
+                     fluidRow(
                        column(4,
                               h4(strong("Vizualizations")),
                               plotOutput('plot_barzooka')
@@ -170,7 +177,11 @@ ui <- navbarPage(
            p(HTML('- <a href="https://doi.org/10.1161/CIRCULATIONAHA.118.037777">
                   Reveal, Don’t Conceal - Transforming Data Visualization to Improve Transparency</a>'))
 
-  )
+  ),
+  tabPanel("About",
+           h2("Contact information"),
+           h2("Contributions")
+           )
 )
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -184,6 +195,7 @@ server <- function(input, output, session)
   observeEvent(input$buttonMethods, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
+    #updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
   })
 
   observeEvent(input$buttonResources, {
