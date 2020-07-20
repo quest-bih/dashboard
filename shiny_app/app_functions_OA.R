@@ -8,9 +8,8 @@ make_OA_plot_data <- function(data_table)
     filter(!is.na(OA_color)) %>%
     group_by(year, OA_color) %>%
     summarize(count = n()) %>%
-    calculate_OA_percentages() #%>%
-  #set_OA_colors(TRUE) %>%
-  #mutate(year = as.factor(year))
+    calculate_OA_percentages() %>%
+    rename(category = OA_color)
 
   return(OA_plot_data)
 }
@@ -32,7 +31,7 @@ calculate_OA_percentages <- function(OA_data)
   #OA percentages
   OA_perc <- publ_OA_colors %>%
     left_join(publ_all) %>%
-    mutate(perc = OA/all) %>%
+    mutate(perc = OA/all *100) %>%
     ungroup()
 
   return(OA_perc)

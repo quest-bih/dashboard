@@ -83,10 +83,13 @@ methods_panels <- tabPanel("Detailed Methods",  value = "tabMethods",
                         and no further quality criteria, like the FAIR criteria, are checked -
                         for further details on the Open Data definition used see
                         <a href="https://www.bihealth.org/en/research/quest-center/mission-approaches/incentives/including-open-data/open-data-criteria/">
-                        here</a>.
+                        here</a>. This definition is also used for the distribution of performance-oriented
+                        funding for publications with Open Data at the Charité.
                         Note also, that data sharing is not possible for all
                         studies, as there is either no dataset to share or as the data
-                        cannot be shared, e.g. due to privacy concerns for patient data.'),
+                        cannot be shared, e.g. due to privacy concerns for patient data.
+                        Data sharing under restrictions is currently not considered,
+                        but we are planning to do so in the future.'),
 
                                   HTML('To identify publications that share research data or analysis code,
                         we use the text-mining algorithm ODDPub
