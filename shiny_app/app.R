@@ -5,6 +5,7 @@ library(ggvis)
 library(ggplot2)
 library(shinythemes)
 library(shinyBS)
+library(DT)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -226,6 +227,17 @@ ui <- navbarPage(
                   Reveal, Don’t Conceal - Transforming Data Visualization to Improve Transparency</a>'))
 
   ),
+
+  #possibly let users choose which dataset (publications/clinical trials) is shown
+  #instead of showing both
+  tabPanel("Datasets",
+           h1("Publication dataset"),
+           h4("The following table shows the dataset underlying the plots
+              shown for the publication based metrics."),
+           br(),
+           DT::dataTableOutput("data_table"),
+           h1("Clinical trial dataset"),
+  ),
   tabPanel("About",
 
            h3("Contributors"),
@@ -275,6 +287,29 @@ server <- function(input, output, session)
   observeEvent(input$buttonResources, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabRessources")
+  })
+
+
+  #data table to show the underlying dataset
+  output$data_table <- DT::renderDataTable({
+    DT::datatable( data = dashboard_metrics,
+    extensions = 'Buttons',
+    filter = 'top',
+    options = list(dom = 'Blfrtip',
+                   buttons =
+                     list(list(
+                       extend = "collection"
+                       , buttons = c("csv", "excel")
+                       , text = "Download"
+                     ) ),
+                   orderClasses = TRUE,
+                   pageLength = 20,
+                   lengthMenu = list(c(10, 20, 50, 100, -1),
+                                     c(10, 20, 50, 100, "All")),
+                   columnDefs = list(list(className = 'dt-left', targets = 2),
+                                     list(className = 'dt-left', targets = 6),
+                                     list(className = 'dt-left', targets = 8))
+    ))
   })
 
 
