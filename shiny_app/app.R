@@ -1,3 +1,4 @@
+library(plotly)
 library(shiny)
 library(shinydashboard)
 library(tidyverse)
@@ -174,7 +175,7 @@ ui <- navbarPage(
                        ),
                        column(4,
                               h4(strong("Open Data"), align = "center"),
-                              plotOutput('plot_oddpub_data')
+                              plotlyOutput('plot_oddpub_data', height = "300px")
                        ),
                        column(4,
                               h4(strong("Open Code"), align = "center"),
@@ -407,23 +408,19 @@ server <- function(input, output, session)
     rename(`Open Code` = open_code_perc) #%>%
     #gather(`Open Data`, `Open Code`, key="category", value="perc")
 
-  output$plot_oddpub_data <- renderPlot({
-    ggplot(oddpub_plot_data, aes(x=year, y=`Open Data`)) +
-      geom_bar(stat="identity", position=position_dodge(),
-               color = "black", fill = color_palette[3], size = 0.8) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Percentage of publications") +
-      ylim(0, 100) +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
 
-  }, height = 300, type = "cairo")
 
+  output$plot_oddpub_data <- renderPlotly({
+    plot_ly(oddpub_plot_data, x = ~year, y = ~`Open Data`, type = 'bar',
+            marker = list(color = color_palette[3],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+      layout(yaxis = list(title = '<b>Percentage of publications</b>',
+                          range = c(0, 100)),
+             xaxis = list(title = '<b>Year</b>'),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
+  })
 
   output$plot_oddpub_code <- renderPlot({
     ggplot(oddpub_plot_data, aes(x=year, y=`Open Code`)) +
