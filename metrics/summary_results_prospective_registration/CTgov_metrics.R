@@ -159,3 +159,27 @@ summary_table_sum_res_24 <- summary_sum_res_24[[1]]
 
 write_csv(summary_table_sum_res_24, "results/summary_results_24_month.csv")
 
+
+#save table with individual trials to display them in the Shiny app
+prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
+  filter(start_date > "2006-01-01") %>%
+  filter(start_date < "2019-12-31") %>%
+  select(nct_id, start_date, study_first_submitted_date,
+         days_reg_to_start, has_prospective_registration)
+
+write_csv(prosp_reg_dataset_shiny, "results/prosp_reg_dataset_shiny.csv")
+
+
+
+#save table with individual trials to display them in the Shiny app
+summary_results_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
+  filter(completion_date > "2006-01-01") %>%
+  filter(completion_date < "2018-12-31") %>%
+  filter(study_type == "Interventional") %>%
+  filter(overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
+  select(nct_id, completion_date, results_first_submitted_date,
+         days_compl_to_summary, summary_result_12_month,
+         summary_result_24_month,
+         study_type, overall_status)
+
+write_csv(summary_results_dataset_shiny, "results/sum_res_dataset_shiny.csv")

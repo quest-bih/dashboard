@@ -24,6 +24,12 @@ dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") 
   mutate(perc_sum_res_12 = perc_sum_res_12 * 100) %>%
   mutate(perc_sum_res_24 = perc_sum_res_24 * 100)
 
+#CT.gov dataset for the datatable
+prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
+  mutate_at(vars(nct_id, start_date, study_first_submitted_date,
+                 days_reg_to_start, has_prospective_registration),
+            as.character)
+summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
 
 #----------------------------------------------------------------------------------------------------------------------
 # preprocessing, need to move somewhere else later
@@ -231,12 +237,24 @@ ui <- navbarPage(
   #possibly let users choose which dataset (publications/clinical trials) is shown
   #instead of showing both
   tabPanel("Datasets",
-           h1("Publication dataset"),
-           h4("The following table shows the dataset underlying the plots
-              shown for the publication based metrics."),
+           h1("Datasets"),
+           h4("The following tables contain the datasets underlying the numbers and plots
+              shown for the metrics included in this Shiny app."),
            br(),
-           DT::dataTableOutput("data_table"),
-           h1("Clinical trial dataset"),
+           bsCollapse(id = "datasetPanels_PublicationDataset",
+                      bsCollapsePanel(strong("Publication dataset"),
+                                      DT::dataTableOutput("data_table_publ"),
+                                      style = "default")),
+           br(),
+           bsCollapse(id = "datasetPanels_PublicationDataset",
+                      bsCollapsePanel(strong("Prospective registration dataset"),
+                                      DT::dataTableOutput("data_table_prosp_reg"),
+                                      style = "default")),
+           br(),
+           bsCollapse(id = "datasetPanels_PublicationDataset",
+                      bsCollapsePanel(strong("Summary results dataset"),
+                                      DT::dataTableOutput("data_table_sum_res"),
+                                      style = "default")),
   ),
   tabPanel("About",
 
@@ -290,9 +308,9 @@ server <- function(input, output, session)
   })
 
 
-  #data table to show the underlying dataset
-  output$data_table <- DT::renderDataTable({
-    DT::datatable( data = dashboard_metrics,
+  #data table to show the underlying publ dataset
+  output$data_table_publ <- DT::renderDataTable({
+    DT::datatable(data = dashboard_metrics,
     extensions = 'Buttons',
     filter = 'top',
     options = list(dom = 'Blfrtip',
@@ -311,6 +329,49 @@ server <- function(input, output, session)
                                      list(className = 'dt-left', targets = 8))
     ))
   })
+
+  #data table to show the underlying dataset
+  output$data_table_prosp_reg <- DT::renderDataTable({
+    DT::datatable(data = prosp_reg_dataset_shiny,
+                  extensions = 'Buttons',
+                  filter = 'top',
+                  options = list(dom = 'Blfrtip',
+                                 buttons =
+                                   list(list(
+                                     extend = "collection"
+                                     , buttons = c("csv", "excel")
+                                     , text = "Download"
+                                   ) ),
+                                 orderClasses = TRUE,
+                                 pageLength = 20,
+                                 lengthMenu = list(c(10, 20, 50, 100, -1),
+                                                   c(10, 20, 50, 100, "All"))
+                  ))
+  })
+
+  #data table to show the underlying dataset
+  output$data_table_sum_res <- DT::renderDataTable({
+    DT::datatable(data = summary_results_dataset_shiny,
+                  extensions = 'Buttons',
+                  filter = 'top',
+                  options = list(dom = 'Blfrtip',
+                                 buttons =
+                                   list(list(
+                                     extend = "collection"
+                                     , buttons = c("csv", "excel")
+                                     , text = "Download"
+                                   ) ),
+                                 orderClasses = TRUE,
+                                 pageLength = 20,
+                                 lengthMenu = list(c(10, 20, 50, 100, -1),
+                                                   c(10, 20, 50, 100, "All")),
+                                 columnDefs = list(list(className = 'dt-left', targets = 2),
+                                                   list(className = 'dt-left', targets = 6),
+                                                   list(className = 'dt-left', targets = 8))
+                  ))
+  })
+
+
 
 
 
