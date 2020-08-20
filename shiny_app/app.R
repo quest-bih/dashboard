@@ -78,7 +78,7 @@ ui <- navbarPage(
                       h4(style = "margin-left:0cm",
                          "This dashboard gives an overview over several metrics of open and responsible
                         research at the Charité. For more detailed information on the methods used to
-                        calculate those metrics or for ressources to improve your own research practices
+                        calculate those metrics, for the dataset underlying the metrics, or for ressources to improve your own research practices
                         click one of the following buttons."),
                       h4(style = "margin-left:0cm",
                          "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
@@ -92,7 +92,9 @@ ui <- navbarPage(
                       actionButton(style = "color: white; background-color: #aa1c7d;",
                                    'buttonResources',
                                    'See resources'),
-                      #h4(style = "margin-left:10cm", HTML(paste0(a(href = 'https://osf.io/fh426/', "Learn more")))),
+                      actionButton(style = "color: white; background-color: #aa1c7d;",
+                                   'buttonDatasets',
+                                   'See Dataset'),
                       br())
              )
            ),
@@ -236,7 +238,7 @@ ui <- navbarPage(
 
   #possibly let users choose which dataset (publications/clinical trials) is shown
   #instead of showing both
-  tabPanel("Datasets",
+  tabPanel("Datasets", value = "tabDatasets",
            h1("Datasets"),
            h4("The following tables contain the datasets underlying the numbers and plots
               shown for the metrics included in this Shiny app."),
@@ -305,6 +307,11 @@ server <- function(input, output, session)
   observeEvent(input$buttonResources, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabRessources")
+  })
+
+  observeEvent(input$buttonDatasets, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabDatasets")
   })
 
 
