@@ -94,7 +94,7 @@ ui <- navbarPage(
                                    'See resources'),
                       actionButton(style = "color: white; background-color: #aa1c7d;",
                                    'buttonDatasets',
-                                   'See Dataset'),
+                                   'See dataset'),
                       br())
              )
            ),
