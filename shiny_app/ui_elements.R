@@ -49,12 +49,13 @@ overall_design_options <- tags$head(
 )
 
 
-metric_box <- function(title, value, value_text)
+metric_box <- function(title, value, value_text, plot)
 {
   wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
             h4(strong(title)),
             h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-            h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text))
+            h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+            plot)
 
 }
 

@@ -104,22 +104,25 @@ ui <- navbarPage(
                      h4(paste0("These metrics show Open Science practices at Charité. The percentage of Charité
                 original research publications that are published as Open Access articles are mesured as well as
                 the percentage of publications that state that they share their research data or analysis code.
-                Additionally, we count articles published on preprint servers like bioRxiv.
-                The data are shown for the year ", show_year, ".")),
+                Additionally, we count articles published on preprint servers like bioRxiv.")),
                      br(),
                      fluidRow(
                        column(3, metric_box("Open Access",
                                             paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
-                                            "Open Access articles")),
+                                            "Open Access articles in 2019",
+                                            plotlyOutput('plot_OA', height = "300px"))),
                        column(3, metric_box("Any Open Data",
                                             paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_perc"]], 0), "%"),
-                                            "of publications mention sharing of research data")),
+                                            "of publications mention sharing of data in 2019",
+                                            plotlyOutput('plot_oddpub_data', height = "300px"))),
                        column(3, metric_box("Any Open Code",
                                             paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_perc"]], 0), "%"),
-                                            "of publications mention sharing of code")),
+                                            "of publications mention sharing of code in 2019",
+                                            plotlyOutput('plot_oddpub_code', height = "300px"))),
                        column(3, metric_box("Preprints",
                                             metrics_show_year$preprints,
-                                            "preprints published"))
+                                            "preprints published in 2019",
+                                            plotlyOutput('plot_preprints', height = "300px")))
                      )
            ),
 
@@ -131,15 +134,14 @@ ui <- navbarPage(
                 ClinicalTrials.gov as well as prospective registration of the trials."),
                      br(),
                      fluidRow(
-                       column(3, metric_box("Summary Results: 12 months",
-                                            paste(round(dashboard_metrics_aggregate[[13,"perc_sum_res_12"]], 0), "%"),
-                                            "of trials completed in 2018 posted summary results on CT.gov within 12 months")),
-                       column(3, metric_box("Summary Results: 24 months",
+                       column(3, metric_box("Summary Results",
                                             paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]], 0), "%"),
-                                            "of trials completed in 2017 posted summary results on CT.gov within 24 months")),
+                                            "of trials completed in 2017 posted summary results on CT.gov within 24 months",
+                                            plotlyOutput('plot_CTgov_1', height = "300px"))),
                        column(3, metric_box("Prospective registration",
                                             paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
-                                            "of clinical trials started in 2019 are prospectively registered on CT.gov"))
+                                            "of clinical trials started in 2019 are prospectively registered on CT.gov",
+                                            plotlyOutput('plot_CTgov_2', height = "300px")))
                      )
            ),
 
@@ -155,62 +157,14 @@ ui <- navbarPage(
                        violin plots, box plots or histograms can be used instead."),
                      br(),
                      fluidRow(
-                       column(3, metric_box("Bar graphs for continuous data",
+                       column(6, metric_box("Problematic graphs",
                                             filter(barzooka_data, year == show_year)$has_bar %>% round(0),
-                                            "out of 1000 publications use bar graphs for continuous data")),
-                       column(3, metric_box("Pie charts",
-                                            filter(barzooka_data, year == show_year)$has_pie %>% round(0),
-                                            "out of 1000 publications use pie charts")),
-                       column(3, metric_box("More informative graph types",
+                                            "out of 1000 publications from 2019 use bar graphs for continuous data",
+                                            plotlyOutput('plot_barzooka_problem', height = "300px"))),
+                       column(6, metric_box("More informative graph types",
                                             filter(barzooka_data, year == show_year)$has_informative %>% round(0),
-                                            "out of 1000 publications use more informative graph types"))
-                     )
-           ),
-
-           wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                     h2(strong("Development over time"), align = "left"),
-                     h2(strong("Open Science"), align = "left"),
-                     fluidRow(
-                       column(4,
-                              h4(strong("Open Access"), align = "center"),
-                              plotlyOutput('plot_OA', height = "300px")
-                       ),
-                       column(4,
-                              h4(strong("Open Data"), align = "center"),
-                              plotlyOutput('plot_oddpub_data', height = "300px")
-                       ),
-                       column(4,
-                              h4(strong("Open Code"), align = "center"),
-                              plotlyOutput('plot_oddpub_code', height = "300px")
-                       )
-                     ),
-                     fluidRow(
-                       column(4,
-                              h4(strong("Preprints"), align = "center"),
-                              plotlyOutput('plot_preprints', height = "300px")
-                       )
-                     ),
-                     h2(strong("Clincal trials"), align = "left"),
-                     fluidRow(
-                       column(4,
-                              h4(strong(HTML("Clinical trials - <br> Timely reporting")), align = "center"),
-                              plotlyOutput('plot_CTgov_1', height = "300px")
-                       ),
-                       column(4,
-                              h4(strong(HTML("Clinical trials - <br> Prospective registration")), align = "center"),
-                              plotlyOutput('plot_CTgov_2', height = "300px")
-                       )
-                     ),
-                     h2(strong("Vizualisations"), align = "left"),
-                     fluidRow(
-                       column(6,
-                              h4(strong("Problematic graphs"), align = "center"),
-                              plotlyOutput('plot_barzooka_problem', height = "300px")
-                       ),
-                       column(6,
-                              h4(strong("More informative graphs"), align = "center"),
-                              plotlyOutput('plot_barzooka_inform', height = "300px")
-                       )
+                                            "out of 1000 publications from 2019 use more informative graph types",
+                                            plotlyOutput('plot_barzooka_inform', height = "300px")))
                      )
            )
   ),
@@ -384,6 +338,7 @@ server <- function(input, output, session)
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050", "#000000")
   background_color <- "#ecf0f1"
+  background_color_darker <- "#DCE3E5"
 
 
   #---------------------------------
@@ -416,8 +371,8 @@ server <- function(input, output, session)
                           range = c(0, 100)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
 
@@ -437,8 +392,8 @@ server <- function(input, output, session)
                           range = c(0, 100)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
   output$plot_oddpub_code <- renderPlotly({
@@ -450,8 +405,8 @@ server <- function(input, output, session)
                           range = c(0, 100)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
 
@@ -471,8 +426,8 @@ server <- function(input, output, session)
                           range = c(0, 100)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
 
@@ -504,8 +459,8 @@ server <- function(input, output, session)
                           range = c(0, 100)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
 
@@ -527,8 +482,8 @@ server <- function(input, output, session)
                           range = c(0, 100)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
 
@@ -548,8 +503,8 @@ server <- function(input, output, session)
              yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
 
@@ -577,8 +532,8 @@ server <- function(input, output, session)
              yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
-             paper_bgcolor = background_color,
-             plot_bgcolor = background_color)
+             paper_bgcolor = background_color_darker,
+             plot_bgcolor = background_color_darker)
   })
 
 }
