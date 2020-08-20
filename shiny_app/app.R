@@ -67,14 +67,14 @@ barzooka_data <- dashboard_metrics %>%
 #----------------------------------------------------------------------------------------------------------------------
 
 ui <- navbarPage(
-  "Charité Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
+  "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
   tabPanel("Start page",
            #overall_design_options,
            wellPanel(
              br(),
              fluidRow(
                column(8,
-                      h1(style = "margin-left:0cm", strong("Charité Dashboard"), align = "left"),
+                      h1(style = "margin-left:0cm", strong("Charité Metrics Dashboard"), align = "left"),
                       h4(style = "margin-left:0cm",
                          "This dashboard gives an overview over several metrics of open and responsible
                         research at the Charité. For more detailed information on the methods used to
