@@ -171,7 +171,7 @@ ui <- navbarPage(
                      fluidRow(
                        column(4,
                               h4(strong("Open Access"), align = "center"),
-                              plotOutput('plot_OA')
+                              plotlyOutput('plot_OA', height = "300px")
                        ),
                        column(4,
                               h4(strong("Open Data"), align = "center"),
@@ -179,36 +179,35 @@ ui <- navbarPage(
                        ),
                        column(4,
                               h4(strong("Open Code"), align = "center"),
-                              plotOutput('plot_oddpub_code')
+                              plotlyOutput('plot_oddpub_code', height = "300px")
                        )
                      ),
                      fluidRow(
                        column(4,
                               h4(strong("Preprints"), align = "center"),
-                              plotOutput('plot_preprints')
+                              plotlyOutput('plot_preprints', height = "300px")
                        )
                      ),
                      h2(strong("Clincal trials"), align = "left"),
                      fluidRow(
                        column(4,
                               h4(strong(HTML("Clinical trials - <br> Timely reporting")), align = "center"),
-                              plotOutput('plot_CTgov_1')
+                              plotlyOutput('plot_CTgov_1', height = "300px")
                        ),
                        column(4,
                               h4(strong(HTML("Clinical trials - <br> Prospective registration")), align = "center"),
-                              plotOutput('plot_CTgov_2')
-                              #ggvisOutput('plot_prospective')
+                              plotlyOutput('plot_CTgov_2', height = "300px")
                        )
                      ),
                      h2(strong("Vizualisations"), align = "left"),
                      fluidRow(
                        column(6,
                               h4(strong("Problematic graphs"), align = "center"),
-                              plotOutput('plot_barzooka_problem')
+                              plotlyOutput('plot_barzooka_problem', height = "300px")
                        ),
                        column(6,
                               h4(strong("More informative graphs"), align = "center"),
-                              plotOutput('plot_barzooka_inform')
+                              plotlyOutput('plot_barzooka_inform', height = "300px")
                        )
                      )
            )
@@ -380,34 +379,46 @@ server <- function(input, output, session)
   background_color <- "#ecf0f1"
 
 
+  #---------------------------------
+  # Open Science plots
+  #---------------------------------
+
   OA_plot_data <- dashboard_metrics %>%
     make_OA_plot_data()
 
-  output$plot_OA <- renderPlot({
-    ggplot(OA_plot_data, aes(x=year, y=perc, fill = category)) +
-      geom_bar(stat="identity", color = "black", width = 0.8, size = 0.8) +
-      scale_fill_manual(values=color_palette[c(3,6,7)]) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Percentage Open Access") +
-      ylim(0, 100) +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
+  OA_plot_data_plotly <- OA_plot_data %>%
+    select(-OA, -all) %>%
+    pivot_wider(names_from = category, values_from = perc)
 
-  }, height = 300, type = "cairo")
+  output$plot_OA <- renderPlotly({
+    plot_ly(OA_plot_data_plotly, x = ~year, y = ~gold, name = "Gold", type = 'bar',
+            marker = list(color = color_palette[3],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+      add_trace(y = ~green, name = 'Green',
+                marker = list(color = color_palette[6],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      add_trace(y = ~hybrid, name = 'Hybrid',
+                marker = list(color = color_palette[7],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      layout(barmode = 'stack',
+             legend=list(title=list(text='<b> Category </b>')),
+             yaxis = list(title = '<b>Percentage Open Access</b>',
+                          range = c(0, 100)),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
+  })
 
 
 
   oddpub_plot_data <- dashboard_metrics %>%
     make_oddpub_plot_data() %>%
     rename(`Open Data` = open_data_perc) %>%
-    rename(`Open Code` = open_code_perc) #%>%
-    #gather(`Open Data`, `Open Code`, key="category", value="perc")
-
+    rename(`Open Code` = open_code_perc)
 
 
   output$plot_oddpub_data <- renderPlotly({
@@ -417,27 +428,24 @@ server <- function(input, output, session)
                                       width = 1.5))) %>%
       layout(yaxis = list(title = '<b>Percentage of publications</b>',
                           range = c(0, 100)),
-             xaxis = list(title = '<b>Year</b>'),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
              paper_bgcolor = background_color,
              plot_bgcolor = background_color)
   })
 
-  output$plot_oddpub_code <- renderPlot({
-    ggplot(oddpub_plot_data, aes(x=year, y=`Open Code`)) +
-      geom_bar(stat="identity", position=position_dodge(),
-               color = "black", fill = color_palette[3], size = 0.8) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Percentage of publications") +
-      ylim(0, 100) +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
-
-  }, height = 300, type = "cairo")
+  output$plot_oddpub_code <- renderPlotly({
+    plot_ly(oddpub_plot_data, x = ~year, y = ~`Open Code`, type = 'bar',
+            marker = list(color = color_palette[3],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+      layout(yaxis = list(title = '<b>Percentage of publications</b>',
+                          range = c(0, 100)),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
+  })
 
 
 
@@ -446,47 +454,52 @@ server <- function(input, output, session)
     filter(!is.na(preprints)) %>%
     filter(year >= 2015)
 
-  output$plot_preprints <- renderPlot({
-    ggplot(preprints_plot_data, aes(x=year, y=preprints)) +
-      geom_bar(stat="identity", fill = color_palette[3], color = "black", size = 0.8) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Number of preprints") +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
 
-  }, height = 300, type = "cairo")
+  output$plot_preprints <- renderPlotly({
+    plot_ly(preprints_plot_data, x = ~year, y = ~preprints, type = 'bar',
+            marker = list(color = color_palette[3],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+      layout(yaxis = list(title = '<b>Percentage of preprints</b>',
+                          range = c(0, 100)),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
+  })
 
 
+  #---------------------------------
+  # Clinical trials plots
+  #---------------------------------
 
   CTgov_plot_data_1 <- dashboard_metrics_aggregate %>%
     select(year, perc_sum_res_12, perc_sum_res_24) %>%
     filter(!is.na(perc_sum_res_12)) %>%
     filter(year >= 2015) %>%
     rename(`12 months` = perc_sum_res_12) %>%
-    rename(`24 months` = perc_sum_res_24) %>%
-    gather(`12 months`, `24 months`, key="category", value="perc")
+    rename(`24 months` = perc_sum_res_24) #%>%
+    #gather(`12 months`, `24 months`, key="category", value="perc")
 
-  output$plot_CTgov_1 <- renderPlot({
-    ggplot(CTgov_plot_data_1, aes(x=year, y=perc, fill=category)) +
-      geom_bar(stat="identity", position=position_dodge(), color = "black", size = 0.6) +
-      scale_fill_manual(values = color_palette[2:4]) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Percentage of trials") +
-      ylim(0, 100) +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
-
-  }, height = 300, type = "cairo")
+  output$plot_CTgov_1 <- renderPlotly({
+    plot_ly(CTgov_plot_data_1, x = ~year, y = ~`12 months`,
+                               name = "12 months", type = 'bar',
+            marker = list(color = color_palette[2],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+      add_trace(y = ~`24 months`, name = '24 months',
+                marker = list(color = color_palette[3],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      layout(barmode = 'group',
+             legend=list(title=list(text='<b> Category </b>')),
+             yaxis = list(title = '<b>Percentage of trials</b>',
+                          range = c(0, 100)),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
+  })
 
 
 
@@ -498,99 +511,68 @@ server <- function(input, output, session)
     gather(`Prospective registration`, key="category", value="perc")
 
 
-  output$plot_CTgov_2 <- renderPlot({
-    ggplot(CTgov_plot_data_2, aes(x=year, y=perc)) +
-      geom_bar(stat="identity", fill = color_palette[2], color = "black", size = 0.8) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Percentage of trials") +
-      ylim(0, 100) +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
-
-  }, height = 300, type = "cairo")
-
-
-  vis_prospective <- reactive({
-    CTgov_plot_data_2 %>%
-      ggvis(x=~year, y=~perc) %>%
-      layer_bars(fill := "#879C9D", stroke := "#3C5D70", fillOpacity := 0.5, fillOpacity.hover := 0.8,
-                 width = 0.8) %>%
-      hide_legend("fill") %>%
-      add_axis("x", title = "Year",
-               properties = axis_props(
-                 labels = list(angle = -90, align = "right", baseline = "middle", fontSize = 15))) %>%
-      add_axis("y", title = "Percentage of trials", title_offset = 60,
-               format = "%",
-               properties = axis_props(
-                 labels = list(fontSize = 14),
-                 title = list(fontSize = 16))) %>%
-      add_tooltip(function(data){
-        as.character(data$perc)
-      }, "hover") %>%
-      scale_numeric("y", domain = c(0, 1))
+  output$plot_CTgov_2 <- renderPlotly({
+    plot_ly(CTgov_plot_data_2, x = ~year, y = ~perc, type = 'bar',
+            marker = list(color = color_palette[2],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+      layout(yaxis = list(title = '<b>Percentage of trials</b>',
+                          range = c(0, 100)),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
   })
-  vis_prospective %>% bind_shiny("plot_prospective")
 
 
+  #---------------------------------
+  # Visualizations plots
+  #---------------------------------
 
-  barzooka_plot_data <- barzooka_data %>%
-    rename(`bar graph` = has_bar) %>%
-    rename(`pie chart` = has_pie) %>%
-    rename(`bar graph with dots` = has_bardot) %>%
-    rename(`box plot` = has_box) %>%
-    rename(`dot plot` = has_dot) %>%
-    rename(`histogram` = has_hist) %>%
-    rename(`violin plot` = has_violin) %>%
-    rename(`any informative` = has_informative)
-
-
-  barzooka_plot_data_problem <- barzooka_plot_data %>%
-    select(year, `bar graph`, `pie chart`) %>%
-    gather(category, value, -year)
-
-  output$plot_barzooka_problem <- renderPlot({
-    ggplot(barzooka_plot_data_problem, aes(x=year, y=value, color = category)) +
-      geom_line(aes(color=category), size=1.2) +
-      geom_point(size=3) +
-      scale_color_manual(values = color_palette[2:4]) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Graph types per 1000 publications") +
-      ylim(0, 250) +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
-  }, height = 300, type = "cairo")
+  output$plot_barzooka_problem <- renderPlotly({
+    plot_ly(barzooka_data, x = ~year, y = ~has_bar,
+            name = "bar graph", type = 'scatter', mode = 'lines+markers',
+            line = list(color = color_palette[2], width = 3),
+            marker = list(color = color_palette[2], size = 8)) %>%
+      add_trace(y = ~has_pie, name = 'pie chart', mode = 'lines+markers',
+                line = list(color = color_palette[3]),
+                marker = list(color = color_palette[3])) %>%
+      layout(legend=list(title=list(text='<b> Category </b>')),
+             yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
+  })
 
 
-  barzooka_plot_data_inform <- barzooka_plot_data %>%
-    select(-total, -`bar graph`, -`pie chart`) %>%
-    gather(category, value, -year)
-
-  output$plot_barzooka_inform <- renderPlot({
-    ggplot(barzooka_plot_data_inform, aes(x=year, y=value, color = category)) +
-      geom_line(aes(color=category), size=1.2) +
-      geom_point(size=3) +
-      scale_color_manual(values = color_palette) +
-      theme_minimal() +
-      xlab("Year") +
-      ylab("Graph types per 1000 publications") +
-      ylim(0, 250) +
-      theme(axis.text=element_text(size=14, face = "bold"),
-            axis.title=element_text(size=16, face = "bold"),
-            legend.title=element_text(size=14, face = "bold"),
-            legend.text=element_text(size=12, face = "bold"),
-            panel.grid=element_blank(),
-            plot.background = element_rect(fill = background_color, colour = background_color))
-  }, height = 300, type = "cairo")
+  output$plot_barzooka_inform <- renderPlotly({
+    plot_ly(barzooka_data, x = ~year, y = ~has_informative,
+            name = "any informative", type = 'scatter', mode = 'lines+markers',
+            line = list(color = color_palette[1], width = 3),
+            marker = list(color = color_palette[1], size = 8)) %>%
+      add_trace(y = ~has_bardot, name = 'bar graph with dots', mode = 'lines+markers',
+                line = list(color = color_palette[2]),
+                marker = list(color = color_palette[2])) %>%
+      add_trace(y = ~has_box, name = 'box plot', mode = 'lines+markers',
+                line = list(color = color_palette[3]),
+                marker = list(color = color_palette[3])) %>%
+      add_trace(y = ~has_dot, name = 'dot plot', mode = 'lines+markers',
+                line = list(color = color_palette[4]),
+                marker = list(color = color_palette[4])) %>%
+      add_trace(y = ~has_hist, name = 'histogram', mode = 'lines+markers',
+                line = list(color = color_palette[5]),
+                marker = list(color = color_palette[5])) %>%
+      add_trace(y = ~has_violin, name = 'violin plot', mode = 'lines+markers',
+                line = list(color = color_palette[6]),
+                marker = list(color = color_palette[6])) %>%
+      layout(legend=list(title=list(text='<b> Category </b>')),
+             yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
+             xaxis = list(title = '<b>Year</b>',
+                          dtick = 1),
+             paper_bgcolor = background_color,
+             plot_bgcolor = background_color)
+  })
 
 }
 
