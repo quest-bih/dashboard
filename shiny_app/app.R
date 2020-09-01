@@ -171,23 +171,36 @@ ui <- navbarPage(
   methods_panels,
   tabPanel("Educational resources", value = "tabRessources",
            h1("Educational resources"),
-           h4("If you want to improve your own research practices related to the topics
-             of Open Science, clinical trials or visualizations, you can
-             have a look at the following resources."),
+           h4("Want to improve your own research practices? See the following resources to get started."),
            br(),
            h2("Open Science"),
-           p(HTML('- <a href="https://www.bihealth.org/de/forschung/quest-center/mission-ansaetze/open-science/quest-toolbox/">
-                  The QUEST Toolbox </a>')),
+           h4("Use the QUEST Toolbox to find tools for making your science more open and reproducible,
+              at any phase of the research process (planning a project, executing a project, publishing your research):"),
+           h4(HTML('<a href="https://quest-toolbox.bihealth.org/">
+                  https://quest-toolbox.bihealth.org/ </a>')),
+           br(),
            h2("Clinical trials"),
-           p("???"),
+           h4("???"),
+           br(),
            h2("Visualizations"),
-           p(HTML('- <a href="http://statistika.mfub.bg.ac.rs/interactive-dotplot/">
-                  Interactive dotplot tool </a>')),
-           p(HTML('- <a href="https://doi.org/10.1371/journal.pbio.1002128">
-                  Beyond Bar and Line Graphs: Time for a New Data Presentation Paradigm </a>')),
-           p(HTML('- <a href="https://doi.org/10.1161/CIRCULATIONAHA.118.037777">
-                  Reveal, Don’t Conceal - Transforming Data Visualization to Improve Transparency</a>'))
-
+           h4("Wondering why you shouldn’t use bar graphs for continuous data, what types of graphs to use instead,
+             and where to find free graphing tools & resources that will help you to replace bar graphs with more informative figures?
+             See the following resources:"),
+           br(),
+           h4(tags$b("A fast, visual overview")),
+           h4(HTML('<a href="https://twitter.com/T_Weissgerber/status/1192694904603992064">
+                  https://twitter.com/T_Weissgerber/status/1192694904603992064 </a>')),
+           br(),
+           h4(tags$b('Papers')),
+           h4(HTML(' 1. 2015 PLoS Biology paper: <a href="http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002128">
+                    http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002128 </a>')),
+           h4(HTML(' 2. More recent data (see Table 3 to find a free visualization resource that meets your needs):
+                    <a href="https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.118.037777">
+                    https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.118.037777 </a>')),
+           br(),
+           h4(tags$b("Webinar")),
+           h4(HTML('<a href="https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility">
+                    https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility </a>'))
   ),
 
   #possibly let users choose which dataset (publications/clinical trials) is shown
