@@ -16,6 +16,8 @@ source("app_functions_OA.R")
 source("app_functions_oddpub.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
+source("resources_descriptions.R", encoding = "UTF-8")
+source("about_page.R", encoding = "UTF-8")
 
 dashboard_metrics <- read_csv("data/dashboard_metrics.csv") %>%
   rename(year = e_pub_year)
@@ -168,40 +170,8 @@ ui <- navbarPage(
                      )
            )
   ),
-  methods_panels,
-  tabPanel("Educational resources", value = "tabRessources",
-           h1("Educational resources"),
-           h4("Want to improve your own research practices? See the following resources to get started."),
-           br(),
-           h2("Open Science"),
-           h4("Use the QUEST Toolbox to find tools for making your science more open and reproducible,
-              at any phase of the research process (planning a project, executing a project, publishing your research):"),
-           h4(HTML('<a href="https://quest-toolbox.bihealth.org/">
-                  https://quest-toolbox.bihealth.org/ </a>')),
-           br(),
-           h2("Clinical trials"),
-           h4("???"),
-           br(),
-           h2("Visualizations"),
-           h4("Wondering why you shouldn’t use bar graphs for continuous data, what types of graphs to use instead,
-             and where to find free graphing tools & resources that will help you to replace bar graphs with more informative figures?
-             See the following resources:"),
-           br(),
-           h4(tags$b("A fast, visual overview")),
-           h4(HTML('<a href="https://twitter.com/T_Weissgerber/status/1192694904603992064">
-                  https://twitter.com/T_Weissgerber/status/1192694904603992064 </a>')),
-           br(),
-           h4(tags$b('Papers')),
-           h4(HTML(' 1. 2015 PLoS Biology paper: <a href="http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002128">
-                    http://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.1002128 </a>')),
-           h4(HTML(' 2. More recent data (see Table 3 to find a free visualization resource that meets your needs):
-                    <a href="https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.118.037777">
-                    https://www.ahajournals.org/doi/10.1161/CIRCULATIONAHA.118.037777 </a>')),
-           br(),
-           h4(tags$b("Webinar")),
-           h4(HTML('<a href="https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility">
-                    https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility </a>'))
-  ),
+  methods_panel,
+  resources_panel,
 
   #possibly let users choose which dataset (publications/clinical trials) is shown
   #instead of showing both
@@ -225,36 +195,7 @@ ui <- navbarPage(
                                       DT::dataTableOutput("data_table_sum_res"),
                                       style = "default")),
   ),
-  tabPanel("About",
-
-           h3("Contributors"),
-           br(),
-           h4("ODDPub - Open Data & Code detection"),
-           helpText('Riedel, Nico (Conceptualization, Methodology, Technical Implementation, Validation);
-                     Bobrov, Evgeny (Conceptualization, Methodology, Validation); Kip, Miriam (Conceptualization, Methodology)'),
-           br(),
-           h4("Barzooka - Vizualization type detection"),
-           helpText('Riedel, Nico (Conceptualization, Methodology, technical implementation);
-                     Weissgerber, Tracey (Conceptualization, Methodology); Schultz, Robert (Validation)'),
-           br(),
-           h4("Clinical trial metrics"),
-           helpText('Riedel, Nico (Conceptualization, Methodology, technical implementation);
-                     Strech, Dainel; Wieschowski, Susanne; Grabitz, Peter; Franzen, Delwen; Salholz-Hillel, Maia'),
-           br(),
-           h4("Shiny app"),
-           helpText('Riedel, Nico (Conceptualization, Technical Implementation); Weissgerber, Tracey (Conceptualization);
-                     Dirnagl, Ulrich (Conceptualization); Bobrov, Evgeny (Conceptualization); Strech, Daniel (Conceptualization);
-                     Franzen, Delwen (Conceptualization); Salholz-Hillel, Maia (Conceptualization)'),
-           br(),
-           h3('Contact address'),
-           helpText('QUEST Center for Transforming Biomedical Research,'),
-           helpText('Berlin Institute of Health (BIH), Berlin, Germany'),
-           helpText('Anna-Louisa-Karsch-Str. 2'),
-           helpText('10178 Berlin '),
-           helpText('quest@bihealth.de'),
-           helpText(HTML('<a href="https://www.bihealth.org/quest-center/">
-                  https://www.bihealth.org/quest-center/ </a>'))
-           )
+  about_page
 )
 
 #----------------------------------------------------------------------------------------------------------------------

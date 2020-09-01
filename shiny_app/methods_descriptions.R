@@ -1,4 +1,4 @@
-methods_panels <- tabPanel("Detailed Methods",  value = "tabMethods",
+methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
 
          h1("Detailed Methods"),
