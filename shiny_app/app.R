@@ -193,7 +193,7 @@ ui <- navbarPage(
            bsCollapse(id = "datasetPanels_PublicationDataset",
                       bsCollapsePanel(strong("Summary results dataset"),
                                       DT::dataTableOutput("data_table_sum_res"),
-                                      style = "default")),
+                                      style = "default"))
   ),
   about_page
 )
