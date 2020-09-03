@@ -2,15 +2,14 @@ resources_panel <- tabPanel("Educational resources", value = "tabRessources",
          h1("Educational resources"),
          h4("Want to improve your own research practices? See the following resources to get started."),
          br(),
+      wellPanel(
          h2("Open Science"),
          h4("Use the QUEST Toolbox to find tools for making your science more open and reproducible,
               at any phase of the research process (planning a project, executing a project, publishing your research):"),
          h4(HTML('<a href="https://quest-toolbox.bihealth.org/">
-                  https://quest-toolbox.bihealth.org/ </a>')),
-         br(),
-         h2("Clinical trials"),
-         h4("???"),
-         br(),
+                  https://quest-toolbox.bihealth.org/ </a>'))
+      ),
+      wellPanel(
          h2("Visualizations"),
          h4("Wondering why you shouldn’t use bar graphs for continuous data, what types of graphs to use instead,
              and where to find free graphing tools & resources that will help you to replace bar graphs with more informative figures?
@@ -30,4 +29,5 @@ resources_panel <- tabPanel("Educational resources", value = "tabRessources",
          h4(tags$b("Webinar")),
          h4(HTML('<a href="https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility">
                     https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility </a>'))
+      )
 )
