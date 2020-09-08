@@ -8,8 +8,8 @@ pdf_folders <- list.dirs(pdf_main_folder)[-1]
 
 for(pdf_folder in pdf_folders)
 {
-  city <- pdf_folder %>% str_split("/") %>% map_chr(tail, 1)
-  txt_folder <- paste0(txt_main_folder, "/", city)
+  subfolder_name <- pdf_folder %>% str_split("/") %>% map_chr(tail, 1)
+  txt_folder <- paste0(txt_main_folder, "/", subfolder_name)
   if(!dir.exists(txt_folder)) {
     dir.create(txt_folder)
   }
@@ -28,5 +28,5 @@ for(txt_folder in txt_folders)
   pdf_text_corpus <- oddpub::pdf_load(paste0(txt_folder, "/"))
   oddpub_results <- oddpub::open_data_search_parallel(pdf_text_corpus)
   oddpub_results["year"] <- year
-  write_csv(oddpub_results[1:3], paste0("./results/Open_Data_", year, ".csv"))
+  write_csv(oddpub_results, paste0("./results/Open_Data_", year, "_cat.csv"))
 }

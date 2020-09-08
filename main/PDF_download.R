@@ -18,3 +18,14 @@ dois <- publications$doi[publications$doi != ""]
 #download pdfs
 pdf_folder <- paste0("C:/Datenablage/charite_dashboard/", year, "/")
 pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(dois, email, pdf_folder, sleep = 10)
+
+
+#download Open Data publ for manual check separately
+open_data_publ <- read_csv("./results/OD_manual_check/Open_Data_2015-18_manual_check.csv")
+pdf_folder <- paste0("C:/Datenablage/charite_dashboard/PDFs/2015-18/")
+pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(open_data_publ$doi, email, pdf_folder, sleep = 10)
+
+open_code_missing_publ <- read_csv("./results/OD_manual_check/Open_Code_missing_check.csv")
+pdf_folder <- paste0("C:/Datenablage/charite_dashboard/PDFs/Open_Code_missing/")
+pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(open_code_missing_publ$doi, email, pdf_folder, sleep = 10)
+

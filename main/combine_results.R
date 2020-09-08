@@ -17,7 +17,8 @@ results_files <- paste0(results_folder, results_files)
 open_data_files <- results_files[results_files %>% str_detect("Open_Data")]
 open_data_results <- map(open_data_files, read_csv)
 open_data_results <- do.call(rbind, open_data_results) %>%
-  rename(doi = article)
+  rename(doi = article) %>%
+  distinct(doi, .keep_all = TRUE)
 
 #convert dois to standard format
 open_data_results$doi <- open_data_results$doi %>%
@@ -25,12 +26,26 @@ open_data_results$doi <- open_data_results$doi %>%
   str_replace_all(fixed("+"), fixed("/"))
 
 
+#manually checked Open Data results
+open_data_manual <- results_files[results_files %>% str_detect("OD_manual_check_")] %>%
+                    map(read_csv)
+open_data_manual <- do.call(rbind, open_data_manual) %>%
+  mutate(doi = (doi %>% (function(x) x %>%
+                           str_remove(fixed(".txt")) %>%
+                           str_replace_all(fixed("+"), "/")))) %>%
+  distinct(doi, .keep_all = TRUE) %>%
+  filter(in_PURE) %>%
+  select(doi, open_data_manual_check, open_data_category_manual,
+         open_code_manual_check, open_code_category_manual,
+         open_data_statements, open_code_statements)
+
 #Open Access results
 open_access_files <- results_files[results_files %>% str_detect("Open_Access")]
 open_access_results <- read_csv(open_access_files) %>%
   select(-year) %>%
   rename(OA_color = color) %>%
-  filter(!is.na(doi))
+  filter(!is.na(doi)) %>%
+  distinct(doi, .keep_all = TRUE)
 
 
 #Barzooka results
@@ -38,7 +53,8 @@ barzooka_files <- results_files[results_files %>% str_detect("Barzooka")]
 barzooka_results <- map(barzooka_files, read_csv)
 barzooka_results <- do.call(rbind, barzooka_results) %>%
   select(paper_id, bar, pie, bardot, box, dot, hist, violin) %>%
-  rename(doi = paper_id)
+  rename(doi = paper_id) %>%
+  distinct(doi, .keep_all = TRUE)
 
 
 #----------------------------------------------------------------------------------------
@@ -47,12 +63,14 @@ barzooka_results <- do.call(rbind, barzooka_results) %>%
 
 #check if there are no duplicated dois in the results files (problem for left_join)
 length(open_data_results$doi) == length(unique(open_data_results$doi))
+length(open_data_manual$doi) == length(unique(open_data_manual$doi))
 length(open_access_results$doi) == length(unique(open_access_results$doi))
 length(barzooka_results$doi) == length(unique(barzooka_results$doi))
 
 
 dashboard_metrics <- publications %>%
   left_join(open_data_results) %>%
+  left_join(open_data_manual) %>%
   left_join(open_access_results) %>%
   left_join(barzooka_results) %>%
   mutate(pdf_downloaded = !is.na(is_open_data))
@@ -74,8 +92,10 @@ dashboard_metrics <- dashboard_metrics %>%
 #only select columns relevant for shiny table
 shiny_table <- dashboard_metrics %>%
   select(doi, pmid, title, journal_title,
-         e_pub_year, pdf_downloaded,
-         is_open_data, is_open_code, OA_color,
+         e_pub_year, pdf_downloaded, OA_color,
+         is_open_data, open_data_manual_check, open_data_category_manual,
+         is_open_code, open_code_manual_check, open_code_category_manual,
+         open_data_statements, open_code_statements,
          bar, pie, bardot, box, dot, hist, violin)
 
 write_csv(shiny_table, "shiny_app/data/dashboard_metrics.csv")
