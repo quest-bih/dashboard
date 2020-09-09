@@ -70,7 +70,7 @@ barzooka_data <- dashboard_metrics %>%
 
 ui <- navbarPage(
   "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
-  tabPanel("Start page",
+  tabPanel("Start page", value = "tabStart",
            #overall_design_options,
            wellPanel(
              br(),
@@ -87,6 +87,7 @@ ui <- navbarPage(
                       br()),
                column(4,
                       hr(),
+                      br(),
                       br(),
                       actionButton(style = "color: white; background-color: #aa1c7d;",
                                    'buttonMethods',
@@ -114,11 +115,11 @@ ui <- navbarPage(
                                             "Open Access articles in 2019",
                                             plotlyOutput('plot_OA', height = "300px"))),
                        column(3, metric_box("Any Open Data",
-                                            paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_perc"]], 0), "%"),
+                                            paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_manual_perc"]], 0), "%"),
                                             "of publications mention sharing of data in 2019",
                                             plotlyOutput('plot_oddpub_data', height = "300px"))),
                        column(3, metric_box("Any Open Code",
-                                            paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_perc"]], 0), "%"),
+                                            paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_perc"]], 0), "%"),
                                             "of publications mention sharing of code in 2019",
                                             plotlyOutput('plot_oddpub_code', height = "300px"))),
                        column(3, metric_box("Preprints",
@@ -333,9 +334,8 @@ server <- function(input, output, session)
 
   oddpub_plot_data <- dashboard_metrics %>%
     make_oddpub_plot_data() %>%
-    rename(`Open Data` = open_data_perc) %>%
-    rename(`Open Code` = open_code_perc)
-
+    rename(`Open Data` = open_data_manual_perc) %>%
+    rename(`Open Code` = open_code_manual_perc)
 
   output$plot_oddpub_data <- renderPlotly({
     plot_ly(oddpub_plot_data, x = ~year, y = ~`Open Data`, type = 'bar',
