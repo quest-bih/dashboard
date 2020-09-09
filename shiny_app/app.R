@@ -338,25 +338,50 @@ server <- function(input, output, session)
     rename(`Open Code` = open_code_manual_perc)
 
   output$plot_oddpub_data <- renderPlotly({
-    plot_ly(oddpub_plot_data, x = ~year, y = ~`Open Data`, type = 'bar',
+    plot_ly(oddpub_plot_data, x = ~year, y = ~OD_field_specific_perc,
+            name = "field-specific repository", type = 'bar',
             marker = list(color = color_palette[3],
                           line = list(color = 'rgb(0,0,0)',
                                       width = 1.5))) %>%
-      layout(yaxis = list(title = '<b>Percentage of publications</b>',
-                          range = c(0, 100)),
+      add_trace(y = ~OD_general_purpose_perc,
+                name = 'general-purpose repository or other website',
+                marker = list(color = color_palette[6],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      add_trace(y = ~OD_supplement_perc, name = 'supplement',
+                marker = list(color = color_palette[7],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      layout(barmode = 'stack',
+             legend=list(title=list(text='<b> Category </b>')),
+             yaxis = list(title = '<b>Percentage of publications</b>',
+                          range = c(0, 20)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
              paper_bgcolor = background_color_darker,
              plot_bgcolor = background_color_darker)
   })
 
+
   output$plot_oddpub_code <- renderPlotly({
-    plot_ly(oddpub_plot_data, x = ~year, y = ~`Open Code`, type = 'bar',
+    plot_ly(oddpub_plot_data, x = ~year, y = ~OC_github_perc,
+            name = "GitHub", type = 'bar',
             marker = list(color = color_palette[3],
                           line = list(color = 'rgb(0,0,0)',
                                       width = 1.5))) %>%
-      layout(yaxis = list(title = '<b>Percentage of publications</b>',
-                          range = c(0, 100)),
+      add_trace(y = ~OC_other_perc,
+                name = 'other repository/website',
+                marker = list(color = color_palette[6],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      add_trace(y = ~OC_supplement_perc, name = 'supplement',
+                marker = list(color = color_palette[7],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      layout(barmode = 'stack',
+             legend=list(title=list(text='<b> Category </b>')),
+             yaxis = list(title = '<b>Percentage of publications</b>',
+                          range = c(0, 10)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
              paper_bgcolor = background_color_darker,
