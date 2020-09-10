@@ -90,6 +90,32 @@ plot_OD_perc <- function(plot_data, color_palette)
            plot_bgcolor = color_palette[9])
 }
 
+plot_OD_total <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~open_data_manual_count,
+          name = "Open Data", type = 'bar',
+          marker = list(color = color_palette[3],
+                        line = list(color = 'rgb(0,0,0)',
+                                    width = 1.5))) %>%
+    add_trace(y = ~open_data_neg_count,
+              name = 'No Open Data',
+              marker = list(color = color_palette[5],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~open_data_NA_count,
+              name = 'PDF not available',
+              marker = list(color = color_palette[1],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    layout(barmode = 'stack',
+           legend=list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Percentage of publications</b>'),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
 
 # Open Code
 plot_OC_perc <- function(plot_data, color_palette)
@@ -116,6 +142,32 @@ plot_OC_perc <- function(plot_data, color_palette)
                           dtick = 1),
              paper_bgcolor = color_palette[9],
              plot_bgcolor = color_palette[9])
+}
+
+plot_OC_total <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~open_code_manual_count,
+          name = "Open Data", type = 'bar',
+          marker = list(color = color_palette[3],
+                        line = list(color = 'rgb(0,0,0)',
+                                    width = 1.5))) %>%
+    add_trace(y = ~open_code_neg_count,
+              name = 'No Open Data',
+              marker = list(color = color_palette[5],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~open_code_NA_count,
+              name = 'PDF not available',
+              marker = list(color = color_palette[1],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    layout(barmode = 'stack',
+           legend=list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Percentage of publications</b>'),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
 }
 
 

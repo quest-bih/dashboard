@@ -4,9 +4,11 @@
 
 make_oddpub_plot_data <- function(data_table)
 {
+  od_manual_pos <- (!is.na(data_table$open_data_manual_check) & data_table$open_data_manual_check)
+  data_table[od_manual_pos,]$is_open_data <- TRUE
   oddpub_plot_data <- data_table %>%
     #HERE WE FILTER SUCH THAT WE ONLY KEEP THE DOWNLOADED PUBLICATIONS
-    filter(!is.na(is_open_data) | (open_data_manual_check == TRUE)) %>%
+    #filter(!is.na(is_open_data) | (open_data_manual_check == TRUE)) %>%
     #only take the categories mentioned first
     mutate(open_data_category_priority = (open_data_category_manual %>% (function(x)
       x %>% str_split(",") %>% map_chr(head, 1)))) %>%
@@ -15,15 +17,22 @@ make_oddpub_plot_data <- function(data_table)
     group_by(year) %>%
     summarize(open_data_count = sum(is_open_data, na.rm = TRUE),
               open_code_count = sum(is_open_code, na.rm = TRUE),
+
               open_data_manual_count = sum(open_data_manual_check, na.rm = TRUE),
+              open_data_neg_count = sum(!open_data_manual_check, na.rm = TRUE),
+              open_data_NA_count = sum(is.na(open_data_manual_check), na.rm = TRUE),
+
               open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
+              open_code_neg_count = sum(!open_code_manual_check, na.rm = TRUE),
+              open_code_NA_count = sum(is.na(open_code_manual_check), na.rm = TRUE),
+
               OD_field_specific_count = sum(open_data_category_priority == "field-specific repository", na.rm = TRUE),
               OD_general_purpose_count = sum(open_data_category_priority == "general-purpose repository", na.rm = TRUE),
               OD_supplement_count = sum(open_data_category_priority == "supplement", na.rm = TRUE),
               OC_github_count = sum(open_code_category_priority == "github", na.rm = TRUE),
               OC_other_count = sum(open_code_category_priority == "other repository/website", na.rm = TRUE),
               OC_supplement_count = sum(open_code_category_priority == "supplement", na.rm = TRUE),
-              total = n()) %>% #DO WE WANT TO BE N=ALL DOWNLOADED PUBLICATIONS OR N=ALL PUBLICATIONS IN THE DATASET?
+              total = sum(!is.na(is_open_data) | (open_data_manual_check == TRUE), na.rm = TRUE)) %>% #DO WE WANT TO BE N=ALL DOWNLOADED PUBLICATIONS OR N=ALL PUBLICATIONS IN THE DATASET?
     #BECAUSE WITH THE CURRENT CALCULATION WE ASSUME THAT THE PERCENTAGE OF OPEN DATA IS THE SAME FOR ALL THE
     #PUBLICATIONS THAT COULD NOT BE DOWNLOADED, WHICH MIGHT NOT BE TRUE
     mutate(open_data_perc = open_data_count/total * 100) %>%

@@ -89,6 +89,38 @@ dashboard_metrics <- dashboard_metrics %>%
   filter(Note == FALSE)
 
 
+#some of the open data cases were only manually detected
+#need to update the is_open_data status for them
+od_manual_pos <- (!is.na(dashboard_metrics$open_data_manual_check) &
+                    dashboard_metrics$open_data_manual_check == "TRUE")
+dashboard_metrics[od_manual_pos,]$is_open_data <- TRUE
+
+no_access_pos <- (!is.na(dashboard_metrics$open_data_manual_check) &
+                    dashboard_metrics$open_data_manual_check == "no access")
+dashboard_metrics[no_access_pos,]$open_data_manual_check <- "FALSE"
+
+no_od_pos <- (is.na(dashboard_metrics$open_data_manual_check) &
+                !is.na(dashboard_metrics$is_open_data))
+dashboard_metrics[no_od_pos,]$open_data_manual_check <- "FALSE"
+
+no_check <- (is.na(dashboard_metrics$is_open_data) &
+               !is.na(dashboard_metrics$open_data_manual_check))
+dashboard_metrics[no_check,]$open_data_manual_check <- NA
+
+#need to do the same cleaning of the manual data for open code
+oc_manual_pos <- (!is.na(dashboard_metrics$open_code_manual_check) &
+                    dashboard_metrics$open_code_manual_check == TRUE)
+dashboard_metrics[oc_manual_pos,]$is_open_code <- TRUE
+
+no_oc_pos <- (is.na(dashboard_metrics$open_code_manual_check) &
+                !is.na(dashboard_metrics$is_open_code))
+dashboard_metrics[no_oc_pos,]$open_code_manual_check <- FALSE
+
+no_check_oc <- (is.na(dashboard_metrics$is_open_code) &
+               !is.na(dashboard_metrics$open_code_manual_check))
+dashboard_metrics[no_check_oc,]$open_code_manual_check <- NA
+
+
 #only select columns relevant for shiny table
 shiny_table <- dashboard_metrics %>%
   select(doi, pmid, title, journal_title,

@@ -330,11 +330,19 @@ server <- function(input, output, session)
     rename(`Open Code` = open_code_manual_perc)
 
   output$plot_oddpub_data <- renderPlotly({
-    plot_OD_perc(oddpub_plot_data, color_palette)
+    if(input$OS_total_check) {
+      return(plot_OD_total(oddpub_plot_data, color_palette))
+    } else {
+      return(plot_OD_perc(oddpub_plot_data, color_palette))
+    }
   })
 
   output$plot_oddpub_code <- renderPlotly({
-    plot_OC_perc(oddpub_plot_data, color_palette)
+    if(input$OS_total_check) {
+      return(plot_OC_total(oddpub_plot_data, color_palette))
+    } else {
+      return(plot_OC_perc(oddpub_plot_data, color_palette))
+    }
   })
 
 
