@@ -142,11 +142,11 @@ ui <- navbarPage(
                        column(3, metric_box("Summary Results",
                                             paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]], 0), "%"),
                                             "of trials completed in 2017 posted summary results on CT.gov within 24 months",
-                                            plotlyOutput('plot_CTgov_1', height = "300px"))),
+                                            plotlyOutput('plot_summary_results', height = "300px"))),
                        column(3, metric_box("Prospective registration",
                                             paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
                                             "of clinical trials started in 2019 are prospectively registered on CT.gov",
-                                            plotlyOutput('plot_CTgov_2', height = "300px")))
+                                            plotlyOutput('plot_prosp_reg', height = "300px")))
                      )
            ),
 
@@ -302,6 +302,7 @@ server <- function(input, output, session)
   # Open Science plots
   #---------------------------------
 
+  # Open Access
   OA_plot_data_plotly <- dashboard_metrics %>%
     make_OA_plot_data() %>%
     select(-OA, -all) %>%
@@ -322,82 +323,29 @@ server <- function(input, output, session)
   })
 
 
-
+  # Open Data & Code
   oddpub_plot_data <- dashboard_metrics %>%
     make_oddpub_plot_data() %>%
     rename(`Open Data` = open_data_manual_perc) %>%
     rename(`Open Code` = open_code_manual_perc)
 
   output$plot_oddpub_data <- renderPlotly({
-    plot_ly(oddpub_plot_data, x = ~year, y = ~OD_field_specific_perc,
-            name = "field-specific repository", type = 'bar',
-            marker = list(color = color_palette[3],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-      add_trace(y = ~OD_general_purpose_perc,
-                name = 'general-purpose repository or other website',
-                marker = list(color = color_palette[6],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OD_supplement_perc, name = 'supplement',
-                marker = list(color = color_palette[7],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      layout(barmode = 'stack',
-             legend=list(title=list(text='<b> Category </b>')),
-             yaxis = list(title = '<b>Percentage of publications</b>',
-                          range = c(0, 20)),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+    plot_OD_perc(oddpub_plot_data, color_palette)
   })
-
 
   output$plot_oddpub_code <- renderPlotly({
-    plot_ly(oddpub_plot_data, x = ~year, y = ~OC_github_perc,
-            name = "GitHub", type = 'bar',
-            marker = list(color = color_palette[3],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-      add_trace(y = ~OC_other_perc,
-                name = 'other repository/website',
-                marker = list(color = color_palette[6],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OC_supplement_perc, name = 'supplement',
-                marker = list(color = color_palette[7],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      layout(barmode = 'stack',
-             legend=list(title=list(text='<b> Category </b>')),
-             yaxis = list(title = '<b>Percentage of publications</b>',
-                          range = c(0, 10)),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+    plot_OC_perc(oddpub_plot_data, color_palette)
   })
 
 
-
+  # Preprints
   preprints_plot_data <- dashboard_metrics_aggregate %>%
     select(year, preprints) %>%
     filter(!is.na(preprints)) %>%
     filter(year >= 2015)
 
-
   output$plot_preprints <- renderPlotly({
-    plot_ly(preprints_plot_data, x = ~year, y = ~preprints, type = 'bar',
-            marker = list(color = color_palette[3],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-      layout(yaxis = list(title = '<b>Number of preprints</b>',
-                          range = c(0, 100)),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+    plot_preprints(preprints_plot_data, color_palette)
   })
 
 
@@ -413,26 +361,9 @@ server <- function(input, output, session)
     rename(`24 months` = perc_sum_res_24) #%>%
     #gather(`12 months`, `24 months`, key="category", value="perc")
 
-  output$plot_CTgov_1 <- renderPlotly({
-    plot_ly(CTgov_plot_data_1, x = ~year, y = ~`12 months`,
-                               name = "12 months", type = 'bar',
-            marker = list(color = color_palette[2],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-      add_trace(y = ~`24 months`, name = '24 months',
-                marker = list(color = color_palette[3],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      layout(barmode = 'group',
-             legend=list(title=list(text='<b> Category </b>')),
-             yaxis = list(title = '<b>Percentage of trials</b>',
-                          range = c(0, 100)),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+  output$plot_summary_results <- renderPlotly({
+    plot_summary_results(CTgov_plot_data_1, color_palette)
   })
-
 
 
   CTgov_plot_data_2 <- dashboard_metrics_aggregate %>%
@@ -443,17 +374,8 @@ server <- function(input, output, session)
     gather(`Prospective registration`, key="category", value="perc")
 
 
-  output$plot_CTgov_2 <- renderPlotly({
-    plot_ly(CTgov_plot_data_2, x = ~year, y = ~perc, type = 'bar',
-            marker = list(color = color_palette[2],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-      layout(yaxis = list(title = '<b>Percentage of trials</b>',
-                          range = c(0, 100)),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+  output$plot_prosp_reg <- renderPlotly({
+    plot_prosp_reg(CTgov_plot_data_2, color_palette)
   })
 
 
@@ -462,48 +384,11 @@ server <- function(input, output, session)
   #---------------------------------
 
   output$plot_barzooka_problem <- renderPlotly({
-    plot_ly(barzooka_data, x = ~year, y = ~has_bar,
-            name = "bar graph", type = 'scatter', mode = 'lines+markers',
-            line = list(color = color_palette[2], width = 3),
-            marker = list(color = color_palette[2], size = 8)) %>%
-      add_trace(y = ~has_pie, name = 'pie chart', mode = 'lines+markers',
-                line = list(color = color_palette[3]),
-                marker = list(color = color_palette[3])) %>%
-      layout(legend=list(title=list(text='<b> Category </b>')),
-             yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+    plot_barzooka_problem(barzooka_data, color_palette)
   })
 
-
   output$plot_barzooka_inform <- renderPlotly({
-    plot_ly(barzooka_data, x = ~year, y = ~has_informative,
-            name = "any informative", type = 'scatter', mode = 'lines+markers',
-            line = list(color = color_palette[1], width = 3),
-            marker = list(color = color_palette[1], size = 8)) %>%
-      add_trace(y = ~has_bardot, name = 'bar graph with dots', mode = 'lines+markers',
-                line = list(color = color_palette[2]),
-                marker = list(color = color_palette[2])) %>%
-      add_trace(y = ~has_box, name = 'box plot', mode = 'lines+markers',
-                line = list(color = color_palette[3]),
-                marker = list(color = color_palette[3])) %>%
-      add_trace(y = ~has_dot, name = 'dot plot', mode = 'lines+markers',
-                line = list(color = color_palette[4]),
-                marker = list(color = color_palette[4])) %>%
-      add_trace(y = ~has_hist, name = 'histogram', mode = 'lines+markers',
-                line = list(color = color_palette[5]),
-                marker = list(color = color_palette[5])) %>%
-      add_trace(y = ~has_violin, name = 'violin plot', mode = 'lines+markers',
-                line = list(color = color_palette[6]),
-                marker = list(color = color_palette[6])) %>%
-      layout(legend=list(title=list(text='<b> Category </b>')),
-             yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+    plot_barzooka_inform(barzooka_data, color_palette)
   })
 
 }
