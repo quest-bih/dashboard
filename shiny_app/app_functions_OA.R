@@ -2,20 +2,34 @@
 # Open Access data loading & preprocessing functions
 #----------------------------------------------------------------------
 
-make_OA_plot_data <- function(data_table)
+
+make_OA_plot_data_total <- function(data_table)
 {
   OA_plot_data <- data_table %>%
-    filter(!is.na(OA_color)) %>%
+    mutate(OA_color = replace_na(OA_color, "NA")) %>%
     group_by(year, OA_color) %>%
     summarize(count = n()) %>%
-    calculate_OA_percentages() %>%
+    calculate_OA_percentages(c("gold", "green", "hybrid", "bronze", "closed", "NA")) %>%
     rename(category = OA_color)
 
   return(OA_plot_data)
 }
 
 
-calculate_OA_percentages <- function(OA_data)
+make_OA_plot_data <- function(data_table)
+{
+  OA_plot_data <- data_table %>%
+    filter(!is.na(OA_color)) %>%
+    group_by(year, OA_color) %>%
+    summarize(count = n()) %>%
+    calculate_OA_percentages(c("gold", "green", "hybrid")) %>%
+    rename(category = OA_color)
+
+  return(OA_plot_data)
+}
+
+
+calculate_OA_percentages <- function(OA_data, categories)
 {
   #number of publications
   publ_all <- OA_data %>%
@@ -24,7 +38,7 @@ calculate_OA_percentages <- function(OA_data)
 
   #number of publ in each OA category
   publ_OA_colors <- OA_data %>%
-    filter(OA_color %in% c("gold", "green", "hybrid")) %>%
+    filter(OA_color %in% categories) %>%
     group_by(OA_color, year) %>%
     summarise(OA = sum(count))
 

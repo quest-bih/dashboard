@@ -18,6 +18,7 @@ source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
 source("resources_descriptions.R", encoding = "UTF-8")
 source("about_page.R", encoding = "UTF-8")
+source("plots.R", encoding = "UTF-8")
 
 dashboard_metrics <- read_csv("data/dashboard_metrics.csv") %>%
   rename(year = e_pub_year)
@@ -108,6 +109,7 @@ ui <- navbarPage(
                 original research publications that are published as Open Access articles are mesured as well as
                 the percentage of publications that state that they share their research data or analysis code.
                 Additionally, we count articles published on preprint servers like bioRxiv.")),
+                     checkboxInput("OS_total_check", "Show absolute numbers", value = FALSE),
                      br(),
                      fluidRow(
                        column(3, metric_box("Open Access",
@@ -291,7 +293,7 @@ server <- function(input, output, session)
 
 
 
-  color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050", "#000000")
+  color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050", "#000000", "#DCE3E5")
   background_color <- "#ecf0f1"
   background_color_darker <- "#DCE3E5"
 
@@ -300,34 +302,23 @@ server <- function(input, output, session)
   # Open Science plots
   #---------------------------------
 
-  OA_plot_data <- dashboard_metrics %>%
-    make_OA_plot_data()
-
-  OA_plot_data_plotly <- OA_plot_data %>%
+  OA_plot_data_plotly <- dashboard_metrics %>%
+    make_OA_plot_data() %>%
     select(-OA, -all) %>%
     pivot_wider(names_from = category, values_from = perc)
 
+  OA_plot_data_plotly_total <- dashboard_metrics %>%
+    make_OA_plot_data_total() %>%
+    select(-perc, -all) %>%
+    pivot_wider(names_from = category, values_from = OA)
+
+
   output$plot_OA <- renderPlotly({
-    plot_ly(OA_plot_data_plotly, x = ~year, y = ~gold, name = "Gold", type = 'bar',
-            marker = list(color = color_palette[3],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-      add_trace(y = ~green, name = 'Green',
-                marker = list(color = color_palette[6],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~hybrid, name = 'Hybrid',
-                marker = list(color = color_palette[7],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      layout(barmode = 'stack',
-             legend=list(title=list(text='<b> Category </b>')),
-             yaxis = list(title = '<b>Percentage Open Access</b>',
-                          range = c(0, 100)),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = background_color_darker,
-             plot_bgcolor = background_color_darker)
+     if(input$OS_total_check) {
+       return(plot_OA_total(OA_plot_data_plotly_total, color_palette))
+     } else {
+       return(plot_OA_perc(OA_plot_data_plotly, color_palette))
+     }
   })
 
 
@@ -401,7 +392,7 @@ server <- function(input, output, session)
             marker = list(color = color_palette[3],
                           line = list(color = 'rgb(0,0,0)',
                                       width = 1.5))) %>%
-      layout(yaxis = list(title = '<b>Percentage of preprints</b>',
+      layout(yaxis = list(title = '<b>Number of preprints</b>',
                           range = c(0, 100)),
              xaxis = list(title = '<b>Year</b>',
                           dtick = 1),
