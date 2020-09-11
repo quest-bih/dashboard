@@ -19,6 +19,7 @@ source("methods_descriptions.R", encoding = "UTF-8")
 source("resources_descriptions.R", encoding = "UTF-8")
 source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
+source("datasets_panel.R")
 
 dashboard_metrics <- read_csv("data/dashboard_metrics.csv") %>%
   rename(year = e_pub_year)
@@ -232,67 +233,18 @@ server <- function(input, output, session)
 
   #data table to show the underlying publ dataset
   output$data_table_publ <- DT::renderDataTable({
-    DT::datatable(data = dashboard_metrics,
-    extensions = 'Buttons',
-    filter = 'top',
-    options = list(dom = 'Blfrtip',
-                   buttons =
-                     list(list(
-                       extend = "collection"
-                       , buttons = c("csv", "excel")
-                       , text = "Download"
-                     ) ),
-                   orderClasses = TRUE,
-                   pageLength = 20,
-                   lengthMenu = list(c(10, 20, 50, 100, -1),
-                                     c(10, 20, 50, 100, "All")),
-                   columnDefs = list(list(className = 'dt-left', targets = 2),
-                                     list(className = 'dt-left', targets = 6),
-                                     list(className = 'dt-left', targets = 8))
-    ))
+    make_datatable(dashboard_metrics)
   })
 
   #data table to show the underlying dataset
   output$data_table_prosp_reg <- DT::renderDataTable({
-    DT::datatable(data = prosp_reg_dataset_shiny,
-                  extensions = 'Buttons',
-                  filter = 'top',
-                  options = list(dom = 'Blfrtip',
-                                 buttons =
-                                   list(list(
-                                     extend = "collection"
-                                     , buttons = c("csv", "excel")
-                                     , text = "Download"
-                                   ) ),
-                                 orderClasses = TRUE,
-                                 pageLength = 20,
-                                 lengthMenu = list(c(10, 20, 50, 100, -1),
-                                                   c(10, 20, 50, 100, "All"))
-                  ))
+    make_datatable(prosp_reg_dataset_shiny)
   })
 
   #data table to show the underlying dataset
   output$data_table_sum_res <- DT::renderDataTable({
-    DT::datatable(data = summary_results_dataset_shiny,
-                  extensions = 'Buttons',
-                  filter = 'top',
-                  options = list(dom = 'Blfrtip',
-                                 buttons =
-                                   list(list(
-                                     extend = "collection"
-                                     , buttons = c("csv", "excel")
-                                     , text = "Download"
-                                   ) ),
-                                 orderClasses = TRUE,
-                                 pageLength = 20,
-                                 lengthMenu = list(c(10, 20, 50, 100, -1),
-                                                   c(10, 20, 50, 100, "All")),
-                                 columnDefs = list(list(className = 'dt-left', targets = 2),
-                                                   list(className = 'dt-left', targets = 6),
-                                                   list(className = 'dt-left', targets = 8))
-                  ))
+    make_datatable(summary_results_dataset_shiny)
   })
-
 
 
 
@@ -300,9 +252,6 @@ server <- function(input, output, session)
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
                      "#303A3E", "#007265", "#810050", "#000000",
                      "#DCE3E5")
-  background_color <- "#ecf0f1"
-  background_color_darker <- "#DCE3E5"
-
 
   #---------------------------------
   # Open Science plots
