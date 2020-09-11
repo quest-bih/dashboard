@@ -192,14 +192,14 @@ plot_preprints <- function(plot_data, color_palette)
 #------------------------------------------------------------------------
 
 # Summary results
-plot_summary_results <- function(plot_data, color_palette)
+plot_summary_results_perc <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~`12 months`,
+  plot_ly(plot_data, x = ~year, y = ~perc_sum_res_12,
           name = "12 months", type = 'bar',
           marker = list(color = color_palette[2],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    add_trace(y = ~`24 months`, name = '24 months',
+    add_trace(y = ~perc_sum_res_24, name = '24 months',
               marker = list(color = color_palette[3],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
@@ -213,15 +213,60 @@ plot_summary_results <- function(plot_data, color_palette)
            plot_bgcolor = color_palette[9])
 }
 
-# Prospective registration
-plot_prosp_reg <- function(plot_data, color_palette)
+plot_summary_results_total <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~perc, type = 'bar',
+  plot_ly(plot_data, x = ~year, y = ~has_sum_res_12,
+          name = "12 months", type = 'bar',
+          marker = list(color = color_palette[2],
+                        line = list(color = 'rgb(0,0,0)',
+                                    width = 1.5))) %>%
+    add_trace(y = ~has_sum_res_24_only, name = '24 month',
+              marker = list(color = color_palette[3],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~no_sum_res_24, name = 'no timely summary results',
+              marker = list(color = color_palette[5],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    layout(barmode = 'stack',
+           legend=list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Number of trials</b>'),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
+
+# Prospective registration
+plot_prosp_reg_perc <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~perc_prosp_reg, type = 'bar',
           marker = list(color = color_palette[2],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
     layout(yaxis = list(title = '<b>Percentage of trials</b>',
                         range = c(0, 100)),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
+plot_prosp_reg_total <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~has_prosp_reg,
+          name = 'prospective registration', type = 'bar',
+          marker = list(color = color_palette[2],
+                        line = list(color = 'rgb(0,0,0)',
+                                    width = 2))) %>%
+    add_trace(y = ~no_prosp_reg,
+              name = 'no prospective registration',
+              marker = list(color = color_palette[5],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 2))) %>%
+    layout(barmode = 'stack',
+           yaxis = list(title = '<b>Number of trials</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],

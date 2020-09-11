@@ -137,6 +137,7 @@ ui <- navbarPage(
                 with Charité as the sponsor or with a priniciple investigator from Charité. We look
                 both at the timely reporting of summary results (within 12 or 24 months) on
                 ClinicalTrials.gov as well as prospective registration of the trials."),
+                     checkboxInput("CT_total_check", "Show absolute numbers", value = FALSE),
                      br(),
                      fluidRow(
                        column(3, metric_box("Summary Results",
@@ -293,7 +294,9 @@ server <- function(input, output, session)
 
 
 
-  color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A", "#303A3E", "#007265", "#810050", "#000000", "#DCE3E5")
+  color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+                     "#303A3E", "#007265", "#810050", "#000000",
+                     "#DCE3E5")
   background_color <- "#ecf0f1"
   background_color_darker <- "#DCE3E5"
 
@@ -362,28 +365,40 @@ server <- function(input, output, session)
   #---------------------------------
 
   CTgov_plot_data_1 <- dashboard_metrics_aggregate %>%
-    select(year, perc_sum_res_12, perc_sum_res_24) %>%
+    select(year, perc_sum_res_12, perc_sum_res_24,
+           has_sum_res_12, has_sum_res_24,
+           no_sum_res_12, no_sum_res_24) %>%
     filter(!is.na(perc_sum_res_12)) %>%
     filter(year >= 2015) %>%
-    rename(`12 months` = perc_sum_res_12) %>%
-    rename(`24 months` = perc_sum_res_24) #%>%
-    #gather(`12 months`, `24 months`, key="category", value="perc")
+    # for stacked bar graph of total numbers need 0-12 month + 12-24 month
+    mutate(has_sum_res_24_only = has_sum_res_24 - has_sum_res_12)
+
+  #for latest year, we only can check for summary results within 12 month
+  #need to use the number for trials without summ res in 12 month here
+  CTgov_plot_data_1$no_sum_res_24[is.na(CTgov_plot_data_1$no_sum_res_24)] <-
+    CTgov_plot_data_1$no_sum_res_12[is.na(CTgov_plot_data_1$no_sum_res_24)]
+
 
   output$plot_summary_results <- renderPlotly({
-    plot_summary_results(CTgov_plot_data_1, color_palette)
+    if(input$CT_total_check) {
+      return(plot_summary_results_total(CTgov_plot_data_1, color_palette))
+    } else {
+      return(plot_summary_results_perc(CTgov_plot_data_1, color_palette))
+    }
   })
 
 
   CTgov_plot_data_2 <- dashboard_metrics_aggregate %>%
-    select(year, perc_prosp_reg, perc_sum_res_12, perc_sum_res_24) %>%
+    select(year, has_prosp_reg, no_prosp_reg, perc_prosp_reg) %>%
     filter(!is.na(perc_prosp_reg)) %>%
-    filter(year >= 2015) %>%
-    rename(`Prospective registration` = perc_prosp_reg) %>%
-    gather(`Prospective registration`, key="category", value="perc")
-
+    filter(year >= 2015)
 
   output$plot_prosp_reg <- renderPlotly({
-    plot_prosp_reg(CTgov_plot_data_2, color_palette)
+    if(input$CT_total_check) {
+      return(plot_prosp_reg_total(CTgov_plot_data_2, color_palette))
+    } else {
+      return(plot_prosp_reg_perc(CTgov_plot_data_2, color_palette))
+    }
   })
 
 
