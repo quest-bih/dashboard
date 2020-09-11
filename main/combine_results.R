@@ -18,7 +18,9 @@ open_data_files <- results_files[results_files %>% str_detect("Open_Data")]
 open_data_results <- map(open_data_files, read_csv)
 open_data_results <- do.call(rbind, open_data_results) %>%
   rename(doi = article) %>%
-  distinct(doi, .keep_all = TRUE)
+  distinct(doi, .keep_all = TRUE) %>%
+  select(doi, is_open_data, open_data_category,
+         is_open_code, open_data_statements, open_code_statements)
 
 #convert dois to standard format
 open_data_results$doi <- open_data_results$doi %>%
@@ -36,8 +38,7 @@ open_data_manual <- do.call(rbind, open_data_manual) %>%
   distinct(doi, .keep_all = TRUE) %>%
   filter(in_PURE) %>%
   select(doi, open_data_manual_check, open_data_category_manual,
-         open_code_manual_check, open_code_category_manual,
-         open_data_statements, open_code_statements)
+         open_code_manual_check, open_code_category_manual)
 
 #Open Access results
 open_access_files <- results_files[results_files %>% str_detect("Open_Access")]
@@ -87,6 +88,20 @@ dashboard_metrics <- dashboard_metrics %>%
   filter(`Conference Abstract` == FALSE) %>%
   filter(`Conference Paper` == FALSE) %>%
   filter(Note == FALSE)
+
+
+#data plausibility/quality check for the updated PDF dataset -> are there any new
+#cases that we missed? For old PDF dataset, there were 0 cases
+check_tbl <- dashboard_metrics %>%
+  filter((is_open_data & is.na(open_data_manual_check)) |
+           (is_open_code & is.na(open_code_manual_check))) %>%
+  select(doi, e_pub_year, is_open_data, open_data_category, is_open_code,
+         open_data_statements, open_code_statements,
+         open_data_manual_check, open_data_category_manual,
+         open_code_manual_check, open_code_category_manual)
+dim(check_tbl)
+write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
+
 
 
 #some of the open data cases were only manually detected
