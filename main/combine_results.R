@@ -69,10 +69,10 @@ length(barzooka_results$doi) == length(unique(barzooka_results$doi))
 
 
 dashboard_metrics <- publications %>%
-  left_join(open_data_results) %>%
-  left_join(open_data_manual) %>%
-  left_join(open_access_results) %>%
-  left_join(barzooka_results) %>%
+  left_join(open_data_results, by = "doi") %>%
+  left_join(open_data_manual, by = "doi") %>%
+  left_join(open_access_results, by = "doi") %>%
+  left_join(barzooka_results, by = "doi") %>%
   mutate(pdf_downloaded = !is.na(is_open_data))
 
 
