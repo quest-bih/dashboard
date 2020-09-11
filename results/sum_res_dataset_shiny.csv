@@ -1,7 +1,9 @@
 nct_id,completion_date,results_first_submitted_date,days_compl_to_summary,summary_result_12_month,summary_result_24_month,study_type,overall_status
 NCT04229069,2015-12-30,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT04055233,2018-10-20,NA,NA,FALSE,FALSE,Interventional,Completed
+NCT03625167,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT03485716,2017-12-31,NA,NA,FALSE,FALSE,Interventional,Completed
+NCT03402074,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT03312816,2017-12-08,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT03281616,2015-09-30,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT03220386,2018-08-01,NA,NA,FALSE,FALSE,Interventional,Unknown status
@@ -9,6 +11,7 @@ NCT03121885,2018-11-01,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT03114306,2017-08-30,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT03094520,2018-10-31,NA,NA,FALSE,FALSE,Interventional,Unknown status
 NCT03031405,2018-06-30,NA,NA,FALSE,FALSE,Interventional,Completed
+NCT03020368,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Terminated
 NCT03001960,2018-04-30,NA,NA,FALSE,FALSE,Interventional,Unknown status
 NCT02971787,2017-06-30,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02963298,2017-09-06,NA,NA,FALSE,FALSE,Interventional,Completed
@@ -18,6 +21,10 @@ NCT02896491,2018-04-30,NA,NA,FALSE,FALSE,Interventional,Unknown status
 NCT02896062,2017-11-30,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02893800,2016-11-30,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02888236,2017-07-06,NA,NA,FALSE,FALSE,Interventional,Completed
+NCT02839993,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Unknown status
+NCT02808793,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Completed
+NCT02795715,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Unknown status
+NCT02795702,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Unknown status
 NCT02794298,2016-12-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02794272,2016-08-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02794259,2016-08-31,NA,NA,FALSE,FALSE,Interventional,Completed
@@ -41,6 +48,7 @@ NCT02566369,2017-11-14,2019-04-18,520,FALSE,TRUE,Interventional,Completed
 NCT02557698,2015-09-30,2017-01-18,476,FALSE,TRUE,Interventional,Completed
 NCT02552654,2016-01-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02541071,2014-10-31,NA,NA,FALSE,FALSE,Interventional,Completed
+NCT02523664,2018-12-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02509962,2017-07-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02509897,2018-07-31,NA,NA,FALSE,FALSE,Interventional,Completed
 NCT02507492,2018-07-31,NA,NA,FALSE,FALSE,Interventional,Unknown status

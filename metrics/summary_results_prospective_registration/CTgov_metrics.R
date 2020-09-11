@@ -132,8 +132,8 @@ write_csv(summary_table_prosp_reg, "results/prospective_registration.csv")
 
 #results for the summary results registration metric
 summary_sum_res_12 <- CTgov_sample_Charite %>%
-  map(filter, completion_date > "2006-01-01") %>%
-  map(filter, completion_date < "2018-12-31") %>%
+  map(filter, completion_date >= "2006-01-01") %>%
+  map(filter, completion_date <= "2018-12-31") %>%
   map(filter, study_type == "Interventional") %>%
   map(filter, overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
   map(function(x) table(year(x[["completion_date"]]), x[["summary_result_12_month"]])) %>%
@@ -147,8 +147,8 @@ write_csv(summary_table_sum_res_12, "results/summary_results_12_month.csv")
 
 #results for the summary results registration metric
 summary_sum_res_24 <- CTgov_sample_Charite %>%
-  map(filter, completion_date > "2006-01-01") %>%
-  map(filter, completion_date < "2017-12-31") %>%
+  map(filter, completion_date >= "2006-01-01") %>%
+  map(filter, completion_date <= "2017-12-31") %>%
   map(filter, study_type == "Interventional") %>%
   map(filter, overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
   map(function(x) table(year(x[["completion_date"]]), x[["summary_result_24_month"]])) %>%
@@ -162,8 +162,8 @@ write_csv(summary_table_sum_res_24, "results/summary_results_24_month.csv")
 
 #save table with individual trials to display them in the Shiny app
 prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
-  filter(start_date > "2006-01-01") %>%
-  filter(start_date < "2019-12-31") %>%
+  filter(start_date >= "2006-01-01") %>%
+  filter(start_date <= "2019-12-31") %>%
   select(nct_id, start_date, study_first_submitted_date,
          days_reg_to_start, has_prospective_registration)
 
@@ -173,8 +173,8 @@ write_csv(prosp_reg_dataset_shiny, "results/prosp_reg_dataset_shiny.csv")
 
 #save table with individual trials to display them in the Shiny app
 summary_results_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
-  filter(completion_date > "2006-01-01") %>%
-  filter(completion_date < "2018-12-31") %>%
+  filter(completion_date >= "2006-01-01") %>%
+  filter(completion_date <= "2018-12-31") %>%
   filter(study_type == "Interventional") %>%
   filter(overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
   select(nct_id, completion_date, results_first_submitted_date,
