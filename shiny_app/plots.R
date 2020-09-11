@@ -109,7 +109,7 @@ plot_OD_total <- function(plot_data, color_palette)
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Percentage of publications</b>'),
+           yaxis = list(title = '<b>Number of publications</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -163,7 +163,7 @@ plot_OC_total <- function(plot_data, color_palette)
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Percentage of publications</b>'),
+           yaxis = list(title = '<b>Number of publications</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
