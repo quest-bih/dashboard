@@ -54,15 +54,15 @@ barzooka_data <- dashboard_metrics %>%
   filter(pdf_downloaded) %>%
   group_by(year) %>%
   summarize(total = n(),
-            has_bar = sum(bar > 0, na.rm = TRUE)/total*1000,
-            has_pie = sum(pie > 0, na.rm = TRUE)/total*1000,
-            has_bardot = sum(bardot > 0, na.rm = TRUE)/total*1000,
-            has_box = sum(box > 0, na.rm = TRUE)/total*1000,
-            has_dot = sum(dot > 0, na.rm = TRUE)/total*1000,
-            has_hist = sum(hist > 0, na.rm = TRUE)/total*1000,
-            has_violin = sum(violin > 0, na.rm = TRUE)/total*1000,
+            has_bar = sum(bar > 0, na.rm = TRUE),
+            has_pie = sum(pie > 0, na.rm = TRUE),
+            has_bardot = sum(bardot > 0, na.rm = TRUE),
+            has_box = sum(box > 0, na.rm = TRUE),
+            has_dot = sum(dot > 0, na.rm = TRUE),
+            has_hist = sum(hist > 0, na.rm = TRUE),
+            has_violin = sum(violin > 0, na.rm = TRUE),
             has_informative = sum(bardot > 0 | box > 0 | dot > 0 | hist > 0 | violin > 0,
-                                  na.rm = TRUE)/total*1000)
+                                  na.rm = TRUE))
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -109,7 +109,7 @@ ui <- navbarPage(
                 original research publications that are published as Open Access articles are mesured as well as
                 the percentage of publications that state that they share their research data or analysis code.
                 Additionally, we count articles published on preprint servers like bioRxiv.")),
-                     checkboxInput("OS_total_check", "Show absolute numbers", value = FALSE),
+                     checkboxInput("checkbox_total_OS", "Show absolute numbers", value = FALSE),
                      br(),
                      fluidRow(
                        column(3, metric_box("Open Access",
@@ -137,7 +137,7 @@ ui <- navbarPage(
                 with Charité as the sponsor or with a priniciple investigator from Charité. We look
                 both at the timely reporting of summary results (within 12 or 24 months) on
                 ClinicalTrials.gov as well as prospective registration of the trials."),
-                     checkboxInput("CT_total_check", "Show absolute numbers", value = FALSE),
+                     checkboxInput("checkbox_total_CT", "Show absolute numbers", value = FALSE),
                      br(),
                      fluidRow(
                        column(3, metric_box("Summary Results",
@@ -161,15 +161,18 @@ ui <- navbarPage(
                        pie charts are considered suboptimal, as they make it difficult to compare
                        the presented data. Different alternative graph types like dot plots,
                        violin plots, box plots or histograms can be used instead."),
+                     checkboxInput("checkbox_total_vis", "Show absolute numbers", value = FALSE),
                      br(),
                      fluidRow(
                        column(6, metric_box("Problematic graphs",
-                                            filter(barzooka_data, year == show_year)$has_bar %>% round(0),
-                                            "out of 1000 publications from 2019 use bar graphs for continuous data",
+                                            paste((filter(barzooka_data, year == show_year)$has_bar/
+                                                     filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
+                                            "of publications from 2019 use bar graphs for continuous data",
                                             plotlyOutput('plot_barzooka_problem', height = "300px"))),
                        column(6, metric_box("More informative graph types",
-                                            filter(barzooka_data, year == show_year)$has_informative %>% round(0),
-                                            "out of 1000 publications from 2019 use more informative graph types",
+                                            paste((filter(barzooka_data, year == show_year)$has_informative/
+                                                     filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
+                                            "of publications from 2019 use more informative graph types",
                                             plotlyOutput('plot_barzooka_inform', height = "300px")))
                      )
            )
@@ -318,7 +321,7 @@ server <- function(input, output, session)
 
 
   output$plot_OA <- renderPlotly({
-     if(input$OS_total_check) {
+     if(input$checkbox_total_OS) {
        return(plot_OA_total(OA_plot_data_plotly_total, color_palette))
      } else {
        return(plot_OA_perc(OA_plot_data_plotly, color_palette))
@@ -333,7 +336,7 @@ server <- function(input, output, session)
     rename(`Open Code` = open_code_manual_perc)
 
   output$plot_oddpub_data <- renderPlotly({
-    if(input$OS_total_check) {
+    if(input$checkbox_total_OS) {
       return(plot_OD_total(oddpub_plot_data, color_palette))
     } else {
       return(plot_OD_perc(oddpub_plot_data, color_palette))
@@ -341,7 +344,7 @@ server <- function(input, output, session)
   })
 
   output$plot_oddpub_code <- renderPlotly({
-    if(input$OS_total_check) {
+    if(input$checkbox_total_OS) {
       return(plot_OC_total(oddpub_plot_data, color_palette))
     } else {
       return(plot_OC_perc(oddpub_plot_data, color_palette))
@@ -380,7 +383,7 @@ server <- function(input, output, session)
 
 
   output$plot_summary_results <- renderPlotly({
-    if(input$CT_total_check) {
+    if(input$checkbox_total_CT) {
       return(plot_summary_results_total(CTgov_plot_data_1, color_palette))
     } else {
       return(plot_summary_results_perc(CTgov_plot_data_1, color_palette))
@@ -394,7 +397,7 @@ server <- function(input, output, session)
     filter(year >= 2015)
 
   output$plot_prosp_reg <- renderPlotly({
-    if(input$CT_total_check) {
+    if(input$checkbox_total_CT) {
       return(plot_prosp_reg_total(CTgov_plot_data_2, color_palette))
     } else {
       return(plot_prosp_reg_perc(CTgov_plot_data_2, color_palette))
@@ -407,11 +410,19 @@ server <- function(input, output, session)
   #---------------------------------
 
   output$plot_barzooka_problem <- renderPlotly({
-    plot_barzooka_problem(barzooka_data, color_palette)
+    if(input$checkbox_total_vis) {
+      return(plot_barzooka_problem_total(barzooka_data, color_palette))
+    } else {
+      return(plot_barzooka_problem_perc(barzooka_data, color_palette))
+    }
   })
 
   output$plot_barzooka_inform <- renderPlotly({
-    plot_barzooka_inform(barzooka_data, color_palette)
+    if(input$checkbox_total_vis) {
+      return(plot_barzooka_inform_total(barzooka_data, color_palette))
+    } else {
+      return(plot_barzooka_inform_perc(barzooka_data, color_palette))
+    }
   })
 
 }

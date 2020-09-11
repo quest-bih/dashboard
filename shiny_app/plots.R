@@ -279,7 +279,24 @@ plot_prosp_reg_total <- function(plot_data, color_palette)
 #------------------------------------------------------------------------
 
 # problematic graphs
-plot_barzooka_problem <- function(plot_data, color_palette)
+plot_barzooka_problem_perc <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~(has_bar/total*100),
+          name = "bar graph", type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[2], width = 3),
+          marker = list(color = color_palette[2], size = 8)) %>%
+    add_trace(y = ~(has_pie/total*100), name = 'pie chart', mode = 'lines+markers',
+              line = list(color = color_palette[3]),
+              marker = list(color = color_palette[3])) %>%
+    layout(legend=list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Percentage of publications</b>'),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
+plot_barzooka_problem_total<- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~has_bar,
           name = "bar graph", type = 'scatter', mode = 'lines+markers',
@@ -288,16 +305,49 @@ plot_barzooka_problem <- function(plot_data, color_palette)
     add_trace(y = ~has_pie, name = 'pie chart', mode = 'lines+markers',
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) %>%
+    add_trace(y = ~total, name = 'All publications', mode = 'lines+markers',
+              line = list(color = color_palette[5]),
+              marker = list(color = color_palette[5])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
+           yaxis = list(title = '<b>Publications with graph type</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9])
 }
 
+
 # more informative graphs
-plot_barzooka_inform <- function(plot_data, color_palette)
+plot_barzooka_inform_perc <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~(has_informative/total*100),
+          name = "any informative", type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[1], width = 3),
+          marker = list(color = color_palette[1], size = 8)) %>%
+    add_trace(y = ~(has_bardot/total*100), name = 'bar graph with dots', mode = 'lines+markers',
+              line = list(color = color_palette[2]),
+              marker = list(color = color_palette[2])) %>%
+    add_trace(y = ~(has_box/total*100), name = 'box plot', mode = 'lines+markers',
+              line = list(color = color_palette[3]),
+              marker = list(color = color_palette[3])) %>%
+    add_trace(y = ~(has_dot/total*100), name = 'dot plot', mode = 'lines+markers',
+              line = list(color = color_palette[4]),
+              marker = list(color = color_palette[4])) %>%
+    add_trace(y = ~(has_hist/total*100), name = 'histogram', mode = 'lines+markers',
+              line = list(color = color_palette[6]),
+              marker = list(color = color_palette[6])) %>%
+    add_trace(y = ~(has_violin/total*100), name = 'violin plot', mode = 'lines+markers',
+              line = list(color = color_palette[7]),
+              marker = list(color = color_palette[7])) %>%
+    layout(legend=list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Percentage of publications</b>'),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
+plot_barzooka_inform_total <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~has_informative,
           name = "any informative", type = 'scatter', mode = 'lines+markers',
@@ -313,13 +363,16 @@ plot_barzooka_inform <- function(plot_data, color_palette)
               line = list(color = color_palette[4]),
               marker = list(color = color_palette[4])) %>%
     add_trace(y = ~has_hist, name = 'histogram', mode = 'lines+markers',
-              line = list(color = color_palette[5]),
-              marker = list(color = color_palette[5])) %>%
-    add_trace(y = ~has_violin, name = 'violin plot', mode = 'lines+markers',
               line = list(color = color_palette[6]),
               marker = list(color = color_palette[6])) %>%
+    add_trace(y = ~has_violin, name = 'violin plot', mode = 'lines+markers',
+              line = list(color = color_palette[7]),
+              marker = list(color = color_palette[7])) %>%
+    add_trace(y = ~total, name = 'All publications', mode = 'lines+markers',
+              line = list(color = color_palette[5]),
+              marker = list(color = color_palette[5])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Graph types per 1000 publications</b>'),
+           yaxis = list(title = '<b>Publications with graph type</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
