@@ -66,7 +66,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         with a delay, such that the OA percentage for a given year is typically
                         rising retrospectively. Thus the point in time of data retrieval is important
                         for the OA percentage. The current OA data were retrieved on the
-                        11.06.2020.'),
+                        14.09.2020.'),
 
                                   "The unpaywall only stores information for publications that have
                         a DOI assigned by crossref. Articles without crossref DOI have to
