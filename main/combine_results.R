@@ -90,8 +90,12 @@ dashboard_metrics <- dashboard_metrics %>%
   filter(Note == FALSE)
 
 
+#----------------------------------------------------------------------------------------
+# further preprocessing needed for manually verified Open Data cases
+#----------------------------------------------------------------------------------------
+
 #data plausibility/quality check for the updated PDF dataset -> are there any new
-#cases that we missed? For old PDF dataset, there were 0 cases
+#cases that we missed? For old PDF dataset, there were 0 cases, now again 0 cases
 check_tbl <- dashboard_metrics %>%
   filter((is_open_data & is.na(open_data_manual_check)) |
            (is_open_code & is.na(open_code_manual_check))) %>%
@@ -100,8 +104,7 @@ check_tbl <- dashboard_metrics %>%
          open_data_manual_check, open_data_category_manual,
          open_code_manual_check, open_code_category_manual)
 dim(check_tbl)
-write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
-
+#write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
 
 
 #some of the open data cases were only manually detected
@@ -135,6 +138,10 @@ no_check_oc <- (is.na(dashboard_metrics$is_open_code) &
                !is.na(dashboard_metrics$open_code_manual_check))
 dashboard_metrics[no_check_oc,]$open_code_manual_check <- NA
 
+
+#----------------------------------------------------------------------------------------
+# save resulting tabe with relevant columns only
+#----------------------------------------------------------------------------------------
 
 #only select columns relevant for shiny table
 shiny_table <- dashboard_metrics %>%

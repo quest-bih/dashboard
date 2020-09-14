@@ -28,5 +28,5 @@ for(txt_folder in txt_folders)
   pdf_text_corpus <- oddpub::pdf_load(paste0(txt_folder, "/"))
   oddpub_results <- oddpub::open_data_search_parallel(pdf_text_corpus)
   oddpub_results["year"] <- year
-  write_csv(oddpub_results, paste0("./results/Open_Data_", year, "_cat.csv"))
+  write_csv(oddpub_results, paste0("./results/Open_Data_", year, ".csv"))
 }
