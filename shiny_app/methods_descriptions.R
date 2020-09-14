@@ -3,23 +3,26 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
          h1("Detailed Methods"),
 
-         h4("You can extend the panels to view the detailed methods for
+         h4(HTML('You can extend the panels to view the detailed methods for
               the individual metrics. The code for the actual implementation
-              of the methods can be found on Github (Link)"),
+              of the methods can be found on
+                 <a href="https://github.com/quest-bih/dashboard">Github</a>')),
 
 
          h2("Publication search"),
          bsCollapse(id = "methodsPanels_PublicationSearch",
                     bsCollapsePanel(strong("Publication Search"),
-                                    p("Many of the assessed metrics are publication-based metrics. To assess those metrics
+                                    p("Many of the assessed metrics are publication-based metrics.
+                        To assess those metrics
                         on the institutional level, we first need to identify the publications that
                         can be assigned to the Charité. For this, we search the publication databases
                         Pubmed and Embase for biomedical publications with at least one of the
-                        authors affiliated to the Charité or the Berlin Insitute of Health.
+                        authors affiliated to the Charité or the Berlin Institute of Health.
                         Subsequently, the search results from both databases were merged and deduplicated.
                         After a final filtering step for the publication year (2015 - 2019) and for
                         research articles, we obtained a list of institutional publications that
                         was used to calculate the publication-based metrics."),
+                                    value = "methodsPanels_PublicationSearch",
                                     style = "default")),
 
 
@@ -52,7 +55,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         As one publication can have several OA versions (e.g. a gold version
                         in an OA journal as well as a green version in a repository), we define
                         a hierarchy of the OA categories and for each publication only assign
-                        the OA catagory with the highest priority. We use a hierarchy of
+                        the OA category with the highest priority. We use a hierarchy of
                         gold - hybrid - green (journal version before repository version),
                         as also implemented in the unpaywall database itself.
                         After querying the unpaywall API for all publication DOIs, we group
@@ -61,19 +64,19 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         the OA percentage is not a fixed number but is changing over time.
                         This comes from the repository versions that are often made available
                         with a delay, such that the OA percentage for a given year is typically
-                        rising retrospectively. Thus the timepoint of data retrieval important
+                        rising retrospectively. Thus the point in time of data retrieval is important
                         for the OA percentage. The current OA data were retrieved on the
                         11.06.2020.'),
 
                                   "The unpaywall only stores information for publications that have
-                        a DOI assigend by crossref. Articles without crossref DOI have to
+                        a DOI assigned by crossref. Articles without crossref DOI have to
                         be excluded from the OA analysis. However, in the most recent years
                         this is the case for a tiny minority (<1%) of the publications."),
 
 
                     methods_panel("Open Data and Open Code",
 
-                                  HTML('The Open Data and Open Code metric measure how many publications
+                                  HTML('The Open Data and Open Code metrics measure how many publications
                         share their raw research data or analysis code with the publication.
                         Openly shared data and code makes research more transparent,
                         as research findings can be reproduced. Additionally, shared datasets
@@ -85,7 +88,14 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         <a href="https://www.bihealth.org/en/research/quest-center/mission-approaches/incentives/including-open-data/open-data-criteria/">
                         here</a>. This definition is also used for the distribution of performance-oriented
                         funding for publications with Open Data at the Charité.
-                        Note also, that data sharing is not possible for all
+                        Here, we distinguish several subcategories for Open Data & Open Code.
+                        For Open Data we distinguish 1) field-specific repositories, that are typically
+                        made for a specific type of dataset with a standardized format and which is used in
+                        a specific community, 2) general-purpose repositories or
+                        other websites, that can contain various types of datasets, and 3) supplemental data.
+                        For Open Code we distinguish code shared 1) via GitHub, which is the most common
+                        way of code sharing, 2) via other websites or repositories, or 3) via the supplement.
+                        Note also that data sharing is not possible for all
                         studies, as there is either no dataset to share or as the data
                         cannot be shared, e.g. due to privacy concerns for patient data.
                         Data sharing under restrictions is currently not considered,
@@ -105,13 +115,16 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         comprehensive information on shared datasets or code.
                         To assess data and code sharing for the Charité publications,
                         we first downloaded the full-texts of the publications that were
-                        accessible to us. Then we screened those full-texts with ODDPub and
-                        summarized the results for each publication year.'),
+                        accessible to us using the unpaywall and crossref APIs.
+                        Then we screened those full-texts with ODDPub and
+                        summarized the results for each publication year.
+                        We calculated the percentages of Open Data & Code relative to the publications
+                        with available full texts, which could indeed be screened.'),
 
                                   "Several limitations apply:
                         Only full texts for Open Access publications or publications in journals
                         that are subscribed by the Charité could be retrieved
-                        (~90% of all detected publications). ODDPub only finds ~75% of all Open Data
+                        (~85% of all detected publications). ODDPub only finds ~75% of all Open Data
                         publications and finds false positive cases (no manual check of the results
                         is done). ODDPub also does not verify that the indicated dataset
                         is indeed available and if the dataset fulfills our definition
@@ -156,7 +169,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                   "We identified interventional clinical trials associated to the Charité
                         by searching the AACT database (which aggregates the data from ClinicalTrials.gov)
                         for trials mentioning the Charité as either sponsor, responsible party or
-                        with a priniciple investigator from Charité. We additionally filtered
+                        with a principle investigator from Charité. We additionally filtered
                         for interventional trials and for the study status as either
                         completed, terminated, Suspended or unknown (which means that the estimated study
                         completion data has already passed, but the registry entry has not been updated
@@ -180,18 +193,18 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                   "This metric measures if the clinical trials are registered before the
                         start date of the study, according to the information given on ClinicalTrials.gov.
                         The idea of prospective registration of studies is to make the trail specifications,
-                        including primary and secondary outcomes, publically available before study start.
+                        including primary and secondary outcomes, publicly available before study start.
                         Prospective registration adds transparency, helps protect against outcome switching.",
 
                                   "We used the same methods as for the timely reporting metric to identify Charité
-                        trials. To assess if a study has been prospecively registered, we compare
+                        trials. To assess if a study has been prospectively registered, we compare
                         the date the study was first submitted to the registry with the
                         start date given in the registry. As some of the earlier dates in the database
                         only stated the month but not the exact day and to account for other possible delays
                         we chose a conservative estimate of prospective registration and allow for a delay
                         between start and registration date of up to 60 days.",
 
-                                  "Like in the case of the summary results metric, we only focussed on the
+                                  "Like in the case of the summary results metric, we only focused on the
                         ClinicalTrials.gov while there are other available registries as well.
                         Also, we rely on the information on ClinicalTrials.gov being accurate.")),
          hr(),
@@ -210,15 +223,18 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         histograms can be used instead. The best choice of graph type depends among other
                         things on the size of the dataset.",
 
-                                  "To detect graph types from publications we used the Barzooka algorithm (unpublished),
-                        a deep neural network that was trained to detect graph types on publication pages and
-                        that was developed by QUEST. Barzooka screens each page of the publication PDFs
+                                  "To detect graph types from publications we used the Barzooka algorithm
+                        (unpublished), a deep neural network that was trained to detect graph types on
+                        publication pages and that was developed by QUEST. We again only used the publications
+                        for which we could retrieve the full texts (see methods for Open Data & Code).
+                        Barzooka screens each page of the available publication PDFs
                         and reports if one or several graph types were detected. The results were then
                         combined for each publication. For each publication we then report if a certain is
                         present (at least once) or not present. The number of publications with each
-                        graph types are then summarized for each publication year.",
+                        graph types are then summarized for each publication year. We again reported
+                        the percentages relative to all publications that could indeed be screened.",
 
                                   "Barzooka detects the graph types with different accuracies and in particular
                         for the categories of bar graphs for continuous data and appropriate bar graphs
-                        (for count data) there can be errornous assignments."))
+                        (for count data) there can be erroneous assignments."))
 )

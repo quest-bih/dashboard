@@ -82,8 +82,8 @@ ui <- navbarPage(
                       h4(style = "margin-left:0cm",
                          "This dashboard gives an overview over several metrics of open and responsible
                         research at the Charité. For more detailed information on the methods used to
-                        calculate those metrics, for the dataset underlying the metrics, or for ressources to improve your own research practices
-                        click one of the following buttons."),
+                        calculate those metrics, for the dataset underlying the metrics, or for ressources
+                        to improve your own research practices click one of the following buttons."),
                       h4(style = "margin-left:0cm",
                          "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
                       br()),
@@ -108,10 +108,10 @@ ui <- navbarPage(
                      h2(strong("Open Science"), align = "left"),
                      h4(paste0("These metrics show Open Science practices at Charité. The percentage of Charité
                 original research publications that are published as Open Access articles are mesured as well as
-                the percentage of publications that state that they share their research data or analysis code.
-                Additionally, we count articles published on preprint servers like bioRxiv.")),
-                     checkboxInput("checkbox_total_OS", "Show absolute numbers", value = FALSE),
+                the percentage of screened publications that state that they share their research data or
+                analysis code. Additionally, we count articles published on preprint servers like bioRxiv.")),
                      br(),
+                     checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE),
                      fluidRow(
                        column(3, metric_box("Open Access",
                                             paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
@@ -138,8 +138,8 @@ ui <- navbarPage(
                 with Charité as the sponsor or with a priniciple investigator from Charité. We look
                 both at the timely reporting of summary results (within 12 or 24 months) on
                 ClinicalTrials.gov as well as prospective registration of the trials."),
-                     checkboxInput("checkbox_total_CT", "Show absolute numbers", value = FALSE),
                      br(),
+                     checkboxInput("checkbox_total_CT", strong("Show absolute numbers"), value = FALSE),
                      fluidRow(
                        column(3, metric_box("Summary Results",
                                             paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]], 0), "%"),
@@ -155,15 +155,15 @@ ui <- navbarPage(
            wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
                      h2(strong("Visualizations"), align = "left"),
                      h4("These metrics measure how often different suboptimal and more informative
-                       graph types appear in the original research publications.
+                       graph types appear in the screened original research publications.
                        Bar graphs for continuous data are common in the biomedical literature
                        but are considered a suboptimal practice, as they conceal the underlying data points
                        and since many different data distributions can lead to the same bar graph. Also
                        pie charts are considered suboptimal, as they make it difficult to compare
                        the presented data. Different alternative graph types like dot plots,
                        violin plots, box plots or histograms can be used instead."),
-                     checkboxInput("checkbox_total_vis", "Show absolute numbers", value = FALSE),
                      br(),
+                     checkboxInput("checkbox_total_vis", strong("Show absolute numbers"), value = FALSE),
                      fluidRow(
                        column(6, metric_box("Problematic graphs",
                                             paste((filter(barzooka_data, year == show_year)$has_bar/
@@ -270,11 +270,11 @@ server <- function(input, output, session)
 
 
   output$plot_OA <- renderPlotly({
-     if(input$checkbox_total_OS) {
-       return(plot_OA_total(OA_plot_data_plotly_total, color_palette))
-     } else {
-       return(plot_OA_perc(OA_plot_data_plotly, color_palette))
-     }
+    if(input$checkbox_total_OS) {
+      return(plot_OA_total(OA_plot_data_plotly_total, color_palette))
+    } else {
+      return(plot_OA_perc(OA_plot_data_plotly, color_palette))
+    }
   })
 
 
