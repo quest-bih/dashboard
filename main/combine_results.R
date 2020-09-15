@@ -168,10 +168,6 @@ preprints <- read_csv("./results/preprints.csv") %>%
   group_by(year) %>%
   summarize(preprints = n())
 
-policy_citations <- read_csv("./results/policy_citations.csv") %>%
-  group_by(year) %>%
-  summarize(policy_citations = n())
-
 total_publ_dimensions = read_csv("./results/Charite_publication_ids_dimensions_2006_19.csv") %>%
   group_by(year) %>%
   summarize(total_publ_dimensions = n())
@@ -185,7 +181,6 @@ shiny_table_aggregate_metrics <- tibble(year = 2006:2019) %>%
   left_join(prospective_registration) %>%
   left_join(summary_results_12_month) %>%
   left_join(summary_results_24_month) %>%
-  left_join(policy_citations) %>%
   left_join(total_publ_dimensions) %>%
   left_join(preprints)
 
