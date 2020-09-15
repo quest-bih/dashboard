@@ -29,12 +29,14 @@ dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") 
   mutate(perc_sum_res_12 = perc_sum_res_12 * 100) %>%
   mutate(perc_sum_res_24 = perc_sum_res_24 * 100)
 
-#CT.gov dataset for the datatable
+#datasets for the datatable
 prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
   mutate_at(vars(nct_id, start_date, study_first_submitted_date,
                  days_reg_to_start, has_prospective_registration),
             as.character)
 summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
+preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
+
 
 #----------------------------------------------------------------------------------------------------------------------
 # preprocessing, need to move somewhere else later
@@ -193,6 +195,11 @@ ui <- navbarPage(
                                       DT::dataTableOutput("data_table_publ"),
                                       style = "default")),
            br(),
+           bsCollapse(id = "datasetPanels_PreprintDataset",
+                      bsCollapsePanel(strong("Preprint dataset"),
+                                      DT::dataTableOutput("data_table_preprints"),
+                                      style = "default")),
+           br(),
            bsCollapse(id = "datasetPanels_PublicationDataset",
                       bsCollapsePanel(strong("Prospective registration dataset"),
                                       DT::dataTableOutput("data_table_prosp_reg"),
@@ -231,21 +238,22 @@ server <- function(input, output, session)
   })
 
 
-  #data table to show the underlying publ dataset
+  #data table to show the underlying datasets
   output$data_table_publ <- DT::renderDataTable({
     make_datatable(dashboard_metrics)
   })
 
-  #data table to show the underlying dataset
+  output$data_table_preprints <- DT::renderDataTable({
+    make_datatable(preprints_dataset_shiny)
+  })
+
   output$data_table_prosp_reg <- DT::renderDataTable({
     make_datatable(prosp_reg_dataset_shiny)
   })
 
-  #data table to show the underlying dataset
   output$data_table_sum_res <- DT::renderDataTable({
     make_datatable(summary_results_dataset_shiny)
   })
-
 
 
 

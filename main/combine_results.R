@@ -159,6 +159,11 @@ write_csv(shiny_table, "shiny_app/data/dashboard_metrics.csv")
 # now for the metrics that are already aggregated by year
 #----------------------------------------------------------------------------------------
 
+preprints_dataset_shiny <- read_csv("./results/preprints.csv") %>%
+  select(doi, title, journal.title, year)
+write_csv(preprints_dataset_shiny, "./shiny_app/data/preprints_dataset_shiny.csv")
+
+
 preprints <- read_csv("./results/preprints.csv") %>%
   group_by(year) %>%
   summarize(preprints = n())
