@@ -65,8 +65,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         This comes from the repository versions that are often made available
                         with a delay, such that the OA percentage for a given year is typically
                         rising retrospectively. Thus the point in time of data retrieval is important
-                        for the OA percentage. The current OA data were retrieved on the
-                        14.09.2020.'),
+                        for the OA percentage. The current OA data were retrieved on: 14.09.2020.'),
 
                                   "The unpaywall only stores information for publications that have
                         a DOI assigned by crossref. Articles without crossref DOI have to
@@ -148,7 +147,8 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         which indexes many preprint servers, including arXiv and bioRxiv.
                         We searched for articles of the type \'preprint\' and
                         with authors assigned to the Charité via its Grid ID. The number of preprints
-                        found by this search are then summarized by year.'),
+                        found by this search are then summarized by year.
+                        The current preprint data were retrieved on: 14.09.2020.'),
 
                                   "Not all relevant preprint servers are currently indexed by dimensions,
                         including some of the bigger preprint servers like OSF preprints or medRxiv.

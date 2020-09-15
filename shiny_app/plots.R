@@ -178,8 +178,7 @@ plot_preprints <- function(plot_data, color_palette)
           marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    layout(yaxis = list(title = '<b>Number of preprints</b>',
-                        range = c(0, 100)),
+    layout(yaxis = list(title = '<b>Number of preprints</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
