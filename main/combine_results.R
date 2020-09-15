@@ -5,7 +5,7 @@ library(tidyverse)
 #----------------------------------------------------------------------------------------
 
 #load publication dataset
-publications <- readRDS("./results/Charite_publication_table.rds")
+publications <- read_rds("./results/Charite_publication_table.rds")
 
 #results files
 results_folder <- "results/"
