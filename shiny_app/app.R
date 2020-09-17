@@ -108,12 +108,13 @@ ui <- navbarPage(
            ),
 
            wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
-                     h2(strong("Open Science"), align = "left"),
-                     h4(paste0("These metrics show Open Science practices at Charité. The percentage of Charité
-                original research publications that are published as Open Access articles are mesured as well as
-                the percentage of screened publications that state that they share their research data or
-                analysis code. Additionally, we count articles published on preprint servers like bioRxiv.")),
-                     br(),
+                     h2(strong("Open Science"),
+                        HTML('&nbsp;'),
+                        actionButton(inputId = "infoOpenScience", label = "", icon = icon("info-circle"),
+                                     class = "btn-primary", style='padding:4px'),
+                        align = "left"),
+                     bsPopover("infoOpenScience", "Open Science metrics", open_science_description,
+                               "right"),
                      checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE),
                      fluidRow(
                        column(3, metric_box("Open Access",
@@ -136,12 +137,12 @@ ui <- navbarPage(
            ),
 
            wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                     h2(strong("Clinical trials"), align = "left"),
-                     h4("These metrics look at clinical trials that are registered on ClinicalTrials.gov
-                with Charité as the sponsor or with a priniciple investigator from Charité. We look
-                both at the timely reporting of summary results (within 12 or 24 months) on
-                ClinicalTrials.gov as well as prospective registration of the trials."),
-                     br(),
+                     h2(strong("Clinical trials"),
+                        HTML('&nbsp;'),
+                        actionButton(inputId = "infoClinicalTrials", label = "", icon = icon("info-circle"),
+                                     class = "btn-primary", style='padding:4px'),align = "left"),
+                     bsPopover("infoClinicalTrials", "Clinical trials metrics", clinical_trials_description,
+                               "right"),
                      checkboxInput("checkbox_total_CT", strong("Show absolute numbers"), value = FALSE),
                      fluidRow(
                        column(3, metric_box("Summary Results",
@@ -156,19 +157,15 @@ ui <- navbarPage(
            ),
 
            wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                     h2(strong("Visualizations"), align = "left"),
-                     h4("These metrics measure how often different suboptimal and more informative
-                       graph types appear in the screened original research publications.
-                       Bar graphs for continuous data are common in the biomedical literature
-                       but are considered a suboptimal practice, as they conceal the underlying data points
-                       and since many different data distributions can lead to the same bar graph. Also
-                       pie charts are considered suboptimal, as they make it difficult to compare
-                       the presented data. Different alternative graph types like dot plots,
-                       violin plots, box plots or histograms can be used instead."),
-                     br(),
+                     h2(strong("Visualizations"), HTML('&nbsp;'),
+                        actionButton(inputId = "infoVisualizations", label = "", icon = icon("info-circle"),
+                                     class = "btn-primary", style='padding:4px'),
+                        align = "left"),
+                     bsPopover("infoVisualizations", "Visualization metrics", visualizations_description,
+                               "right"),
                      checkboxInput("checkbox_total_vis", strong("Show absolute numbers"), value = FALSE),
                      fluidRow(
-                       column(6, metric_box("Problematic graphs",
+                       column(6, metric_box("Problematic graph types",
                                             paste((filter(barzooka_data, year == show_year)$has_bar/
                                                      filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
                                             "of publications from 2019 use bar graphs for continuous data",
@@ -236,6 +233,23 @@ server <- function(input, output, session)
   observeEvent(input$buttonDatasets, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabDatasets")
+  })
+
+  observeEvent(input$infoOpenScience, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Open Access")
+  })
+
+  observeEvent(input$infoClinicalTrials, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely reporting")
+  })
+
+  observeEvent(input$infoVisualizations, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabRessources")
   })
 
 

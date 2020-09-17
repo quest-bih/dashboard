@@ -238,3 +238,27 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         for the categories of bar graphs for continuous data and appropriate bar graphs
                         (for count data) there can be erroneous assignments."))
 )
+
+
+open_science_description <- strwrap("These metrics show Open Science practices at Charité. The percentage of Charité original
+                             research publications that are published as Open Access articles are mesured as well as
+                             the percentage of screened publications that state that they share their research data or
+                             analysis code. Additionally, we count articles published on preprint servers like bioRxiv.
+                             - Click for methods details.") %>%
+                            paste(collapse = " ")
+
+clinical_trials_description <- strwrap("These metrics look at clinical trials that are registered on ClinicalTrials.gov
+                                       with Charité as the sponsor or with a priniciple investigator from Charité.
+                                       We look both at the timely reporting of summary results (within 12 or 24 months)
+                                       on ClinicalTrials.gov as well as prospective registration of the trials.
+                                       - Click for methods details.") %>%
+                               paste(collapse = " ")
+
+visualizations_description <- strwrap("Bar graphs for continuous data are common but are considered a suboptimal practice,
+                                      as they conceal the underlying data points
+                                      and since many different data distributions can lead to the same bar graph. Also
+                                      pie charts are considered suboptimal, as they make it difficult to compare
+                                      the presented data. Different alternative graph types like dot plots,
+                                      violin plots, box plots or histograms can be used instead.
+                                      - Click for more info.") %>%
+                              paste(collapse = " ")
