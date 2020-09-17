@@ -27,7 +27,8 @@ dashboard_metrics <- read_csv("data/dashboard_metrics.csv") %>%
 dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") %>%
   mutate(perc_prosp_reg = perc_prosp_reg * 100) %>%
   mutate(perc_sum_res_12 = perc_sum_res_12 * 100) %>%
-  mutate(perc_sum_res_24 = perc_sum_res_24 * 100)
+  mutate(perc_sum_res_24 = perc_sum_res_24 * 100) %>%
+  round(1)
 
 #datasets for the datatable
 prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%

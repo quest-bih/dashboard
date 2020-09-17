@@ -103,7 +103,7 @@ plot_OD_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     add_trace(y = ~open_data_NA_count,
-              name = 'PDF not available',
+              name = 'PDF not accessible',
               marker = list(color = color_palette[1],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
@@ -147,17 +147,17 @@ plot_OC_perc <- function(plot_data, color_palette)
 plot_OC_total <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~open_code_manual_count,
-          name = "Open Data", type = 'bar',
+          name = "Open Code", type = 'bar',
           marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
     add_trace(y = ~open_code_neg_count,
-              name = 'No Open Data',
+              name = 'No Open Code',
               marker = list(color = color_palette[5],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     add_trace(y = ~open_code_NA_count,
-              name = 'PDF not available',
+              name = 'PDF not accessible',
               marker = list(color = color_palette[1],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
@@ -280,11 +280,11 @@ plot_prosp_reg_total <- function(plot_data, color_palette)
 # problematic graphs
 plot_barzooka_problem_perc <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~(has_bar/total*100),
+  plot_ly(plot_data, x = ~year, y = ~round(has_bar/total*100, 1),
           name = "bar graph", type = 'scatter', mode = 'lines+markers',
           line = list(color = color_palette[2], width = 3),
           marker = list(color = color_palette[2], size = 8)) %>%
-    add_trace(y = ~(has_pie/total*100), name = 'pie chart', mode = 'lines+markers',
+    add_trace(y = ~round(has_pie/total*100, 1), name = 'pie chart', mode = 'lines+markers',
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),
@@ -304,7 +304,7 @@ plot_barzooka_problem_total<- function(plot_data, color_palette)
     add_trace(y = ~has_pie, name = 'pie chart', mode = 'lines+markers',
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) %>%
-    add_trace(y = ~total, name = 'All publications', mode = 'lines+markers',
+    add_trace(y = ~total, name = 'accessible publications', mode = 'lines+markers',
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),
@@ -319,23 +319,23 @@ plot_barzooka_problem_total<- function(plot_data, color_palette)
 # more informative graphs
 plot_barzooka_inform_perc <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~(has_informative/total*100),
+  plot_ly(plot_data, x = ~year, y = ~round(has_informative/total*100, 1),
           name = "any informative", type = 'scatter', mode = 'lines+markers',
           line = list(color = color_palette[1], width = 3),
           marker = list(color = color_palette[1], size = 8)) %>%
-    add_trace(y = ~(has_bardot/total*100), name = 'bar graph with dots', mode = 'lines+markers',
+    add_trace(y = ~round(has_bardot/total*100, 1), name = 'bar graph with dots', mode = 'lines+markers',
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
-    add_trace(y = ~(has_box/total*100), name = 'box plot', mode = 'lines+markers',
+    add_trace(y = ~round(has_box/total*100, 1), name = 'box plot', mode = 'lines+markers',
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) %>%
-    add_trace(y = ~(has_dot/total*100), name = 'dot plot', mode = 'lines+markers',
+    add_trace(y = ~round(has_dot/total*100, 1), name = 'dot plot', mode = 'lines+markers',
               line = list(color = color_palette[4]),
               marker = list(color = color_palette[4])) %>%
-    add_trace(y = ~(has_hist/total*100), name = 'histogram', mode = 'lines+markers',
+    add_trace(y = ~round(has_hist/total*100, 1), name = 'histogram', mode = 'lines+markers',
               line = list(color = color_palette[6]),
               marker = list(color = color_palette[6])) %>%
-    add_trace(y = ~(has_violin/total*100), name = 'violin plot', mode = 'lines+markers',
+    add_trace(y = ~round(has_violin/total*100, 1), name = 'violin plot', mode = 'lines+markers',
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),
@@ -367,7 +367,7 @@ plot_barzooka_inform_total <- function(plot_data, color_palette)
     add_trace(y = ~has_violin, name = 'violin plot', mode = 'lines+markers',
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) %>%
-    add_trace(y = ~total, name = 'All publications', mode = 'lines+markers',
+    add_trace(y = ~total, name = 'accessible publications', mode = 'lines+markers',
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),

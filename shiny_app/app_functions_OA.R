@@ -45,7 +45,7 @@ calculate_OA_percentages <- function(OA_data, categories)
   #OA percentages
   OA_perc <- publ_OA_colors %>%
     left_join(publ_all) %>%
-    mutate(perc = OA/all *100) %>%
+    mutate(perc = round(OA/all *100, 1)) %>%
     ungroup()
 
   return(OA_perc)

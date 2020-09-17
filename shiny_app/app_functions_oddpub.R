@@ -29,14 +29,14 @@ make_oddpub_plot_data <- function(data_table)
               OC_supplement_count = sum(open_code_category_priority == "supplement", na.rm = TRUE),
               total = sum(!is.na(is_open_data) | (open_data_manual_check == TRUE), na.rm = TRUE)) %>%
 
-    mutate(open_data_manual_perc = open_data_manual_count/total * 100) %>%
-    mutate(open_code_manual_perc = open_code_manual_count/total * 100) %>%
-    mutate(OD_field_specific_perc = OD_field_specific_count/total * 100) %>%
-    mutate(OD_general_purpose_perc = OD_general_purpose_count/total * 100) %>%
-    mutate(OD_supplement_perc = OD_supplement_count/total * 100) %>%
-    mutate(OC_github_perc = OC_github_count/total * 100) %>%
-    mutate(OC_other_perc = OC_other_count/total * 100) %>%
-    mutate(OC_supplement_perc = OC_supplement_count/total * 100)
+    mutate(open_data_manual_perc = round(open_data_manual_count/total * 100, 1)) %>%
+    mutate(open_code_manual_perc = round(open_code_manual_count/total * 100, 1)) %>%
+    mutate(OD_field_specific_perc = round(OD_field_specific_count/total * 100, 1)) %>%
+    mutate(OD_general_purpose_perc = round(OD_general_purpose_count/total * 100, 1)) %>%
+    mutate(OD_supplement_perc = round(OD_supplement_count/total * 100, 1)) %>%
+    mutate(OC_github_perc = round(OC_github_count/total * 100, 1)) %>%
+    mutate(OC_other_perc = round(OC_other_count/total * 100, 1)) %>%
+    mutate(OC_supplement_perc = round(OC_supplement_count/total * 100, 1))
 
   return(oddpub_plot_data)
 }
