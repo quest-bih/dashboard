@@ -157,7 +157,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
          hr(),
          h2("Clinical trials"),
          bsCollapse(id = "methodsPanels_ClinicalTrials",
-                    methods_panel("Timely reporting",
+                    methods_panel("Summary results reporting",
 
                                   "This metric measures how often clinical trials registered at ClinicalTrials.gov
                         share their results in the form of summary results within 12 or 24 month.

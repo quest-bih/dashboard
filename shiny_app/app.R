@@ -151,7 +151,7 @@ ui <- navbarPage(
                                             value_text = "of trials completed in 2017 posted summary results on CT.gov within 24 months",
                                             plot = plotlyOutput('plot_summary_results', height = "300px"),
                                             info_id = "infoSumRes",
-                                            info_title = "Summary Results",
+                                            info_title = "Summary Results reporting",
                                             info_text = summary_results_tooltip)),
                        column(3, metric_box(title = "Prospective registration",
                                             value = paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
@@ -244,19 +244,50 @@ server <- function(input, output, session)
                       selected = "tabDatasets")
   })
 
-  observeEvent(input$infoOpenScience, {
+
+  #tooltip buttons -> methods section
+  observeEvent(input$infoOA, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_OpenScience", open = "Open Access")
   })
 
-  observeEvent(input$infoClinicalTrials, {
+  observeEvent(input$infoOD, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
-    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely reporting")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
   })
 
-  observeEvent(input$infoVisualizations, {
+  observeEvent(input$infoOC, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
+  })
+
+  observeEvent(input$infoPreprints, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
+  })
+
+  observeEvent(input$infoSumRes, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Summary results reporting")
+  })
+
+  observeEvent(input$infoProspReg, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Prospective registration")
+  })
+
+  observeEvent(input$infoVisProblem, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabRessources")
+  })
+
+  observeEvent(input$infoVisInform, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabRessources")
   })
