@@ -240,25 +240,85 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 )
 
 
-open_science_description <- strwrap("These metrics show Open Science practices at Charité. The percentage of Charité original
-                             research publications that are published as Open Access articles are mesured as well as
-                             the percentage of screened publications that state that they share their research data or
-                             analysis code. Additionally, we count articles published on preprint servers like bioRxiv.
+#------------------------------------------------------------------------
+# Tooltip info descriptions for all metrics
+#------------------------------------------------------------------------
+
+
+open_access_tooltip <- strwrap("The Open Access metric shows the percentage of Charité original
+                             research publications that are published as Open Access (OA) articles.
+                             Gold OA denotes publication in a pure OA journal.
+                             Green OA denotes a freely available repository version. Hybrid OA denotes
+                             an OA publication in a journal with offers both a subscription based model
+                             as well as an Open Access option. Bronze OA denotes a publication which is
+                             freely available on the journal page, but without a clear open license.
+                             Closed articles are not freely available. For some articles no Open Access
+                             information was available.
                              - Click for methods details.") %>%
-                            paste(collapse = " ")
+  paste(collapse = " ")
 
-clinical_trials_description <- strwrap("These metrics look at clinical trials that are registered on ClinicalTrials.gov
-                                       with Charité as the sponsor or with a priniciple investigator from Charité.
-                                       We look both at the timely reporting of summary results (within 12 or 24 months)
-                                       on ClinicalTrials.gov as well as prospective registration of the trials.
+open_data_tooltip <- strwrap("The Open Data metric measures the the percentage of screened publications
+                             that state that they shared their research data.
+                             Openly shared data makes research more transparent,
+                             as research findings can be reproduced. Additionally, shared datasets
+                             can be reused and combined by other scientists to answer new research
+                             questions.
+                             - Click for methods details.") %>%
+  paste(collapse = " ")
+
+open_code_tooltip <- strwrap("The Open Code metric measures the the percentage of screened publications
+                             that state that they shared their analysis code.
+                             Like openly shared data, Open Code makes research more transparent,
+                             as research findings can be reproduced.
+                             - Click for methods details.") %>%
+  paste(collapse = " ")
+
+preprints_tooltip <- strwrap("This metric measures how many preprints with authors from the Charité
+                             have been published on a range of preprint servers. Preprints allow
+                             rapid and transparent communication of preliminary research results
+                             before publication in a peer-reviewed journal.
+                             - Click for methods details.") %>%
+  paste(collapse = " ")
+
+
+
+
+summary_results_tooltip <- strwrap("This metric measures how often clinical trials registered at ClinicalTrials.gov
+                        share their results in the form of summary results within 12 or 24 month.
+                        Clinical trials are expensive and have often many contributing patients.
+                        A fast dissemination of the trial results is crucial to make the evidence gained
+                        in those trials available. The World Health organization recommends publishing
+                        clinical trial results within one year after the end of a study.
                                        - Click for methods details.") %>%
-                               paste(collapse = " ")
+  paste(collapse = " ")
 
-visualizations_description <- strwrap("Bar graphs for continuous data are common but are considered a suboptimal practice,
-                                      as they conceal the underlying data points
-                                      and since many different data distributions can lead to the same bar graph. Also
-                                      pie charts are considered suboptimal, as they make it difficult to compare
-                                      the presented data. Different alternative graph types like dot plots,
-                                      violin plots, box plots or histograms can be used instead.
-                                      - Click for more info.") %>%
-                              paste(collapse = " ")
+prospective_registration_tooltip <- strwrap("This metric measures if the clinical trials are registered before the
+                        start date of the study, according to the information given on ClinicalTrials.gov.
+                        The idea of prospective registration of studies is to make the trail specifications,
+                        including primary and secondary outcomes, publicly available before study start.
+                        Prospective registration adds transparency, helps protect against outcome switching.
+                                       - Click for methods details.") %>%
+  paste(collapse = " ")
+
+
+
+vis_problem_tooltip <- strwrap("Bar graphs for continuous data are common but are considered a suboptimal practice,
+                                as they conceal the underlying data points
+                                and many different data distributions can lead to the same bar graph.
+                                Bar graphs of continuous data should be replaced with more informative graphs
+                                that provide information about the data distribution and sample size,
+                                such as dot plots, box plots, violin plots or histograms. Pie charts are suboptimal,
+                                as humans have difficulty assessing proportions based on differences in area and angle.
+                                This is especially difficult when a pie chart includes many slices, or groups with similar proportions.
+                                - Click for more info.") %>%
+  paste(collapse = " ")
+
+
+vis_inform_tooltip <- strwrap("Bar graphs for continuous data are common but are considered a suboptimal practice,
+                                as they conceal the underlying data points
+                                and many different data distributions can lead to the same bar graph.
+                                Bar graphs of continuous data should be replaced with more informative graphs
+                                that provide information about the data distribution and sample size,
+                                such as dot plots, box plots, violin plots or histograms.
+                                - Click for more info.") %>%
+  paste(collapse = " ")
