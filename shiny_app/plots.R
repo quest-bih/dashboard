@@ -167,22 +167,28 @@ plot_OC_total <- function(plot_data, color_palette)
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    remove_buttons()
 }
 
 
 # Preprints
 plot_preprints <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~preprints, type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    layout(yaxis = list(title = '<b>Number of preprints</b>'),
+  plot_ly(plot_data, x = ~year, y = ~preprints,
+          name = 'Preprints',
+          type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[3], width = 3),
+          marker = list(color = color_palette[3], size = 8)) %>%
+    add_trace(y = ~count, name = 'Journal articles', mode = 'lines+markers',
+              line = list(color = color_palette[2]),
+              marker = list(color = color_palette[2])) %>%
+    layout(yaxis = list(title = '<b>Total number</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    remove_buttons()
 }
 
 

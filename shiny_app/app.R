@@ -325,10 +325,17 @@ server <- function(input, output, session)
 
 
   # Preprints
+
+  #add total number of publications to the dataset
+  preprint_publ_total <- dashboard_metrics %>%
+    group_by(year) %>%
+    summarize(count = n())
+
   preprints_plot_data <- dashboard_metrics_aggregate %>%
     select(year, preprints) %>%
     filter(!is.na(preprints)) %>%
-    filter(year >= 2015)
+    filter(year >= 2015) %>%
+    left_join(preprint_publ_total, by = "year")
 
   output$plot_preprints <- renderPlotly({
     plot_preprints(preprints_plot_data, color_palette)
