@@ -132,7 +132,7 @@ plot_OD_total <- function(plot_data, color_palette)
 plot_OC_perc <- function(plot_data, color_palette, zoom_in)
 {
   if(zoom_in) {
-    yrange <- c(0, 10)
+    yrange <- c(0, 5)
   } else {
     yrange <- c(0, 100)
   }
