@@ -194,8 +194,10 @@ server <- function(input, output, session)
     req(input$width)
     if(input$width < 1400) {
       col_width <- 6
+      alignment <- "left"
     } else {
       col_width <- 3
+      alignment <- "right"
     }
 
     wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
@@ -217,7 +219,8 @@ server <- function(input, output, session)
                                      plot = plotlyOutput('plot_oddpub_data', height = "300px"),
                                      info_id = "infoOD",
                                      info_title = "Open Data",
-                                     info_text = open_data_tooltip)),
+                                     info_text = open_data_tooltip,
+                                     info_alignment = alignment)),
                 column(col_width, metric_box(title = "Any Open Code",
                                      value = paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_perc"]], 0), "%"),
                                      value_text = "of publications mention sharing of code in 2019",
@@ -242,8 +245,10 @@ server <- function(input, output, session)
     req(input$width)
     if(input$width < 1400) {
       col_width <- 6
+      alignment <- "left"
     } else {
       col_width <- 3
+      alignment <- "right"
     }
 
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
@@ -263,7 +268,8 @@ server <- function(input, output, session)
                                      plot = plotlyOutput('plot_prosp_reg', height = "300px"),
                                      info_id = "infoProspReg",
                                      info_title = "Prospective registration",
-                                     info_text = prospective_registration_tooltip)))
+                                     info_text = prospective_registration_tooltip,
+                                     info_alignment = alignment)))
     )
   })
 
