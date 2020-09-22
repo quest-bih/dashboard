@@ -6,6 +6,7 @@ library(ggvis)
 library(ggplot2)
 library(shinythemes)
 library(shinyBS)
+library(shinyjs)
 library(DT)
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -107,62 +108,10 @@ ui <- navbarPage(
              )
            ),
 
-           wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
-                     h2(strong("Open Science"), align = "left"),
-                     fluidRow(
-                       column(2, checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE)),
-                       column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))),
-                     fluidRow(
-                       column(3, metric_box(title = "Open Access",
-                                            value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
-                                            value_text = "of publications are Open Access in 2019",
-                                            plot = plotlyOutput('plot_OA', height = "300px"),
-                                            info_id = "infoOA",
-                                            info_title = "Open Access",
-                                            info_text = open_access_tooltip)),
-                       column(3, metric_box(title = "Any Open Data",
-                                            value = paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_manual_perc"]], 0), "%"),
-                                            value_text = "of publications mention sharing of data in 2019",
-                                            plot = plotlyOutput('plot_oddpub_data', height = "300px"),
-                                            info_id = "infoOD",
-                                            info_title = "Open Data",
-                                            info_text = open_data_tooltip)),
-                       column(3, metric_box(title = "Any Open Code",
-                                            value = paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_perc"]], 0), "%"),
-                                            value_text = "of publications mention sharing of code in 2019",
-                                            plot = plotlyOutput('plot_oddpub_code', height = "300px"),
-                                            info_id = "infoOC",
-                                            info_title = "Open Code",
-                                            info_text = open_code_tooltip)),
-                       column(3, metric_box(title = "Preprints",
-                                            value = metrics_show_year$preprints,
-                                            value_text = "preprints published in 2019",
-                                            plot = plotlyOutput('plot_preprints', height = "300px"),
-                                            info_id = "infoPreprints",
-                                            info_title = "Preprints",
-                                            info_text = preprints_tooltip,
-                                            info_alignment = "left")))
-           ),
+           # generate Open Science metrics UI dynamically to determine column width during start of the app
+           uiOutput("OpenScience_metrics"),
 
-           wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                     h2(strong("Clinical trials"), align = "left"),
-                     checkboxInput("checkbox_total_CT", strong("Show absolute numbers"), value = FALSE),
-                     fluidRow(
-                       column(3, metric_box(title = "Summary Results",
-                                            value = paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]], 0), "%"),
-                                            value_text = "of trials completed in 2017 posted summary results on CT.gov within 24 months",
-                                            plot = plotlyOutput('plot_summary_results', height = "300px"),
-                                            info_id = "infoSumRes",
-                                            info_title = "Summary Results reporting",
-                                            info_text = summary_results_tooltip)),
-                       column(3, metric_box(title = "Prospective registration",
-                                            value = paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
-                                            value_text = "of clinical trials started in 2019 are prospectively registered on CT.gov",
-                                            plot = plotlyOutput('plot_prosp_reg', height = "300px"),
-                                            info_id = "infoProspReg",
-                                            info_title = "Prospective registration",
-                                            info_text = prospective_registration_tooltip)))
-           ),
+           uiOutput("CT_metrics"),
 
            wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
                      h2(strong("Visualizations"),
@@ -219,7 +168,17 @@ ui <- navbarPage(
                                       DT::dataTableOutput("data_table_sum_res"),
                                       style = "default"))
   ),
-  about_page
+  about_page,
+
+  # Javascript code necessary to provide window width as input variable
+  # for the dynamic column width setting
+  tags$head(tags$script('
+                        var width = 0;
+                        $(document).on("shiny:connected", function(e) {
+                          width = window.innerWidth;
+                          Shiny.onInputChange("width", width);
+                        });
+                        '))
 )
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -228,6 +187,88 @@ ui <- navbarPage(
 
 server <- function(input, output, session)
 {
+
+  # dynamically determine column width of Open Science metrics at program start
+  # four columns if resolution large enough, otherwise two columns
+  output$OpenScience_metrics <- renderUI({
+    req(input$width)
+    if(input$width < 1400) {
+      col_width <- 6
+    } else {
+      col_width <- 3
+    }
+
+    wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
+              h2(strong("Open Science"), align = "left"),
+              fluidRow(
+                column(2, checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE)),
+                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))),
+              fluidRow(
+                column(col_width, metric_box(title = "Open Access",
+                                     value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
+                                     value_text = "of publications are Open Access in 2019",
+                                     plot = plotlyOutput('plot_OA', height = "300px"),
+                                     info_id = "infoOA",
+                                     info_title = "Open Access",
+                                     info_text = open_access_tooltip)),
+                column(col_width, metric_box(title = "Any Open Data",
+                                     value = paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_manual_perc"]], 0), "%"),
+                                     value_text = "of publications mention sharing of data in 2019",
+                                     plot = plotlyOutput('plot_oddpub_data', height = "300px"),
+                                     info_id = "infoOD",
+                                     info_title = "Open Data",
+                                     info_text = open_data_tooltip)),
+                column(col_width, metric_box(title = "Any Open Code",
+                                     value = paste(round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_perc"]], 0), "%"),
+                                     value_text = "of publications mention sharing of code in 2019",
+                                     plot = plotlyOutput('plot_oddpub_code', height = "300px"),
+                                     info_id = "infoOC",
+                                     info_title = "Open Code",
+                                     info_text = open_code_tooltip)),
+                column(col_width, metric_box(title = "Preprints",
+                                     value = metrics_show_year$preprints,
+                                     value_text = "preprints published in 2019",
+                                     plot = plotlyOutput('plot_preprints', height = "300px"),
+                                     info_id = "infoPreprints",
+                                     info_title = "Preprints",
+                                     info_text = preprints_tooltip,
+                                     info_alignment = "left")))
+    )
+  })
+
+
+
+  output$CT_metrics <- renderUI({
+    req(input$width)
+    if(input$width < 1400) {
+      col_width <- 6
+    } else {
+      col_width <- 3
+    }
+
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+              h2(strong("Clinical trials"), align = "left"),
+              checkboxInput("checkbox_total_CT", strong("Show absolute numbers"), value = FALSE),
+              fluidRow(
+                column(col_width, metric_box(title = "Summary Results",
+                                     value = paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]], 0), "%"),
+                                     value_text = "of trials completed in 2017 posted summary results on CT.gov within 24 months",
+                                     plot = plotlyOutput('plot_summary_results', height = "300px"),
+                                     info_id = "infoSumRes",
+                                     info_title = "Summary Results reporting",
+                                     info_text = summary_results_tooltip)),
+                column(col_width, metric_box(title = "Prospective registration",
+                                     value = paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
+                                     value_text = "of clinical trials started in 2019 are prospectively registered on CT.gov",
+                                     plot = plotlyOutput('plot_prosp_reg', height = "300px"),
+                                     info_id = "infoProspReg",
+                                     info_title = "Prospective registration",
+                                     info_text = prospective_registration_tooltip)))
+    )
+  })
+
+
+
 
   #actionButton to switch tabs
   observeEvent(input$buttonMethods, {
