@@ -109,11 +109,13 @@ ui <- navbarPage(
 
            wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
                      h2(strong("Open Science"), align = "left"),
-                     checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE),
+                     fluidRow(
+                       column(2, checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE)),
+                       column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))),
                      fluidRow(
                        column(3, metric_box(title = "Open Access",
                                             value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
-                                            value_text = "Open Access articles in 2019",
+                                            value_text = "of publications are Open Access in 2019",
                                             plot = plotlyOutput('plot_OA', height = "300px"),
                                             info_id = "infoOA",
                                             info_title = "Open Access",
@@ -351,7 +353,7 @@ server <- function(input, output, session)
     if(input$checkbox_total_OS) {
       return(plot_OD_total(oddpub_plot_data, color_palette))
     } else {
-      return(plot_OD_perc(oddpub_plot_data, color_palette))
+      return(plot_OD_perc(oddpub_plot_data, color_palette, input$checkbox_zoom_OS))
     }
   })
 
@@ -359,7 +361,7 @@ server <- function(input, output, session)
     if(input$checkbox_total_OS) {
       return(plot_OC_total(oddpub_plot_data, color_palette))
     } else {
-      return(plot_OC_perc(oddpub_plot_data, color_palette))
+      return(plot_OC_perc(oddpub_plot_data, color_palette, input$checkbox_zoom_OS))
     }
   })
 

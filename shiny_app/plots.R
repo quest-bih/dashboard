@@ -64,8 +64,14 @@ plot_OA_perc <- function(plot_data, color_palette)
 
 
 # Open Data
-plot_OD_perc <- function(plot_data, color_palette)
+plot_OD_perc <- function(plot_data, color_palette, zoom_in)
 {
+  if(zoom_in) {
+    yrange <- c(0, 20)
+  } else {
+    yrange <- c(0, 100)
+  }
+
   plot_ly(plot_data, x = ~year, y = ~OD_field_specific_perc,
           name = "field-specific repository", type = 'bar',
           marker = list(color = color_palette[3],
@@ -83,7 +89,7 @@ plot_OD_perc <- function(plot_data, color_palette)
     layout(barmode = 'stack',
            legend=list(title=list(text='<b> Category </b>')),
            yaxis = list(title = '<b>Percentage of publications</b>',
-                        range = c(0, 20)),
+                        range = yrange),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -118,30 +124,36 @@ plot_OD_total <- function(plot_data, color_palette)
 
 
 # Open Code
-plot_OC_perc <- function(plot_data, color_palette)
+plot_OC_perc <- function(plot_data, color_palette, zoom_in)
 {
-    plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
-            name = "GitHub", type = 'bar',
-            marker = list(color = color_palette[3],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-      add_trace(y = ~OC_other_perc,
-                name = 'other repository/website',
-                marker = list(color = color_palette[6],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OC_supplement_perc, name = 'supplement',
-                marker = list(color = color_palette[7],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      layout(barmode = 'stack',
-             legend=list(title=list(text='<b> Category </b>')),
-             yaxis = list(title = '<b>Percentage of publications</b>',
-                          range = c(0, 10)),
-             xaxis = list(title = '<b>Year</b>',
-                          dtick = 1),
-             paper_bgcolor = color_palette[9],
-             plot_bgcolor = color_palette[9])
+  if(zoom_in) {
+    yrange <- c(0, 10)
+  } else {
+    yrange <- c(0, 100)
+  }
+
+  plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
+          name = "GitHub", type = 'bar',
+          marker = list(color = color_palette[3],
+                        line = list(color = 'rgb(0,0,0)',
+                                    width = 1.5))) %>%
+    add_trace(y = ~OC_other_perc,
+              name = 'other repository/website',
+              marker = list(color = color_palette[6],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OC_supplement_perc, name = 'supplement',
+              marker = list(color = color_palette[7],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    layout(barmode = 'stack',
+           legend=list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Percentage of publications</b>',
+                        range = yrange),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
 }
 
 plot_OC_total <- function(plot_data, color_palette)
