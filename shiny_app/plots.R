@@ -1,8 +1,33 @@
+
 #------------------------------------------------------------------------
 # Open Science plots
 #------------------------------------------------------------------------
 
 # Open Access
+plot_OA_perc <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~gold, name = "Gold", type = 'bar',
+          marker = list(color = color_palette[3],
+                        line = list(color = 'rgb(0,0,0)',
+                                    width = 1.5))) %>%
+    add_trace(y = ~green, name = 'Green',
+              marker = list(color = color_palette[6],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~hybrid, name = 'Hybrid',
+              marker = list(color = color_palette[7],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    layout(barmode = 'stack',
+           legend = list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Percentage Open Access</b>',
+                        range = c(0, 100)),
+           xaxis = list(title = '<b>Year</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
 plot_OA_total <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~gold, name = "Gold", type = 'bar',
@@ -25,41 +50,18 @@ plot_OA_total <- function(plot_data, color_palette)
               marker = list(color = color_palette[5],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
-    add_trace(y = ~`NA`, name = 'No data available',
+    add_trace(y = ~`NA`, name = 'No data <br>available',
               marker = list(color = color_palette[1],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Publications</b>'),
+           yaxis = list(title = '<b>Publications</b>',
+                        range = c(0, 6000)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9])
-}
-
-plot_OA_perc <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~gold, name = "Gold", type = 'bar',
-                          marker = list(color = color_palette[3],
-                                        line = list(color = 'rgb(0,0,0)',
-                                                    width = 1.5))) %>%
-  add_trace(y = ~green, name = 'Green',
-            marker = list(color = color_palette[6],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-  add_trace(y = ~hybrid, name = 'Hybrid',
-            marker = list(color = color_palette[7],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-  layout(barmode = 'stack',
-         legend=list(title=list(text='<b> Category </b>')),
-         yaxis = list(title = '<b>Percentage Open Access</b>',
-                      range = c(0, 100)),
-         xaxis = list(title = '<b>Year</b>',
-                      dtick = 1),
-         paper_bgcolor = color_palette[9],
-         plot_bgcolor = color_palette[9])
 }
 
 
@@ -78,7 +80,7 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in)
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
     add_trace(y = ~OD_general_purpose_perc,
-              name = 'general-purpose repository or other website',
+              name = 'multipurpose repository <br>or website',
               marker = list(color = color_palette[6],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
@@ -109,13 +111,14 @@ plot_OD_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     add_trace(y = ~open_data_NA_count,
-              name = 'PDF not accessible',
+              name = 'Not accessible',
               marker = list(color = color_palette[1],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Number of publications</b>'),
+           yaxis = list(title = '<b>Number of publications</b>',
+                        range = c(0, 6000)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -169,18 +172,18 @@ plot_OC_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     add_trace(y = ~open_code_NA_count,
-              name = 'PDF not accessible',
+              name = 'Not accessible',
               marker = list(color = color_palette[1],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Number of publications</b>'),
+           yaxis = list(title = '<b>Number of publications</b>',
+                        range = c(0, 6000)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    remove_buttons()
+           plot_bgcolor = color_palette[9])
 }
 
 
@@ -195,12 +198,13 @@ plot_preprints <- function(plot_data, color_palette)
     add_trace(y = ~count, name = 'Journal articles', mode = 'lines+markers',
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
-    layout(yaxis = list(title = '<b>Total number</b>'),
+    layout(yaxis = list(title = '<b>Total number</b>',
+                        range = c(0, 6000)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    remove_buttons()
+           plot_bgcolor = color_palette[9],
+           list(xanchor = "right"))
 }
 
 
@@ -212,16 +216,16 @@ plot_preprints <- function(plot_data, color_palette)
 plot_summary_results_perc <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~perc_sum_res_12,
-          name = "12 months", type = 'bar',
+          name = "12", type = 'bar',
           marker = list(color = color_palette[2],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    add_trace(y = ~perc_sum_res_24, name = '24 months',
+    add_trace(y = ~perc_sum_res_24, name = '24',
               marker = list(color = color_palette[3],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'group',
-           legend=list(title=list(text='<b> Category </b>')),
+           legend=list(title=list(text='<b>Months</b>')),
            yaxis = list(title = '<b>Percentage of trials</b>',
                         range = c(0, 100)),
            xaxis = list(title = '<b>Year</b>',
