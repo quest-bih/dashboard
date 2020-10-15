@@ -218,20 +218,16 @@ plot_preprints <- function(plot_data, color_palette)
 # Summary results
 plot_summary_results_perc <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~perc_sum_res_12,
-          name = "12", type = 'bar',
-          marker = list(color = color_palette[2],
+  plot_data <- plot_data %>% add_column(city = "Charité")
+  plot_ly(plot_data, x = ~city, y = ~round(perc_reported * 100,1),
+          marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    add_trace(y = ~perc_sum_res_24, name = '24',
-              marker = list(color = color_palette[3],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
+    add_bars(width = 0.2) %>%
     layout(barmode = 'group',
-           legend=list(title=list(text='<b>Months</b>')),
            yaxis = list(title = '<b>Percentage of trials</b>',
                         range = c(0, 100)),
-           xaxis = list(title = '<b>Year</b>',
+           xaxis = list(title = '',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9])
@@ -239,23 +235,22 @@ plot_summary_results_perc <- function(plot_data, color_palette)
 
 plot_summary_results_total <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~has_sum_res_12,
-          name = "12 months", type = 'bar',
+  plot_data <- plot_data %>% add_column(city = "Charité")
+  plot_ly(plot_data) %>%
+    add_bars(x = ~city, y = ~total_reported, width = ~c(0.2),
+          name = "reported", type = 'bar',
           marker = list(color = color_palette[2],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    add_trace(y = ~has_sum_res_24_only, name = '24 month',
+    add_bars(x = ~city, y = ~total_unreported, width = ~c(0.2),
+             name = 'unreported',
               marker = list(color = color_palette[3],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~no_sum_res_24, name = 'no timely summary results',
-              marker = list(color = color_palette[5],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Number of trials</b>'),
-           xaxis = list(title = '<b>Year</b>',
+           yaxis = list(title = '<b>Number of due trials</b>'),
+           xaxis = list(title = '',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9])

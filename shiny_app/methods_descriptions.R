@@ -159,33 +159,23 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
          bsCollapse(id = "methodsPanels_ClinicalTrials",
                     methods_panel("Summary results reporting",
 
-                                  "This metric measures how often clinical trials registered at ClinicalTrials.gov
-                        share their results in the form of summary results within 12 or 24 month.
+                                  "This metric measures how many clinical trials registered in the
+                        EU Clinical Trials Register that are due to report their results have already
+                        done so. A trial is due to report its results 12 month after trial completion.
                         Clinical trials are expensive and have often many contributing patients.
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.",
 
-                                  "We identified interventional clinical trials associated to the Charité
-                        by searching the AACT database (which aggregates the data from ClinicalTrials.gov)
-                        for trials mentioning the Charité as either sponsor, responsible party or
-                        with a principle investigator from Charité. We additionally filtered
-                        for interventional trials and for the study status as either
-                        completed, terminated, Suspended or unknown (which means that the estimated study
-                        completion data has already passed, but the registry entry has not been updated
-                        for more than 2 years). For the identified trials we calculated the time to
-                        summary results reporting by comparing the completion date to the date
-                        of results submission (if any were submitted), which are both included
-                        in the AACT dataset. We then grouped the results by the completion year
-                        of the studies.",
+                                  "The data were retrieved from the EU Trials Tracker by the EBM DataLab
+                        (eu.trialstracker.net).",
 
-                                  "While ClinicalTrials.gov is the largest trial registry, it is not the only
-                        available registry. There are other registries like the EU Clinical Trials Register
+                                  "While the EU Clinical Trials Register is one of the most important
+                        European trial registries, it is not the only
+                        available registry. There are other registries like ClinicalTrials.gov.
                         or the German Clinical Trials Registry, which are not considered here.
-                        Additionally, the completion dates given in the CT.gov registry can also
-                        be planned completion dates (if the record is not updated after study
-                        completion or if the study runs for longer), which can lead to inaccurate
-                        measurement of time to reporting."),
+                        Additionally, the EU Trials Tracker does not measure for how long the
+                        trials have been due."),
 
 
                     methods_panel("Prospective registration",
@@ -283,8 +273,11 @@ preprints_tooltip <- strwrap("This metric measures how many preprints with autho
 
 
 
-summary_results_tooltip <- strwrap("This metric measures how often clinical trials registered at ClinicalTrials.gov
-                        share their results in the form of summary results within 12 or 24 month.
+summary_results_tooltip <- strwrap("This metric measures how many clinical trials registered in the
+                        EU Clinical Trials Register that are due to report their results have already
+                        done so. A trial is due to report its results 12 month after trial completion.
+                        The data were retrieved from the EU Trials Tracker by the EBM DataLab
+                        (eu.trialstracker.net).
                         Clinical trials are expensive and have often many contributing patients.
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing

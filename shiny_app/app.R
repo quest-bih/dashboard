@@ -38,6 +38,7 @@ prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
             as.character)
 summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
 preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
+EU_trialstracker_dataset <- read_csv("data/EU_trialstracker.csv")
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -256,8 +257,9 @@ server <- function(input, output, session)
               checkboxInput("checkbox_total_CT", strong("Show absolute numbers"), value = FALSE),
               fluidRow(
                 column(col_width, metric_box(title = "Summary Results",
-                                     value = paste(round(dashboard_metrics_aggregate[[12,"perc_sum_res_24"]], 0), "%"),
-                                     value_text = "of trials completed in 2017 posted summary results on CT.gov within 24 months",
+                                     value = paste(round(EU_trialstracker_dataset$perc_reported * 100, 0), "%"),
+                                     value_text = paste0("of due trials registered on the EU Clinical Trials Register have reported results (as of ",
+                                                         EU_trialstracker_dataset$retrieval_date %>% str_replace_all("-", "/"), ")"),
                                      plot = plotlyOutput('plot_summary_results', height = "300px"),
                                      info_id = "infoSumRes",
                                      info_title = "Summary Results reporting",
@@ -452,9 +454,9 @@ server <- function(input, output, session)
 
   output$plot_summary_results <- renderPlotly({
     if(input$checkbox_total_CT) {
-      return(plot_summary_results_total(CTgov_plot_data_1, color_palette))
+      return(plot_summary_results_total(EU_trialstracker_dataset, color_palette))
     } else {
-      return(plot_summary_results_perc(CTgov_plot_data_1, color_palette))
+      return(plot_summary_results_perc(EU_trialstracker_dataset, color_palette))
     }
   })
 
