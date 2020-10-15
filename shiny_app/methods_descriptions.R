@@ -177,6 +177,34 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         Additionally, the EU Trials Tracker does not measure for how long the
                         trials have been due."),
 
+                    methods_panel("Results Publication",
+
+                                  "This metric measures how many clinical trials registered on ClinicalTrials.gov
+                        reported their results either as a journal publication or as summary
+                        results on the trials registry within 2 or 5 years after completion. Trials
+                        completed between 2009 and 2013 were considered.
+                        A fast dissemination of the trial results is crucial to make the evidence gained
+                        in those trials available. The World Health organization recommends publishing
+                        clinical trial results within one year after the end of a study.",
+
+                                  HTML('The registry ClinicalTrials.gov was searched for studies with Charité
+                        as the responsible party/sponsor or with a principle investigator from
+                        Charité. A manual search for published results was done, searching the
+                        registry, PubMed and Google. When calculating the time to publication, we only
+                        considered trials where we could track the full timeframe since completion.
+                        As not all trials could be tracked for 5 years since completion at
+                        the time when this study was carried out, we have less trials where we can
+                        report the publications 5 years after completion. The results were previously
+                        published as part of the <a href="https://s-quest.bihealth.org/intovalue/">IntoValue study</a>.
+                        Detailed methods can be found under
+                        <a href="https://doi.org/10.1101/467746">https://doi.org/10.1101/467746</a>.'),
+                                  "Some detected publications might be missed in the manual search
+                        procedure as we only searched a limited number of scientific databases and did not
+                        contact the responsible parties. Furthermore, we did not include observational clinical
+                        studies in our sample. Additionally, we might overestimate the time to publication
+                        for some studies as we stopped the manual search after the first detected publication."),
+
+
 
                     methods_panel("Prospective registration",
 
@@ -278,6 +306,18 @@ summary_results_tooltip <- strwrap("This metric measures how many clinical trial
                         done so. A trial is due to report its results 12 month after trial completion.
                         The data were retrieved from the EU Trials Tracker by the EBM DataLab
                         (eu.trialstracker.net).
+                        Clinical trials are expensive and have often many contributing patients.
+                        A fast dissemination of the trial results is crucial to make the evidence gained
+                        in those trials available. The World Health organization recommends publishing
+                        clinical trial results within one year after the end of a study.
+                                       - Click for methods details.") %>%
+  paste(collapse = " ")
+
+intovalue_tooltip <- strwrap("This metric measures how many clinical trials registered on CT.gov
+                        reported their results either as a journal publication or as summary
+                        results on the trials registry within 2 or 5 years after completion. Trials
+                        completed between 2009 and 2013 were considered. The results were previously
+                        published as part of the IntoValue study (https://s-quest.bihealth.org/intovalue/).
                         Clinical trials are expensive and have often many contributing patients.
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing

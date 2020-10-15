@@ -31,6 +31,10 @@ dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") 
   mutate(perc_sum_res_24 = perc_sum_res_24 * 100) %>%
   round(1)
 
+EU_trialstracker_dataset <- read_csv("data/EU_trialstracker.csv")
+intovalue_dataset <- read_csv("data/IntoValue_Results.csv")
+
+
 #datasets for the datatable
 prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
   mutate_at(vars(nct_id, start_date, study_first_submitted_date,
@@ -38,7 +42,6 @@ prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
             as.character)
 summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
 preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
-EU_trialstracker_dataset <- read_csv("data/EU_trialstracker.csv")
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -264,6 +267,17 @@ server <- function(input, output, session)
                                      info_id = "infoSumRes",
                                      info_title = "Summary Results reporting",
                                      info_text = summary_results_tooltip)),
+
+                column(col_width, metric_box(title = "Results publication",
+                                             value = paste(round(intovalue_dataset$percentage_published[1] * 100, 0), "%"),
+                                             value_text = paste0("of trials registered on CT.gov published results
+                                                                 within 2 years after completion"),
+                                             plot = plotlyOutput('plot_intovalue', height = "300px"),
+                                             info_id = "infoIntoValue",
+                                             info_title = "Summary Results reporting",
+                                             info_text = intovalue_tooltip,
+                                             info_alignment = alignment)),
+
                 column(col_width, metric_box(title = "Prospective registration",
                                      value = paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
                                      value_text = "of clinical trials started in 2019 are prospectively registered on CT.gov",
@@ -325,6 +339,12 @@ server <- function(input, output, session)
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Summary results reporting")
+  })
+
+  observeEvent(input$infoIntoValue, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Results Publication")
   })
 
   observeEvent(input$infoProspReg, {
@@ -457,6 +477,14 @@ server <- function(input, output, session)
       return(plot_summary_results_total(EU_trialstracker_dataset, color_palette))
     } else {
       return(plot_summary_results_perc(EU_trialstracker_dataset, color_palette))
+    }
+  })
+
+  output$plot_intovalue <- renderPlotly({
+    if(input$checkbox_total_CT) {
+      return(plot_intovalue_total(intovalue_dataset, color_palette))
+    } else {
+      return(plot_intovalue_perc(intovalue_dataset, color_palette))
     }
   })
 

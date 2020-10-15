@@ -223,7 +223,7 @@ plot_summary_results_perc <- function(plot_data, color_palette)
           marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    add_bars(width = 0.2) %>%
+    add_bars(width = 0.3) %>%
     layout(barmode = 'group',
            yaxis = list(title = '<b>Percentage of trials</b>',
                         range = c(0, 100)),
@@ -237,14 +237,14 @@ plot_summary_results_total <- function(plot_data, color_palette)
 {
   plot_data <- plot_data %>% add_column(city = "Charité")
   plot_ly(plot_data) %>%
-    add_bars(x = ~city, y = ~total_reported, width = ~c(0.2),
+    add_bars(x = ~city, y = ~total_reported, width = ~c(0.3),
           name = "reported", type = 'bar',
-          marker = list(color = color_palette[2],
+          marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    add_bars(x = ~city, y = ~total_unreported, width = ~c(0.2),
+    add_bars(x = ~city, y = ~total_unreported, width = ~c(0.3),
              name = 'unreported',
-              marker = list(color = color_palette[3],
+              marker = list(color = color_palette[5],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
@@ -257,11 +257,51 @@ plot_summary_results_total <- function(plot_data, color_palette)
 }
 
 
+# Trial publication
+plot_intovalue_perc <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~years_after_completion, y = ~round(percentage_published * 100,1),
+          type = 'bar',
+          marker = list(color = color_palette[3],
+                        line = list(color = 'rgb(0,0,0)',
+                                    width = 1.5))) %>%
+    layout(barmode = 'group',
+           yaxis = list(title = '<b>Percentage of trials</b>',
+                        range = c(0, 100)),
+           xaxis = list(title = '<b>Publication within which timeframe</b>',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
+plot_intovalue_total <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data) %>%
+    add_bars(x = ~years_after_completion, y = ~trials_with_publication,
+             name = "reported", type = 'bar',
+             marker = list(color = color_palette[3],
+                           line = list(color = 'rgb(0,0,0)',
+                                       width = 1.5))) %>%
+    add_bars(x = ~years_after_completion, y = ~trials_without_publication,
+             name = 'unreported',
+             marker = list(color = color_palette[5],
+                           line = list(color = 'rgb(0,0,0)',
+                                       width = 1.5))) %>%
+    layout(barmode = 'stack',
+           legend=list(title=list(text='<b> Category </b>')),
+           yaxis = list(title = '<b>Number of trials</b>'),
+           xaxis = list(title = '',
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
+
 # Prospective registration
 plot_prosp_reg_perc <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~perc_prosp_reg, type = 'bar',
-          marker = list(color = color_palette[2],
+          marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
     layout(yaxis = list(title = '<b>Percentage of trials</b>',
@@ -276,7 +316,7 @@ plot_prosp_reg_total <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~has_prosp_reg,
           name = 'prospective registration', type = 'bar',
-          marker = list(color = color_palette[2],
+          marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 2))) %>%
     add_trace(y = ~no_prosp_reg,
