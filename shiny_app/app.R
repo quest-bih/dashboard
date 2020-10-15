@@ -268,13 +268,13 @@ server <- function(input, output, session)
                                      info_title = "Summary Results reporting",
                                      info_text = summary_results_tooltip)),
 
-                column(col_width, metric_box(title = "Results publication",
+                column(col_width, metric_box(title = "Timely results publication",
                                              value = paste(round(intovalue_dataset$percentage_published[1] * 100, 0), "%"),
                                              value_text = paste0("of trials registered on CT.gov published results
                                                                  within 2 years after completion"),
                                              plot = plotlyOutput('plot_intovalue', height = "300px"),
                                              info_id = "infoIntoValue",
-                                             info_title = "Summary Results reporting",
+                                             info_title = "Timely results publication",
                                              info_text = intovalue_tooltip,
                                              info_alignment = alignment)),
 
@@ -344,7 +344,7 @@ server <- function(input, output, session)
   observeEvent(input$infoIntoValue, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
-    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Results Publication")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely results publication")
   })
 
   observeEvent(input$infoProspReg, {

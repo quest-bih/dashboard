@@ -177,7 +177,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         Additionally, the EU Trials Tracker does not measure for how long the
                         trials have been due."),
 
-                    methods_panel("Results Publication",
+                    methods_panel("Timely results publication",
 
                                   "This metric measures how many clinical trials registered on ClinicalTrials.gov
                         reported their results either as a journal publication or as summary
