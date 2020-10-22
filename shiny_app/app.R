@@ -33,7 +33,7 @@ dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") 
 
 EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv") %>%
   mutate(perc_reported = total_reported/total_due)
-intovalue_dataset <- read_csv("data/IntoValue_Results.csv")
+intovalue_dataset <- read_csv("data/IntoValue_Results_years.csv")
 
 
 #datasets for the datatable
@@ -270,9 +270,9 @@ server <- function(input, output, session)
                                      info_text = summary_results_tooltip)),
 
                 column(col_width, metric_box(title = "Timely results publication",
-                                             value = paste(round(intovalue_dataset$percentage_published[1] * 100, 0), "%"),
+                                             value = paste(round(intovalue_dataset$percentage_published_2_years[5] * 100, 0), "%"),
                                              value_text = paste0("of trials registered on CT.gov published results
-                                                                 within 2 years after completion"),
+                                                                 within 2 years after completion in 2013"),
                                              plot = plotlyOutput('plot_intovalue', height = "300px"),
                                              info_id = "infoIntoValue",
                                              info_title = "Timely results publication",

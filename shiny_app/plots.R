@@ -242,7 +242,7 @@ plot_summary_results_total <- function(plot_data, color_palette)
     add_trace(y = ~total_due, name = 'Due trials', mode = 'lines+markers',
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
-    layout(yaxis = list(title = '<b>Total number</b>'),
+    layout(yaxis = list(title = '<b>Number of trials</b>'),
            xaxis = list(title = '<b>Date</b>',
                         type = 'date'),
            paper_bgcolor = color_palette[9],
@@ -253,40 +253,50 @@ plot_summary_results_total <- function(plot_data, color_palette)
 # Trial publication
 plot_intovalue_perc <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~years_after_completion, y = ~round(percentage_published * 100,1),
-          type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    layout(barmode = 'group',
-           yaxis = list(title = '<b>Percentage of trials</b>',
+  plot_ly(plot_data, x = ~completion_year, y = ~round(percentage_published_2_years * 100,1),
+          name = 'results within 2 years',
+          type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[3], width = 3),
+          marker = list(color = color_palette[3], size = 8)) %>%
+    add_trace(y = ~round(percentage_published_5_years * 100,1),
+              name = 'results within 5 years', mode = 'lines+markers',
+              line = list(color = color_palette[2]),
+              marker = list(color = color_palette[2])) %>%
+    layout(yaxis = list(title = '<b>Percentage of trials</b>',
                         range = c(0, 100)),
-           xaxis = list(title = '<b>Publication within which timeframe</b>',
+           xaxis = list(title = '<b>Trial completion year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9],
+           legend = list(xanchor = "right"))
 }
 
 plot_intovalue_total <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data) %>%
-    add_bars(x = ~years_after_completion, y = ~trials_with_publication,
-             name = "reported", type = 'bar',
-             marker = list(color = color_palette[3],
-                           line = list(color = 'rgb(0,0,0)',
-                                       width = 1.5))) %>%
-    add_bars(x = ~years_after_completion, y = ~trials_without_publication,
-             name = 'unreported',
-             marker = list(color = color_palette[5],
-                           line = list(color = 'rgb(0,0,0)',
-                                       width = 1.5))) %>%
-    layout(barmode = 'stack',
-           legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Number of trials</b>'),
-           xaxis = list(title = '',
+  plot_ly(plot_data, x = ~completion_year, y = ~trials_with_publication_2_years,
+          name = 'results within 2 years',
+          type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[3], width = 3),
+          marker = list(color = color_palette[3], size = 8)) %>%
+    add_trace(y = ~trials_with_publication_5_years,
+              name = 'results within 5 years', mode = 'lines+markers',
+              line = list(color = color_palette[4]),
+              marker = list(color = color_palette[4])) %>%
+    add_trace(y = ~total_trials_2_years,
+              name = 'total trials 2 years', mode = 'lines+markers',
+              line = list(color = color_palette[2]),
+              marker = list(color = color_palette[2])) %>%
+    add_trace(y = ~total_trials_5_years,
+              name = 'total trials 5 years', mode = 'lines+markers',
+              line = list(color = color_palette[5]),
+              marker = list(color = color_palette[5])) %>%
+    layout(yaxis = list(title = '<b>Number of trials</b>',
+                        range = c(0, 100)),
+           xaxis = list(title = '<b>Trial completion year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9],
+           legend = list(xanchor = "right"))
 }
 
 
