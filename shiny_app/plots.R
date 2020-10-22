@@ -218,40 +218,33 @@ plot_preprints <- function(plot_data, color_palette)
 # Summary results
 plot_summary_results_perc <- function(plot_data, color_palette)
 {
-  plot_data <- plot_data %>% add_column(city = "Charité")
-  plot_ly(plot_data, x = ~city, y = ~round(perc_reported * 100,1),
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    add_bars(width = 0.3) %>%
-    layout(barmode = 'group',
-           yaxis = list(title = '<b>Percentage of trials</b>',
+  plot_ly(plot_data, x = ~as.Date(retrieval_date, format= "%Y-%m-%d"), y = ~round(perc_reported * 100, 1),
+          name = 'Reported trials',
+          type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[3], width = 3),
+          marker = list(color = color_palette[3], size = 8)) %>%
+    layout(yaxis = list(title = '<b>Percentage of trials</b>',
                         range = c(0, 100)),
-           xaxis = list(title = '',
-                        dtick = 1),
+           xaxis = list(title = '<b>Date</b>',
+                        type = 'date'),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9],
+           legend = list(xanchor = "right"))
 }
 
 plot_summary_results_total <- function(plot_data, color_palette)
 {
-  plot_data <- plot_data %>% add_column(city = "Charité")
-  plot_ly(plot_data) %>%
-    add_bars(x = ~city, y = ~total_reported, width = ~c(0.3),
-          name = "reported", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    add_bars(x = ~city, y = ~total_unreported, width = ~c(0.3),
-             name = 'unreported',
-              marker = list(color = color_palette[5],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    layout(barmode = 'stack',
-           legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Number of due trials</b>'),
-           xaxis = list(title = '',
-                        dtick = 1),
+  plot_ly(plot_data, x = ~as.Date(retrieval_date, format= "%Y-%m-%d"), y = ~total_reported,
+          name = 'Reported trials',
+          type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[3], width = 3),
+          marker = list(color = color_palette[3], size = 8)) %>%
+    add_trace(y = ~total_due, name = 'Due trials', mode = 'lines+markers',
+              line = list(color = color_palette[2]),
+              marker = list(color = color_palette[2])) %>%
+    layout(yaxis = list(title = '<b>Total number</b>'),
+           xaxis = list(title = '<b>Date</b>',
+                        type = 'date'),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9])
 }

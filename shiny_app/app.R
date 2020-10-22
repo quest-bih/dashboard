@@ -31,7 +31,8 @@ dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") 
   mutate(perc_sum_res_24 = perc_sum_res_24 * 100) %>%
   round(1)
 
-EU_trialstracker_dataset <- read_csv("data/EU_trialstracker.csv")
+EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv") %>%
+  mutate(perc_reported = total_reported/total_due)
 intovalue_dataset <- read_csv("data/IntoValue_Results.csv")
 
 
@@ -260,9 +261,9 @@ server <- function(input, output, session)
               checkboxInput("checkbox_total_CT", strong("Show absolute numbers"), value = FALSE),
               fluidRow(
                 column(col_width, metric_box(title = "Summary Results",
-                                     value = paste(round(EU_trialstracker_dataset$perc_reported * 100, 0), "%"),
+                                     value = paste(round(EU_trialstracker_dataset$perc_reported[1] * 100, 0), "%"),
                                      value_text = paste0("of due trials registered on the EU Clinical Trials Register have reported results (as of ",
-                                                         EU_trialstracker_dataset$retrieval_date %>% str_replace_all("-", "/"), ")"),
+                                                         EU_trialstracker_dataset$retrieval_date[1] %>% str_replace_all("-", "/"), ")"),
                                      plot = plotlyOutput('plot_summary_results', height = "300px"),
                                      info_id = "infoSumRes",
                                      info_title = "Summary Results reporting",
