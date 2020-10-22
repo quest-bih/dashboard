@@ -167,8 +167,8 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.",
 
-                                  "The data were retrieved from the EU Trials Tracker by the EBM DataLab
-                        (eu.trialstracker.net).",
+                                  HTML('The data were retrieved from the
+                        <a href="eu.trialstracker.net">EU Trials Tracker</a> by the EBM DataLab.'),
 
                                   "While the EU Clinical Trials Register is one of the most important
                         European trial registries, it is not the only
