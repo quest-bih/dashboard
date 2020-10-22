@@ -79,7 +79,9 @@ barzooka_data <- dashboard_metrics %>%
 # ui
 #----------------------------------------------------------------------------------------------------------------------
 
-ui <- navbarPage(
+ui <- tagList(
+  tags$head(tags$script(type="text/javascript", src = "code.js")),
+  navbarPage(
   "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
   tabPanel("Start page", value = "tabStart",
            #overall_design_options,
@@ -184,6 +186,7 @@ ui <- navbarPage(
                           Shiny.onInputChange("width", width);
                         });
                         '))
+)
 )
 
 #----------------------------------------------------------------------------------------------------------------------
