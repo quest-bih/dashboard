@@ -152,7 +152,31 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
                                   "Not all relevant preprint servers are currently indexed by dimensions,
                         including some of the bigger preprint servers like OSF preprints or medRxiv.
-                        Thus we likely underestimate the number of published preprints.")),
+                        Thus we likely underestimate the number of published preprints."),
+
+                    methods_panel("ORCID",
+
+                                  "This metric measures how many researchers currently affiliatied with the
+                        Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
+                        despite name variants or name changes and uniquely associates
+                        publications or other types of research output with him/her.
+                        Many publishers now request ORCIDs when manuscripts are submitted.",
+
+                                  HTML('To identify Charité researchers with ORCIDs, we query the
+                        <a href="https://members.orcid.org/api">ORCID API</a> using the following
+                        search query: "current-institution-affiliation-name:
+                        (Charité OR Charite OR (Universitätsmedizin AND Berlin)
+                        OR (Berlin AND Institute AND of AND Health))". That way we only identify
+                        researchers that have listed the Charité as their current institution,
+                        but not researchers that have listed it as a past institution. The
+                        query is executed during the start of the app, such that the current
+                        number of ORCIDs is shown.'),
+
+                                  "The method relies on the information entered by the ORCID
+                        users being up to date. Some users might not enter correct or up to
+                        date information or keeping their account information private,
+                        which could then not be found. Also no historic data are available
+                        for this metric.")),
 
          hr(),
          h2("Clinical trials"),
@@ -298,7 +322,13 @@ preprints_tooltip <- strwrap("This metric measures how many preprints with autho
                              - Click for methods details.") %>%
   paste(collapse = " ")
 
-
+orcid_tooltip <- strwrap("This metric measures how many researchers currently affiliatied with the
+                          Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
+                          despite name variants or name changes and uniquely associates
+                          publications or other types of research output with him/her.
+                          Many publishers now request ORCIDs when manuscripts are submitted.
+                          - Click for methods details.") %>%
+  paste(collapse = " ")
 
 
 summary_results_tooltip <- strwrap("This metric measures how many clinical trials registered in the

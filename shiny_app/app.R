@@ -8,6 +8,7 @@ library(shinythemes)
 library(shinyBS)
 library(shinyjs)
 library(DT)
+library(rorcid)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -43,6 +44,11 @@ prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
             as.character)
 summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
 preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
+
+orcid_id_num <- orcid(query="current-institution-affiliation-name:
+                      (Charité OR Charite OR (Universitätsmedizin AND Berlin)
+                      OR (Berlin AND Institute AND of AND Health))") %>%
+                attr("found")
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -243,7 +249,15 @@ server <- function(input, output, session)
                                      info_id = "infoPreprints",
                                      info_title = "Preprints",
                                      info_text = preprints_tooltip,
-                                     info_alignment = "left")))
+                                     info_alignment = "left")),
+                column(col_width, metric_box(title = "ORCID",
+                                     value = orcid_id_num,
+                                     value_text = "Charité researchers with an ORCID",
+                                     plot = NULL,
+                                     info_id = "infoOrcid",
+                                     info_title = "ORCID",
+                                     info_text = orcid_tooltip))
+                )
     )
   })
 
@@ -338,6 +352,13 @@ server <- function(input, output, session)
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
   })
+
+  observeEvent(input$infoOrcid, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "ORCID")
+  })
+
 
   observeEvent(input$infoSumRes, {
     updateTabsetPanel(session, "navbarTabs",
