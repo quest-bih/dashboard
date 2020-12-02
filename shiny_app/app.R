@@ -8,7 +8,6 @@ library(shinythemes)
 library(shinyBS)
 library(shinyjs)
 library(DT)
-library(rorcid)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -45,10 +44,7 @@ prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
 summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
 preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
 
-orcid_id_num <- orcid(query="current-institution-affiliation-name:
-                      (Charité OR Charite OR (Universitätsmedizin AND Berlin)
-                      OR (Berlin AND Institute AND of AND Health))") %>%
-                attr("found")
+orcid_dataset <- read_csv("data/orcid_results.csv")
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -251,8 +247,9 @@ server <- function(input, output, session)
                                      info_text = preprints_tooltip,
                                      info_alignment = "left")),
                 column(col_width, metric_box(title = "ORCID",
-                                     value = orcid_id_num,
-                                     value_text = "Charité researchers with an ORCID",
+                                     value = orcid_dataset$orcid_count %>% last(1),
+                                     value_text = paste0("Charité researchers with an ORCID (as of ",
+                                                         orcid_dataset$date %>% last(1) %>% str_replace_all("-", "/"), ")"),
                                      plot = NULL,
                                      info_id = "infoOrcid",
                                      info_title = "ORCID",
