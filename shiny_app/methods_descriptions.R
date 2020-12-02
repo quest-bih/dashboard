@@ -166,11 +166,9 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         <a href="https://members.orcid.org/api">ORCID API</a> using the following
                         search query: "current-institution-affiliation-name:
                         (Charité OR Charite OR (Universitätsmedizin AND Berlin)
-                        OR (Berlin AND Institute AND of AND Health))". That way we only identify
+                        OR (Berlin AND Institute AND of AND Health))". That way, we only identify
                         researchers that have listed the Charité as their current institution,
-                        but not researchers that have listed it as a past institution. The
-                        query is executed during the start of the app, such that the current
-                        number of ORCIDs is shown.'),
+                        but not researchers that have listed it as a past institution.'),
 
                                   "The method relies on the information entered by the ORCID
                         users being up to date. Some users might not enter correct or up to
