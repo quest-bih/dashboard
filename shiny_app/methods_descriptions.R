@@ -156,7 +156,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
                     methods_panel("ORCID",
 
-                                  "This metric measures how many researchers currently affiliatied with the
+                                  "This metric measures how many researchers currently affiliated with the
                         Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
                         despite name variants or name changes and uniquely associates
                         publications or other types of research output with him/her.
@@ -320,7 +320,7 @@ preprints_tooltip <- strwrap("This metric measures how many preprints with autho
                              - Click for methods details.") %>%
   paste(collapse = " ")
 
-orcid_tooltip <- strwrap("This metric measures how many researchers currently affiliatied with the
+orcid_tooltip <- strwrap("This metric measures how many researchers currently affiliated with the
                           Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
                           despite name variants or name changes and uniquely associates
                           publications or other types of research output with him/her.

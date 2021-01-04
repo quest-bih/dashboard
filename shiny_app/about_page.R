@@ -5,13 +5,13 @@ about_page <- tabPanel("About", value = "tabAbout",
                        helpText('Riedel, Nico (Conceptualization, Methodology, Technical Implementation, Validation);
                                 Bobrov, Evgeny (Conceptualization, Methodology, Validation); Kip, Miriam (Conceptualization, Methodology)'),
                        br(),
-                       h4("Barzooka - Vizualization type detection"),
+                       h4("Barzooka - Visualization type detection"),
                        helpText('Riedel, Nico (Conceptualization, Methodology, technical implementation);
                                 Weissgerber, Tracey (Conceptualization, Methodology); Schultz, Robert (Validation)'),
                        br(),
                        h4("Clinical trial metrics"),
                        helpText('Riedel, Nico (Conceptualization, Methodology, technical implementation);
-                                Strech, Dainel (Conceptualization, Methodology); Wieschowski, Susanne (Conceptualization, Methodology);
+                                Strech, Daniel (Conceptualization, Methodology); Wieschowski, Susanne (Conceptualization, Methodology);
                                 Grabitz, Peter (Conceptualization, Methodology); Franzen, Delwen (Conceptualization, Methodology);
                                 Salholz-Hillel, Maia (Conceptualization, Methodology)'),
                        br(),
