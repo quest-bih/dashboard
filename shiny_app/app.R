@@ -82,6 +82,7 @@ barzooka_data <- dashboard_metrics %>%
 #----------------------------------------------------------------------------------------------------------------------
 
 ui <- tagList(
+  tags$head(tags$script(type="text/javascript", src = "code.js")),
   navbarPage(
   "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
   tabPanel("Start page", value = "tabStart",
@@ -92,8 +93,8 @@ ui <- tagList(
                       h1(style = "margin-left:0cm", strong("Charité Metrics Dashboard"), align = "left"),
                       h4(style = "margin-left:0cm",
                          "This dashboard gives an overview over several metrics of open and responsible
-                        research at the Charité. For more detailed information on the methods used to
-                        calculate those metrics, for the dataset underlying the metrics, or for ressources
+                        research at the Charité (including the Berlin Institute of Health). For more detailed information on the methods used to
+                        calculate those metrics, for the dataset underlying the metrics, or for resources
                         to improve your own research practices click one of the following buttons."),
                       h4(style = "margin-left:0cm",
                          "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
