@@ -92,10 +92,10 @@ ui <- tagList(
                column(8,
                       h1(style = "margin-left:0cm", strong("Charité Metrics Dashboard"), align = "left"),
                       h4(style = "margin-left:0cm",
-                         "This dashboard gives an overview over several metrics of open and responsible
+                         "This dashboard gives an overview of several metrics of open and responsible
                         research at the Charité (including the Berlin Institute of Health). For more detailed information on the methods used to
-                        calculate those metrics, for the dataset underlying the metrics, or for resources
-                        to improve your own research practices click one of the following buttons."),
+                        calculate those metrics, the dataset underlying the metrics, or resources
+                        to improve your own research practices, click one of the following buttons."),
                       h4(style = "margin-left:0cm",
                          "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
                       br()),
@@ -116,7 +116,7 @@ ui <- tagList(
              )
            ),
 
-           # generate Open Science metrics UI dynamically to determine column width during start of the app
+           # generate Open Science & Clinical trial metrics UI dynamically to determine column width during start of the app
            uiOutput("OpenScience_metrics"),
 
            uiOutput("CT_metrics"),
@@ -129,7 +129,7 @@ ui <- tagList(
                        column(6, metric_box(title = "Problematic graph types",
                                             value = paste((filter(barzooka_data, year == show_year)$has_bar/
                                                      filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
-                                            value_text = "of publications from 2019 use bar graphs for continuous data",
+                                            value_text = "of publications from 2019 used bar graphs for continuous data",
                                             plot = plotlyOutput('plot_barzooka_problem', height = "300px"),
                                             info_id = "infoVisProblem",
                                             info_title = "Problematic graph types",
@@ -137,7 +137,7 @@ ui <- tagList(
                        column(6, metric_box(title = "More informative graph types for continuous data",
                                             value = paste((filter(barzooka_data, year == show_year)$has_informative/
                                                      filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
-                                            value_text = "of publications from 2019 use more informative graph types",
+                                            value_text = "of publications from 2019 used more informative graph types",
                                             plot = plotlyOutput('plot_barzooka_inform', height = "300px"),
                                             info_id = "infoVisInform",
                                             info_title = "More informative graph types",
@@ -217,14 +217,14 @@ server <- function(input, output, session)
               fluidRow(
                 column(col_width, metric_box(title = "Open Access",
                                      value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
-                                     value_text = "of publications are Open Access in 2019",
+                                     value_text = "of publications were Open Access in 2019",
                                      plot = plotlyOutput('plot_OA', height = "300px"),
                                      info_id = "infoOA",
                                      info_title = "Open Access",
                                      info_text = open_access_tooltip)),
                 column(col_width, metric_box(title = "Any Open Data",
                                      value = paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_manual_perc"]], 0), "%"),
-                                     value_text = "of publications mention sharing of data in 2019",
+                                     value_text = "of publications mentioned sharing of data in 2019",
                                      plot = plotlyOutput('plot_oddpub_data', height = "300px"),
                                      info_id = "infoOD",
                                      info_title = "Open Data",
@@ -232,7 +232,7 @@ server <- function(input, output, session)
                                      info_alignment = alignment)),
                 column(col_width, metric_box(title = "Any Open Code",
                                      value = round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_count"]], 0),
-                                     value_text = "publications mention sharing of code in 2019",
+                                     value_text = "publications mentioned sharing of code in 2019",
                                      plot = plotlyOutput('plot_oddpub_code', height = "300px"),
                                      info_id = "infoOC",
                                      info_title = "Open Code",
@@ -275,26 +275,26 @@ server <- function(input, output, session)
               fluidRow(
                 column(col_width, metric_box(title = "Summary Results",
                                      value = paste(round(EU_trialstracker_dataset$perc_reported[1] * 100, 0), "%"),
-                                     value_text = paste0("of due trials registered on the EU Clinical Trials Register have reported results (as of ",
+                                     value_text = paste0("of due trials registered on the EU Clinical Trials Register reported results (as of ",
                                                          EU_trialstracker_dataset$retrieval_date[1] %>% str_replace_all("-", "/"), ")"),
                                      plot = plotlyOutput('plot_summary_results', height = "300px"),
                                      info_id = "infoSumRes",
                                      info_title = "Summary Results reporting",
                                      info_text = summary_results_tooltip)),
 
-                column(col_width, metric_box(title = "Timely results publication",
+                column(col_width, metric_box(title = "Timely publication of results",
                                              value = paste(round(intovalue_dataset$percentage_published_2_years[5] * 100, 0), "%"),
-                                             value_text = paste0("of trials registered on CT.gov published results
-                                                                 within 2 years after completion in 2013"),
+                                             value_text = paste0("of trials registered on CT.gov that ended in 2013 published results
+                                                                 within 2 years"),
                                              plot = plotlyOutput('plot_intovalue', height = "300px"),
                                              info_id = "infoIntoValue",
-                                             info_title = "Timely results publication",
+                                             info_title = "Timely publication of results",
                                              info_text = intovalue_tooltip,
                                              info_alignment = alignment)),
 
                 column(col_width, metric_box(title = "Prospective registration",
                                      value = paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
-                                     value_text = "of clinical trials started in 2019 are prospectively registered on CT.gov",
+                                     value_text = "of clinical trials started in 2019 were prospectively registered on CT.gov",
                                      plot = plotlyOutput('plot_prosp_reg', height = "300px"),
                                      info_id = "infoProspReg",
                                      info_title = "Prospective registration",
@@ -365,7 +365,7 @@ server <- function(input, output, session)
   observeEvent(input$infoIntoValue, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
-    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely results publication")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely publication of results")
   })
 
   observeEvent(input$infoProspReg, {
