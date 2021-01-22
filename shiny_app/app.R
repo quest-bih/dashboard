@@ -110,8 +110,8 @@ server <- function (input, output, session) {
             col_width <- 6
             alignment <- "left"
         } else {
-            col_width <- 6
-            alignment <- "left"
+            col_width <- 3
+            alignment <- "right"
         }
 
         all_numer_rando <- rm_data %>%
