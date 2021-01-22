@@ -12,27 +12,6 @@ library(R.utils)
 
 ## Load data
 
-rm_data$city %>% as.factor() %>%summary()
-
-numer <- rm_data %>%
-    filter(city == "duisburg-essen") %>%
-    select(randomization) %>%
-    sum(na.rm=TRUE)
-
-denom <- rm_data %>%
-    filter(city == "bochum", animals == 1, !is.na(sciscore)) %>%
-    select(randomization) %>%
-    sum(na.rm=TRUE)_
-
-rm_data %>%
-    filter(
-        animals == 1,
-        ! is.na(sciscore)
-    ) %>%
-    nrow()
-
-rm_data$animals %>% sum()
-
 rm_data <- read_csv(
     "data/2021-01-20_pp-dataset.csv",
     col_types="ccdddcccccdcccdllllllcddccccDlccccccccccccccccccccdddddddddddddddddddddddddd"
