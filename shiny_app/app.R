@@ -114,6 +114,25 @@ server <- function (input, output, session) {
             alignment <- "left"
         }
 
+        all_numer_rando <- rm_data %>%
+            filter(
+                animals == 1,
+                ! is.na(sciscore),
+                type == "Article"
+            ) %>%
+            select(randomization) %>%
+            sum(na.rm=TRUE)
+
+        all_denom_rando <- rm_data %>%
+            filter(
+                animals == 1,
+                ! is.na(sciscore),
+                type == "Article"
+            ) %>%
+            nrow()
+
+        all_percent_randomized <- paste0(round(100*all_numer_rando/all_denom_rando), "%")
+
         wellPanel(
             style = "padding-top: 0px; padding-bottom: 0px;",
             h2(strong("Robustness"), align = "left"),
@@ -122,8 +141,8 @@ server <- function (input, output, session) {
                     col_width,
                     metric_box(
                         title = "Randomization",
-                        value = 3,
-                        value_text = "of them",
+                        value = all_percent_randomized,
+                        value_text = "of animal studies report randomization",
                         plot = plotlyOutput('plot_randomization', height="300px"),
                         info_id = "infoRandomization",
                         info_title = "Randomization",
