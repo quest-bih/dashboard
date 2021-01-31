@@ -73,4 +73,3 @@ start_page <- tabPanel(
     uiOutput("robustness_metrics")
 )
 
-randomization_tooltip <- strwrap("This metric shows ...")

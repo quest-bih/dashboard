@@ -12,8 +12,6 @@ library(R.utils)
 
 ## Load data
 
-rm_data %>% spec()
-
 rm_data <- read_csv(
     "data/2021-01-31_pop_with_oa_trn_sciscore.csv",
     col_types="ccdddcccccdcccdllllllcddccccDlccccccccccccccccccccdddddddddddddddddddddddd"
@@ -27,6 +25,8 @@ rm_data <- read_csv(
     ## NOTE: IF WE EVER ADD MORE COLUMNS, THE COLUMN TYPE
     ## SPECIFICATION WILL NEED TO BE UPDATED MANUALLY
 )
+
+rm_data %>% spec()
 
 ## Load functions
 
@@ -125,7 +125,16 @@ server <- function (input, output, session) {
             select(randomization) %>%
             sum(na.rm=TRUE)
 
-        all_denom_rando <- rm_data %>%
+        all_numer_blinded <- rm_data %>%
+            filter(
+                is_animal == 1,
+                ! is.na(sciscore),
+                type == "Article"
+            ) %>%
+            select(blinding) %>%
+            sum(na.rm=TRUE)
+
+        all_denom_animal_sciscore <- rm_data %>%
             filter(
                 is_animal == 1,
                 ! is.na(sciscore),
@@ -133,7 +142,8 @@ server <- function (input, output, session) {
             ) %>%
             nrow()
 
-        all_percent_randomized <- paste0(round(100*all_numer_rando/all_denom_rando), "%")
+        all_percent_randomized <- paste0(round(100*all_numer_rando/all_denom_animal_sciscore), "%")
+        all_percent_blinded <- paste0(round(100*all_numer_blinded/all_denom_animal_sciscore), "%")
 
         wellPanel(
             style = "padding-top: 0px; padding-bottom: 0px;",
@@ -150,6 +160,18 @@ server <- function (input, output, session) {
                         info_title = "Randomization",
                         info_text = randomization_tooltip
                     )
+                ),
+                column(
+                    col_width,
+                    metric_box(
+                        title = "Blinding",
+                        value = all_percent_blinded,
+                        value_text = "of animal studies report blinding",
+                        plot = plotlyOutput('plot_blinding', height="300px"),
+                        info_id = "infoBlinding",
+                        info_title = "Blinding",
+                        info_text = blinding_tooltip
+                    )
                 )
             )
         )        
@@ -161,9 +183,13 @@ server <- function (input, output, session) {
                      "#DCE3E5")
 
     ## Robustness plot
-
     output$plot_randomization <- renderPlotly({
         return (plot_randomization(rm_data, input$selectUMC, color_palette))
+    })
+
+    ## Blinding plot
+    output$plot_blinding <- renderPlotly({
+        return(plot_blinding(rm_data, input$selectUMC, color_palette))
     })
     
 }
