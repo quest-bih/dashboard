@@ -7,7 +7,7 @@ plot_randomization <- function (dataset, umc, color_palette) {
 
     all_numer <- dataset %>%
         filter(
-            animals == 1,
+            is_animal == 1,
             ! is.na(sciscore),
             type == "Article"
         ) %>%
@@ -16,7 +16,7 @@ plot_randomization <- function (dataset, umc, color_palette) {
 
     all_denom <- dataset %>%
         filter(
-            animals == 1,
+            is_animal == 1,
             ! is.na(sciscore),
             type == "Article"
         ) %>%
@@ -30,7 +30,7 @@ plot_randomization <- function (dataset, umc, color_palette) {
         umc_numerator <- dataset %>%
             filter(
                 city == umc,
-                animals == 1,
+                is_animal == 1,
                 ! is.na(sciscore),
                 type == "Article"
             )
@@ -41,7 +41,7 @@ plot_randomization <- function (dataset, umc, color_palette) {
         umc_denom <- dataset %>%
             filter(
                 city == umc,
-                animals == 1,
+                is_animal == 1,
                 ! is.na(sciscore),
                 type == "Article"
             ) %>%

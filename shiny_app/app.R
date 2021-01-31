@@ -12,9 +12,11 @@ library(R.utils)
 
 ## Load data
 
+rm_data %>% spec()
+
 rm_data <- read_csv(
-    "data/2021-01-20_pp-dataset.csv",
-    col_types="ccdddcccccdcccdllllllcddccccDlccccccccccccccccccccdddddddddddddddddddddddddd"
+    "data/2021-01-31_pop_with_oa_trn_sciscore.csv",
+    col_types="ccdddcccccdcccdllllllcddccccDlccccccccccccccccccccdddddddddddddddddddddddd"
     ## Need to specify column types here because read_csv
     ## only looks at the first few rows to determine type
     ## automatically, and if they're all empty, assumes
@@ -116,7 +118,7 @@ server <- function (input, output, session) {
 
         all_numer_rando <- rm_data %>%
             filter(
-                animals == 1,
+                is_animal == 1,
                 ! is.na(sciscore),
                 type == "Article"
             ) %>%
@@ -125,7 +127,7 @@ server <- function (input, output, session) {
 
         all_denom_rando <- rm_data %>%
             filter(
-                animals == 1,
+                is_animal == 1,
                 ! is.na(sciscore),
                 type == "Article"
             ) %>%
