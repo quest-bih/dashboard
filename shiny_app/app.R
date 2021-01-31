@@ -134,6 +134,24 @@ server <- function (input, output, session) {
             select(blinding) %>%
             sum(na.rm=TRUE)
 
+        all_numer_power <- rm_data %>%
+            filter(
+                is_animal == 1,
+                ! is.na(sciscore),
+                type == "Article"
+            ) %>%
+            select(power) %>%
+            sum(na.rm=TRUE)
+
+        all_numer_iacuc <- rm_data %>%
+            filter(
+                is_animal == 1,
+                ! is.na(sciscore),
+                type == "Article"
+            ) %>%
+            select(iacuc) %>%
+            sum(na.rm=TRUE)
+
         all_denom_animal_sciscore <- rm_data %>%
             filter(
                 is_animal == 1,
@@ -144,6 +162,8 @@ server <- function (input, output, session) {
 
         all_percent_randomized <- paste0(round(100*all_numer_rando/all_denom_animal_sciscore), "%")
         all_percent_blinded <- paste0(round(100*all_numer_blinded/all_denom_animal_sciscore), "%")
+        all_percent_power <- paste0(round(100*all_numer_power/all_denom_animal_sciscore), "%")
+        all_percent_iacuc <- paste0(round(100*all_numer_iacuc/all_denom_animal_sciscore), "%")
 
         wellPanel(
             style = "padding-top: 0px; padding-bottom: 0px;",
@@ -172,6 +192,30 @@ server <- function (input, output, session) {
                         info_title = "Blinding",
                         info_text = blinding_tooltip
                     )
+                ),
+                column(
+                    col_width,
+                    metric_box(
+                        title = "Power calculation",
+                        value = all_percent_power,
+                        value_text = "of animal studies report a power calculation",
+                        plot = plotlyOutput('plot_power', height="300px"),
+                        info_id = "infoPower",
+                        info_title = "Power",
+                        info_text = power_tooltip
+                    )
+                ),
+                column(
+                    col_width,
+                    metric_box(
+                        title = "IACUC statement",
+                        value = all_percent_iacuc,
+                        value_text = "of animal studies report an IACUC statement",
+                        plot = plotlyOutput('plot_iacuc', height="300px"),
+                        info_id = "infoIACUC",
+                        info_title = "IACUC",
+                        info_text = iacuc_tooltip
+                    )
                 )
             )
         )        
@@ -190,6 +234,16 @@ server <- function (input, output, session) {
     ## Blinding plot
     output$plot_blinding <- renderPlotly({
         return(plot_blinding(rm_data, input$selectUMC, color_palette))
+    })
+
+    ## Power calc plot
+    output$plot_power <- renderPlotly({
+        return(plot_power(rm_data, input$selectUMC, color_palette))
+    })
+
+    ## IACUC plot
+    output$plot_iacuc <- renderPlotly({
+        return(plot_iacuc(rm_data, input$selectUMC, color_palette))
     })
     
 }
