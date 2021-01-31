@@ -3,9 +3,11 @@ library(DBI)
 
 ### Read in the data set that has OA and TRN columns
 original <- read_csv(
-    "2021-01-11_pp-dataset-trn.csv",
+    "2021-01-29_pp-dataset-trn.csv",
     col_types="ccdddcccccdcccdllllllcddccccDlcccccccccccccccccccc"
 )
+
+## Actually, didn't end up using this because the columns were already in the CSV
 
 ### Generate the following CSV using the CSV above and the R script at the following address:
 ### https://codeberg.org/bgcarlisle/PubmedIntersectionCheck
@@ -35,6 +37,8 @@ joined_filename <- Sys.time() %>%
 joined %>%
     write_csv(joined_filename)
 
+## But I did do this part
+
 ### Now join with Sciscore data
 
 con <- dbConnect(RSQLite::SQLite(), "~/Academic/2020-12-01-robustness/2019-11-17-sciscore_pmcoai_all2.db")
@@ -42,10 +46,13 @@ con <- dbConnect(RSQLite::SQLite(), "~/Academic/2020-12-01-robustness/2019-11-17
 sciscore_reports <- con %>%
     dbReadTable("sciscore_reports")
 
-joined$pmid_dimensions <- joined$pmid_dimensions %>%
-    as.character()
+original$pmid_dimensions <- original$pmid_dimensions %>%
+    as.character
 
-joinedwithsciscore <- joined %>%
+## joined$pmid_dimensions <- joined$pmid_dimensions %>%
+##    as.character()
+
+joinedwithsciscore <- original %>%
     left_join(sciscore_reports, by=c("pmid_dimensions" = "pmid"))
 
 joinedwithsciscore_filename <- Sys.time() %>%
