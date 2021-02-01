@@ -11,7 +11,6 @@ library(DT)
 library(R.utils)
 
 ## Load data
-
 rm_data <- read_csv(
     "data/2021-01-31_pop_with_oa_trn_sciscore.csv",
     col_types="ccdddcccccdcccdllllllcddccccDlccccccccccccccccccccdddddddddddddddddddddddd"
@@ -29,12 +28,10 @@ rm_data <- read_csv(
 rm_data %>% spec()
 
 ## Load functions
-
 source("ui_elements.R")
 source("plots.R")
 
 ## Load pages
-
 source("start_page.R")
 source("all_umcs.R")
 source("methods_page.R")
@@ -42,7 +39,6 @@ source("datasets_page.R")
 source("about_rm.R")
 
 ## Define UI
-
 ui <- tagList(
     tags$head(tags$script(type="text/javascript", src = "code.js")),
     navbarPage(
@@ -68,7 +64,6 @@ ui <- tagList(
 )
 
 ## Define server function
-
 server <- function (input, output, session) {
 
     ## Define button actions
@@ -222,9 +217,107 @@ server <- function (input, output, session) {
         
     })
 
+    output$clinicaltrials_metrics <- renderUI({
+
+        req(input$width)
+
+        if (input$width < 1400) {
+            col_width <- 6
+            alignment <- "left"
+        } else {
+            col_width <- 3
+            alignment <- "right"
+        }
+
+        all_numer_trn <- 5
+        all_denom_trn <- 100
+
+        wellPanel(
+            style="padding-top: 0px; padding-bottom: 0px;",
+            h2(strong("Clinical Trials"), align = "left"),
+            fluidRow(
+                column(
+                    col_width,
+                    metric_box(
+                        title = "Trial Registry Number Reporting",
+                        value = paste0(round(100*all_numer_trn/all_denom_trn), "%"),
+                        value_text = "of publications reported a TRN",
+                        plot = plotlyOutput('plot_clinicaltrials_trn', height="300px"),
+                        info_id = "infoTRN",
+                        info_title = "Trial Registry Number Reporting",
+                        info_text = trn_tooltip
+                    )
+                )
+                
+            )
+
+        )
+
+        
+    })
+
+    output$openscience_metrics <- renderUI({
+
+        req(input$width)
+
+        if (input$width < 1400) {
+            col_width <- 6
+            alignment <- "left"
+        } else {
+            col_width <- 3
+            alignment <- "right"
+        }
+
+        ## Value for Open Access
+
+        all_numer_oa <- rm_data %>%
+            filter(
+                color == "gold" | color == "green" | color == "hybrid"
+                
+            ) %>%
+            nrow()
+
+        all_denom_oa <- rm_data %>%
+            filter(
+                ! is.na(color)
+                
+            ) %>%
+            nrow()
+
+        wellPanel(
+            style="padding-top: 0px; padding-bottom: 0px;",
+            h2(strong("Open Science"), align = "left"),
+            fluidRow(
+                column(
+                    col_width,
+                    metric_box(
+                        title = "Open Access",
+                        value = paste0(round(100*all_numer_oa/all_denom_oa), "%"),
+                        value_text = "of publications were Open Access",
+                        plot = plotlyOutput('plot_opensci_oa', height="300px"),
+                        info_id = "infoOpenAccess",
+                        info_title = "Open Access",
+                        info_text = openaccess_tooltip
+                    )
+                )
+            )
+        )
+
+    })
+
     color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
                      "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
                      "#DCE3E5")
+
+    ## Open Access plot
+    output$plot_opensci_oa <- renderPlotly({
+        return (plot_opensci_oa(rm_data, input$selectUMC, color_palette))
+    })
+    
+    ## TRN plot
+    output$plot_clinicaltrials_trn <- renderPlotly({
+        return (plot_clinicaltrials_trn(rm_data, input$selectUMC, color_palette))
+    })
 
     ## Robustness plot
     output$plot_randomization <- renderPlotly({
@@ -249,5 +342,4 @@ server <- function (input, output, session) {
 }
 
 ## Create Shiny object
-
 shinyApp(ui, server)

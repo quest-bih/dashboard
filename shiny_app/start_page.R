@@ -70,6 +70,9 @@ start_page <- tabPanel(
             )
         )
     ),
+    # The following are defined in app.R in the Shiny server object
+    uiOutput("openscience_metrics"),
+    uiOutput("clinicaltrials_metrics"),
     uiOutput("robustness_metrics")
 )
 
