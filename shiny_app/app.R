@@ -25,7 +25,12 @@ rm_data <- read_csv(
     ## SPECIFICATION WILL NEED TO BE UPDATED MANUALLY
 )
 
-rm_data %>% spec()
+odoc_data <- read_csv(
+    "data/2021-01-26_pp-dataset-oa-od.csv"
+    ## This one is for the open data/open code variables. We'll
+    ## harmonize this all into a single data file at some point.
+    ## We promise.
+)
 
 ## Load functions
 source("ui_elements.R")
@@ -292,6 +297,38 @@ server <- function (input, output, session) {
             ) %>%
             nrow()
 
+        ## Value for Open Data
+
+        all_denom_od <- odoc_data %>%
+            filter(
+                ! is.na (is_open_data),
+                language == "English"
+            ) %>%
+            nrow()
+
+        all_numer_od <- odoc_data %>%
+            filter(
+                is_open_data,
+                language == "English"
+            ) %>%
+            nrow()
+
+        ## Value for Open Code
+
+        all_denom_oc <- odoc_data %>%
+            filter(
+                ! is.na (is_open_code),
+                language == "English"
+            ) %>%
+            nrow()
+
+        all_numer_oc <- odoc_data %>%
+            filter(
+                is_open_code,
+                language == "English"
+            ) %>%
+            nrow()
+        
         wellPanel(
             style="padding-top: 0px; padding-bottom: 0px;",
             h2(strong("Open Science"), align = "left"),
@@ -307,6 +344,30 @@ server <- function (input, output, session) {
                         info_title = "Open Access",
                         info_text = openaccess_tooltip
                     )
+                ),
+                column(
+                    col_width,
+                    metric_box(
+                        title = "Open Data",
+                        value = paste0(round(100*all_numer_od/all_denom_od), "%"),
+                        value_text = "of analyzable publications reported Open Data",
+                        plot = plotlyOutput('plot_opensci_od', height="300px"),
+                        info_id = "infoOpenData",
+                        info_title = "Open Data",
+                        info_text = opendata_tooltip
+                    )
+                ),
+                column(
+                    col_width,
+                    metric_box(
+                        title = "Open Code",
+                        value = paste0(round(100*all_numer_oc/all_denom_oc), "%"),
+                        value_text = "of analyzable publications reported Open Code",
+                        plot = plotlyOutput('plot_opensci_oc', height="300px"),
+                        info_id = "infoOpenCode",
+                        info_title = "Open Code",
+                        info_text = opencode_tooltip
+                    )
                 )
             )
         )
@@ -320,6 +381,16 @@ server <- function (input, output, session) {
     ## Open Access plot
     output$plot_opensci_oa <- renderPlotly({
         return (plot_opensci_oa(rm_data, input$selectUMC, color_palette))
+    })
+    
+    ## Open Data plot
+    output$plot_opensci_od <- renderPlotly({
+        return (plot_opensci_od(odoc_data, input$selectUMC, color_palette))
+    })
+    
+    ## Open Code plot
+    output$plot_opensci_oc <- renderPlotly({
+        return (plot_opensci_oc(odoc_data, input$selectUMC, color_palette))
     })
     
     ## TRN plot

@@ -7,6 +7,10 @@ methods_page <- tabPanel(
 
 openaccess_tooltip <- strwrap("This metric ...")
 
+opendata_tooltip <- strwrap("This metric ...")
+
+opencode_tooltip <- strwrap("This metric ...")
+
 ## Tooltips for Clinical Trials metrics
 
 trn_tooltip <- strwrap("This metric ...")
