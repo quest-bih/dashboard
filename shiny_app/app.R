@@ -229,8 +229,16 @@ server <- function (input, output, session) {
             alignment <- "right"
         }
 
-        all_numer_trn <- 5
-        all_denom_trn <- 100
+        all_numer_trn <- rm_data %>%
+            filter(
+                is_human_ct == 1,
+                ! is.na(abs_trn_1)
+            ) %>%
+            nrow()
+        
+        all_denom_trn <- rm_data %>%
+            filter(is_human_ct == 1) %>%
+            nrow()
 
         wellPanel(
             style="padding-top: 0px; padding-bottom: 0px;",
@@ -241,7 +249,7 @@ server <- function (input, output, session) {
                     metric_box(
                         title = "Trial Registry Number Reporting",
                         value = paste0(round(100*all_numer_trn/all_denom_trn), "%"),
-                        value_text = "of publications reported a TRN",
+                        value_text = "of publications reported a TRN in the abstract",
                         plot = plotlyOutput('plot_clinicaltrials_trn', height="300px"),
                         info_id = "infoTRN",
                         info_title = "Trial Registry Number Reporting",
