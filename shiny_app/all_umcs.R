@@ -1,5 +1,34 @@
 allumc_openaccess_tooltip <- strwrap("This metric ...")
 
+## Calculate the overall "value" to be displayed
+## Load data
+rm_data <- read_csv(
+    "data/2021-01-31_pop_with_oa_trn_sciscore.csv",
+    col_types="ccdddcccccdcccdllllllcddccccDlccccccccccccccccccccdddddddddddddddddddddddd"
+    ## Need to specify column types here because read_csv
+    ## only looks at the first few rows to determine type
+    ## automatically, and if they're all empty, assumes
+    ## that they're logical. This is a problem when it
+    ## gets right to the end of the TRN columns and finds
+    ## an NCT number there and kicks back a warning.
+
+    ## NOTE: IF WE EVER ADD MORE COLUMNS, THE COLUMN TYPE
+    ## SPECIFICATION WILL NEED TO BE UPDATED MANUALLY
+)
+
+all_numer_oa <- rm_data %>%
+    filter(
+        color == "gold" | color == "green" | color == "hybrid"
+    ) %>%
+    nrow()
+
+all_denom_oa <- rm_data %>%
+    filter(
+        ! is.na(color)
+        
+    ) %>%
+    nrow()
+
 ## Define the page layout
 all_umcs_page <- tabPanel(
     "All UMC's", value = "tabAllUMCs",
