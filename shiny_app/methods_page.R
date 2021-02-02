@@ -7,6 +7,8 @@ methods_page <- tabPanel(
 
 openaccess_tooltip <- strwrap("This metric ...")
 
+allumc_openaccess_tooltip <- strwrap("This metric ...")
+
 opendata_tooltip <- strwrap("This metric ...")
 
 opencode_tooltip <- strwrap("This metric ...")

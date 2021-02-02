@@ -379,6 +379,8 @@ server <- function (input, output, session) {
                      "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
                      "#DCE3E5")
 
+    ## Start page plots ##
+    
     ## Open Access plot
     output$plot_opensci_oa <- renderPlotly({
         return (plot_opensci_oa(rm_data, input$selectUMC, color_palette))
@@ -417,6 +419,16 @@ server <- function (input, output, session) {
     ## IACUC plot
     output$plot_iacuc <- renderPlotly({
         return(plot_iacuc(rm_data, input$selectUMC, color_palette))
+    })
+
+    ## All UMC's page plots ##
+
+    ## Open Science
+
+    ## Open Access
+
+    output$plot_allumc_openaccess <- renderPlotly({
+        return(plot_allumc_openaccess(rm_data, color_palette))
     })
     
 }
