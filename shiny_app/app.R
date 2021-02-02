@@ -167,7 +167,7 @@ server <- function (input, output, session) {
 
         wellPanel(
             style = "padding-top: 0px; padding-bottom: 0px;",
-            h2(strong("Robustness"), align = "left"),
+            h2(strong("Robustness of animal studies"), align = "left"),
             fluidRow(
                 column(
                     col_width,
