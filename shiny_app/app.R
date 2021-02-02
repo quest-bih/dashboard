@@ -35,6 +35,7 @@ odoc_data <- read_csv(
 ## Load functions
 source("ui_elements.R")
 source("start_page_plots.R")
+source("all_umc_plots.R")
 
 ## Load pages
 source("start_page.R")
