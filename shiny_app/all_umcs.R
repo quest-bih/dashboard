@@ -1,3 +1,19 @@
+## Calculate the overall "value" to be displayed
+all_numer_oa <- rm_data %>%
+    filter(
+        color == "gold" | color == "green" | color == "hybrid"
+        
+    ) %>%
+    nrow()
+
+all_denom_oa <- rm_data %>%
+    filter(
+        ! is.na(color)
+        
+    ) %>%
+    nrow()
+
+## Define the page layout
 all_umcs_page <- tabPanel(
     "All UMC's", value = "tabAllUMCs",
     wellPanel(
@@ -28,7 +44,7 @@ all_umcs_page <- tabPanel(
                 12,
                 metric_box(
                     title = "Open Access",
-                    value = "5%",
+                    value = paste0(round(100*all_numer_oa/all_denom_oa), "%"),
                     value_text = "of publications were Open Access",
                     plot = plotlyOutput('plot_allumc_openaccess', height="300px"),
                     info_id = "infoALLUMCOpenAccess",
