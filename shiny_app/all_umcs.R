@@ -1,20 +1,5 @@
 allumc_openaccess_tooltip <- strwrap("This metric ...")
 
-## Calculate the overall "value" to be displayed
-all_numer_oa <- rm_data %>%
-    filter(
-        color == "gold" | color == "green" | color == "hybrid"
-        
-    ) %>%
-    nrow()
-
-all_denom_oa <- rm_data %>%
-    filter(
-        ! is.na(color)
-        
-    ) %>%
-    nrow()
-
 ## Define the page layout
 all_umcs_page <- tabPanel(
     "All UMC's", value = "tabAllUMCs",
