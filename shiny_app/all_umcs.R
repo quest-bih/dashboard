@@ -1,3 +1,5 @@
+allumc_openaccess_tooltip <- strwrap("This metric ...")
+
 ## Calculate the overall "value" to be displayed
 all_numer_oa <- rm_data %>%
     filter(
