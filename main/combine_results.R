@@ -177,7 +177,7 @@ summary_results_12_month <- read_csv("./results/summary_results_12_month.csv")
 summary_results_24_month <- read_csv("./results/summary_results_24_month.csv")
 
 
-shiny_table_aggregate_metrics <- tibble(year = 2006:2019) %>%
+shiny_table_aggregate_metrics <- tibble(year = 2006:2020) %>%
   left_join(prospective_registration) %>%
   left_join(summary_results_12_month) %>%
   left_join(summary_results_24_month) %>%
