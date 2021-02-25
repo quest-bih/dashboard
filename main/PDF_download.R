@@ -4,10 +4,10 @@ library(pdfRetrieve)
 email <- "nico.riedel@bihealth.de"
 
 #load PURE dataset
-load("./main/status_quo_table.RData")
+load("./main/status_quo_table_2020.RData")
 
 #filter dataset
-year <- 2019
+year <- 2020
 publications <- status_quo_table_save %>%
   filter(e_pub_year == year) %>%
   filter(Article == TRUE) %>%
@@ -17,7 +17,8 @@ dois <- publications$doi[publications$doi != ""]
 
 #download pdfs
 pdf_folder <- paste0("C:/Datenablage/charite_dashboard/PDFs/", year, "/")
-pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(dois, email, pdf_folder, sleep = 10)
+pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(dois[1500:length(dois)], email, pdf_folder, sleep = 10)
+
 
 
 #------------------------------------------------------------------------------------------------
