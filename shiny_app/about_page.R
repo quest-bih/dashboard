@@ -21,10 +21,10 @@ about_page <- tabPanel("About", value = "tabAbout",
                                 Franzen, Delwen (Conceptualization); Salholz-Hillel, Maia (Conceptualization)'),
                        br(),
                        h3('Contact address'),
-                       helpText('QUEST Center for Transforming Biomedical Research,'),
-                       helpText('Berlin Institute of Health (BIH), Berlin, Germany'),
+                       helpText('QUEST Center for Transforming Biomedical Research'),
+                       helpText('Berlin Institute of Health at Charité – Universitätsmedizin Berlin'),
                        helpText('Anna-Louisa-Karsch-Str. 2'),
-                       helpText('10178 Berlin '),
+                       helpText('10178 Berlin, Germany'),
                        helpText('quest@bihealth.de'),
                        helpText(HTML('<a href="https://www.bihealth.org/quest-center/">
                                       https://www.bihealth.org/quest-center/ </a>'))
