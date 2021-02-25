@@ -51,7 +51,7 @@ orcid_dataset <- read_csv("data/orcid_results.csv")
 # preprocessing, need to move somewhere else later
 #----------------------------------------------------------------------------------------------------------------------
 
-show_year <- "2019"
+show_year <- "2020"
 metrics_show_year <- dashboard_metrics_aggregate %>% filter(year == show_year)
 
 OA_data <- dashboard_metrics %>%
@@ -129,7 +129,7 @@ ui <- tagList(
                        column(6, metric_box(title = "Problematic graph types",
                                             value = paste((filter(barzooka_data, year == show_year)$has_bar/
                                                      filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
-                                            value_text = "of publications from 2019 used bar graphs for continuous data",
+                                            value_text = paste0("of publications from ", show_year, " used bar graphs for continuous data"),
                                             plot = plotlyOutput('plot_barzooka_problem', height = "300px"),
                                             info_id = "infoVisProblem",
                                             info_title = "Problematic graph types",
@@ -137,7 +137,7 @@ ui <- tagList(
                        column(6, metric_box(title = "More informative graph types for continuous data",
                                             value = paste((filter(barzooka_data, year == show_year)$has_informative/
                                                      filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
-                                            value_text = "of publications from 2019 used more informative graph types",
+                                            value_text = paste0("of publications from ", show_year, " used more informative graph types"),
                                             plot = plotlyOutput('plot_barzooka_inform', height = "300px"),
                                             info_id = "infoVisInform",
                                             info_title = "More informative graph types",
@@ -217,14 +217,14 @@ server <- function(input, output, session)
               fluidRow(
                 column(col_width, metric_box(title = "Open Access",
                                      value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
-                                     value_text = "of publications were Open Access in 2019",
+                                     value_text = paste0("of publications were Open Access in ", show_year),
                                      plot = plotlyOutput('plot_OA', height = "300px"),
                                      info_id = "infoOA",
                                      info_title = "Open Access",
                                      info_text = open_access_tooltip)),
                 column(col_width, metric_box(title = "Any Open Data",
                                      value = paste(round((oddpub_data %>%  filter(year == show_year))[["open_data_manual_perc"]], 0), "%"),
-                                     value_text = "of publications mentioned sharing of data in 2019",
+                                     value_text = paste0("of publications mentioned sharing of data in ", show_year),
                                      plot = plotlyOutput('plot_oddpub_data', height = "300px"),
                                      info_id = "infoOD",
                                      info_title = "Open Data",
@@ -232,23 +232,23 @@ server <- function(input, output, session)
                                      info_alignment = alignment)),
                 column(col_width, metric_box(title = "Any Open Code",
                                      value = round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_count"]], 0),
-                                     value_text = "publications mentioned sharing of code in 2019",
+                                     value_text = paste0("publications mentioned sharing of code in ", show_year),
                                      plot = plotlyOutput('plot_oddpub_code', height = "300px"),
                                      info_id = "infoOC",
                                      info_title = "Open Code",
                                      info_text = open_code_tooltip)),
                 column(col_width, metric_box(title = "Preprints",
                                      value = metrics_show_year$preprints,
-                                     value_text = "preprints published in 2019",
+                                     value_text = paste0("preprints published in ", show_year),
                                      plot = plotlyOutput('plot_preprints', height = "300px"),
                                      info_id = "infoPreprints",
                                      info_title = "Preprints",
                                      info_text = preprints_tooltip,
                                      info_alignment = "left")),
                 column(col_width, metric_box(title = "ORCID",
-                                     value = orcid_dataset$orcid_count %>% last(1),
+                                     value = orcid_dataset$orcid_count %>% last(),
                                      value_text = paste0("Charité researchers with an ORCID (as of ",
-                                                         orcid_dataset$date %>% last(1) %>% str_replace_all("-", "/"), ")"),
+                                                         orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
                                      plot = NULL,
                                      info_id = "infoOrcid",
                                      info_title = "ORCID",
@@ -294,7 +294,7 @@ server <- function(input, output, session)
 
                 column(col_width, metric_box(title = "Prospective registration",
                                      value = paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
-                                     value_text = "of clinical trials started in 2019 were prospectively registered on CT.gov",
+                                     value_text = paste0("of clinical trials started in ", show_year, " were prospectively registered on CT.gov"),
                                      plot = plotlyOutput('plot_prosp_reg', height = "300px"),
                                      info_id = "infoProspReg",
                                      info_title = "Prospective registration",

@@ -202,7 +202,7 @@ plot_preprints <- function(plot_data, color_palette)
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
     layout(yaxis = list(title = '<b>Total number</b>',
-                        range = c(0, 6000)),
+                        range = c(0, 7000)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
