@@ -172,8 +172,9 @@ ui <- tagList(
                                       style = "default")),
            br(),
            bsCollapse(id = "datasetPanels_PublicationDataset",
-                      bsCollapsePanel(strong("Summary results dataset"),
-                                      DT::dataTableOutput("data_table_sum_res"),
+                      bsCollapsePanel(strong("Timely publication dataset"),
+                                      HTML('This dataset was already published
+                        <a href="https://osf.io/fh426/">here</a>.'),
                                       style = "default"))
   ),
   about_page,
@@ -284,7 +285,7 @@ server <- function(input, output, session)
 
                 column(col_width, metric_box(title = "Timely publication of results",
                                              value = paste(round(intovalue_dataset$percentage_published_2_years[5] * 100, 0), "%"),
-                                             value_text = paste0("of trials registered on CT.gov that ended in 2013 published results
+                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in 2013 published results
                                                                  within 2 years"),
                                              plot = plotlyOutput('plot_intovalue', height = "300px"),
                                              info_id = "infoIntoValue",

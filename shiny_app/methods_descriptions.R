@@ -202,6 +202,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                     methods_panel("Timely publication of results",
 
                                   "This metric measures how many clinical trials registered on ClinicalTrials.gov
+                        or on the German Clinical Trials Register (DRKS)
                         reported their results either as a journal publication or as summary
                         results on the trials registry within 2 or 5 years after completion. Trials
                         completed between 2009 and 2013 were considered.
@@ -209,7 +210,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.",
 
-                                  HTML('The registry ClinicalTrials.gov was searched for studies with Charité
+                                  HTML('The registries ClinicalTrials.gov and DRKS.de were searched for studies with Charité
                         as the responsible party/sponsor or with a principle investigator from
                         Charité. A manual search for published results was done, searching the
                         registry, PubMed and Google. When calculating the time to publication, we only
@@ -341,7 +342,8 @@ summary_results_tooltip <- strwrap("This metric measures how many clinical trial
                                        - Click for methods details.") %>%
   paste(collapse = " ")
 
-intovalue_tooltip <- strwrap("This metric measures how many clinical trials registered on CT.gov
+intovalue_tooltip <- strwrap("This metric measures how many clinical trials registered on CT.gov or
+                        on the German Clinical Trials Register (DRKS)
                         reported their results either as a journal publication or as summary
                         results on the trials registry within 2 or 5 years after completion. Trials
                         completed between 2009 and 2013 were considered. The results were previously
