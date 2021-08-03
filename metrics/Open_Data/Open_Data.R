@@ -1,8 +1,8 @@
 library(tidyverse)
 
 #conversion of PDFs
-pdf_main_folder <- "C:/Datenablage/charite_dashboard/PDFs"
-txt_main_folder <- "C:/Datenablage/charite_dashboard/PDFs_to_text"
+pdf_main_folder <- "C:/Datenablage/charite_dashboard/PDFs_new/"
+txt_main_folder <- "C:/Datenablage/charite_dashboard/PDFs_new_to_text/"
 
 pdf_folders <- list.dirs(pdf_main_folder)[-1]
 
@@ -28,5 +28,5 @@ for(txt_folder in txt_folders)
   pdf_text_corpus <- oddpub::pdf_load(paste0(txt_folder, "/"))
   oddpub_results <- oddpub::open_data_search_parallel(pdf_text_corpus)
   oddpub_results["year"] <- year
-  write_csv(oddpub_results, paste0("./results/Open_Data_", year, ".csv"))
+  write_csv(oddpub_results, paste0("./results/Open_Data_new_", year, ".csv"))
 }
