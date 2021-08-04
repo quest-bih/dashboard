@@ -42,3 +42,22 @@ OD2020 <- OD2020 %>%
          open_code_category_manual, open_data_statements, open_code_statements)
 
 write_csv(OD2020, "results/OD_manual_check_2020.csv")
+
+
+#-------------------------------------------------------------------------------------------------------
+# Open Data new
+#-------------------------------------------------------------------------------------------------------
+
+OD_new <- read_csv("results/OD_manual_check/Open_Data_new_manual_check.csv")
+OD_new <- OD_new %>%
+  filter(is_open_data_manual | is_open_code_manual) %>%
+  mutate(doi = article %>% str_remove(fixed(".txt")) %>% str_replace_all(fixed("+"), "/")) %>%
+  rename(is_open_data_oddpub = is_open_data,
+         is_open_code_oddpub = is_open_code,
+         open_data_manual_check = is_open_data_manual,
+         open_code_manual_check = is_open_code_manual) %>%
+  select(doi, year, is_open_data_oddpub, open_data_manual_check, open_data_category,
+         open_data_category_manual, is_open_code_oddpub, open_code_manual_check,
+         open_code_category_manual, open_data_statements, open_code_statements)
+
+write_csv(OD_new, "results/OD_manual_check_new.csv")
