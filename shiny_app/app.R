@@ -22,8 +22,7 @@ source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
 source("datasets_panel.R")
 
-dashboard_metrics <- read_csv("data/dashboard_metrics.csv") %>%
-  rename(year = e_pub_year)
+dashboard_metrics <- read_csv("data/dashboard_metrics.csv")
 
 dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") %>%
   mutate(perc_prosp_reg = perc_prosp_reg * 100) %>%

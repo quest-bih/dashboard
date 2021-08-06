@@ -59,8 +59,9 @@ barzooka_results <- map(barzooka_results, select,
 
 #Open Access results
 publications <- publications %>%
-  mutate(oa_status = oa_status %>% str_replace("Gold", "gold"))
-publications$oa_status[publications$oa_status %in% c("Kein Ergebnis", "kein Ergebnis")] <- NA
+  rename(OA_color = oa_status) %>%
+  mutate(OA_color = OA_color %>% str_replace("Gold", "gold"))
+publications$OA_color[publications$OA_color %in% c("Kein Ergebnis", "kein Ergebnis")] <- NA
 
 
 #----------------------------------------------------------------------------------------
@@ -136,7 +137,7 @@ dashboard_metrics[no_check_oc,]$open_code_manual_check <- NA
 #only select columns relevant for shiny table
 shiny_table <- dashboard_metrics %>%
   select(doi, pmid, title, journal,
-         year, pdf_downloaded, oa_status,
+         year, pdf_downloaded, OA_color,
          is_open_data, open_data_manual_check, open_data_category_manual,
          is_open_code, open_code_manual_check, open_code_category_manual,
          open_data_statements, open_code_statements,
