@@ -4,8 +4,9 @@ library(tidyverse)
 # load results
 #----------------------------------------------------------------------------------------
 
-#load publication dataset
-publications <- read_rds("./results/Charite_publication_table.rds")
+#load new publication dataset
+publications_old <- read_rds("./results/Charite_publication_table.rds")
+publications <- read_csv("./main/publication_table_library_280421.csv")
 
 #results files
 results_folder <- "results/"
@@ -29,33 +30,37 @@ open_data_results$doi <- open_data_results$doi %>%
 
 
 #manually checked Open Data results
-open_data_manual <- results_files[results_files %>% str_detect("OD_manual_check_")] %>%
+open_data_manual_files <- results_files[results_files %>% str_detect("OD_manual_check_")]
+open_data_manual <- open_data_manual_files %>%
                     map(read_csv)
+#unify columns
+has_in_PURE <- map_lgl(open_data_manual, function(x) "in_PURE" %in% colnames(x))
+open_data_manual[has_in_PURE] <- open_data_manual[has_in_PURE] %>%
+  map(select, -in_PURE)
+#clean results
 open_data_manual <- do.call(rbind, open_data_manual) %>%
   mutate(doi = (doi %>% (function(x) x %>%
                            str_remove(fixed(".txt")) %>%
                            str_replace_all(fixed("+"), "/")))) %>%
   distinct(doi, .keep_all = TRUE) %>%
-  filter(in_PURE) %>%
   select(doi, open_data_manual_check, open_data_category_manual,
          open_code_manual_check, open_code_category_manual)
-
-#Open Access results
-open_access_files <- results_files[results_files %>% str_detect("Open_Access")]
-open_access_results <- read_csv(open_access_files) %>%
-  select(-year) %>%
-  rename(OA_color = color) %>%
-  filter(!is.na(doi)) %>%
-  distinct(doi, .keep_all = TRUE)
 
 
 #Barzooka results
 barzooka_files <- results_files[results_files %>% str_detect("Barzooka")]
 barzooka_results <- map(barzooka_files, read_csv)
-barzooka_results <- do.call(rbind, barzooka_results) %>%
-  select(paper_id, bar, pie, bardot, box, dot, hist, violin) %>%
+barzooka_results <- map(barzooka_results, select,
+                        c(paper_id, bar, pie, bardot, box, dot, hist, violin)) %>%
+  bind_rows() %>%
   rename(doi = paper_id) %>%
   distinct(doi, .keep_all = TRUE)
+
+
+#Open Access results
+publications <- publications %>%
+  mutate(oa_status = oa_status %>% str_replace("Gold", "gold"))
+publications$oa_status[publications$oa_status %in% c("Kein Ergebnis", "kein Ergebnis")] <- NA
 
 
 #----------------------------------------------------------------------------------------
@@ -65,29 +70,14 @@ barzooka_results <- do.call(rbind, barzooka_results) %>%
 #check if there are no duplicated dois in the results files (problem for left_join)
 length(open_data_results$doi) == length(unique(open_data_results$doi))
 length(open_data_manual$doi) == length(unique(open_data_manual$doi))
-length(open_access_results$doi) == length(unique(open_access_results$doi))
 length(barzooka_results$doi) == length(unique(barzooka_results$doi))
 
 
 dashboard_metrics <- publications %>%
   left_join(open_data_results, by = "doi") %>%
   left_join(open_data_manual, by = "doi") %>%
-  left_join(open_access_results, by = "doi") %>%
   left_join(barzooka_results, by = "doi") %>%
   mutate(pdf_downloaded = !is.na(is_open_data))
-
-
-#still need to filter out some article types, as the filtering by 'article'
-#was not sufficient, because one publication can have multiple types
-dashboard_metrics <- dashboard_metrics %>%
-  filter(Comment == FALSE) %>%
-  filter(Editorial == FALSE) %>%
-  filter(Erratum == FALSE) %>%
-  filter(`Retracted Publication` == FALSE) %>%
-  filter(`Retraction of Publication` == FALSE) %>%
-  filter(`Conference Abstract` == FALSE) %>%
-  filter(`Conference Paper` == FALSE) %>%
-  filter(Note == FALSE)
 
 
 #----------------------------------------------------------------------------------------
@@ -99,7 +89,7 @@ dashboard_metrics <- dashboard_metrics %>%
 check_tbl <- dashboard_metrics %>%
   filter((is_open_data & is.na(open_data_manual_check)) |
            (is_open_code & is.na(open_code_manual_check))) %>%
-  select(doi, e_pub_year, is_open_data, open_data_category, is_open_code,
+  select(doi, year, is_open_data, open_data_category, is_open_code,
          open_data_statements, open_code_statements,
          open_data_manual_check, open_data_category_manual,
          open_code_manual_check, open_code_category_manual)
@@ -145,8 +135,8 @@ dashboard_metrics[no_check_oc,]$open_code_manual_check <- NA
 
 #only select columns relevant for shiny table
 shiny_table <- dashboard_metrics %>%
-  select(doi, pmid, title, journal_title,
-         e_pub_year, pdf_downloaded, OA_color,
+  select(doi, pmid, title, journal,
+         year, pdf_downloaded, oa_status,
          is_open_data, open_data_manual_check, open_data_category_manual,
          is_open_code, open_code_manual_check, open_code_category_manual,
          open_data_statements, open_code_statements,
