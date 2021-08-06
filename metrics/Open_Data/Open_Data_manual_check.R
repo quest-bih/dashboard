@@ -30,7 +30,7 @@ write_csv(open_data_manual_comb, "./results/OD_manual_check/Open_Data_2015-18_ma
 
 OD2020 <- read_csv("results/OD_manual_check/Open_Data_2020_manual_check.csv")
 OD2020 <- OD2020 %>%
-  filter(is_open_data_manual | is_open_code_manual) %>%
+  filter(is_open_data | is_open_code) %>%
   mutate(year = "2020") %>%
   mutate(in_PURE = doi %in% status_quo_table_save$doi) %>%
   rename(is_open_data_oddpub = is_open_data,
@@ -50,7 +50,7 @@ write_csv(OD2020, "results/OD_manual_check_2020.csv")
 
 OD_new <- read_csv("results/OD_manual_check/Open_Data_new_manual_check.csv")
 OD_new <- OD_new %>%
-  filter(is_open_data_manual | is_open_code_manual) %>%
+  filter(is_open_data | is_open_code) %>%
   mutate(doi = article %>% str_remove(fixed(".txt")) %>% str_replace_all(fixed("+"), "/")) %>%
   rename(is_open_data_oddpub = is_open_data,
          is_open_code_oddpub = is_open_code,
