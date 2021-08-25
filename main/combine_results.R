@@ -4,9 +4,31 @@ library(tidyverse)
 # load results
 #----------------------------------------------------------------------------------------
 
-#load new publication dataset
+#load new publication dataset & merge the two publication lists
 publications_old <- read_rds("./results/Charite_publication_table.rds")
-publications <- read_csv("./main/publication_table_library_280421.csv")
+publications <- read_csv("./main/publication_table_library_2018_20.csv")
+publications_2 <- read_csv("./main/publication_table_library_2016_17.csv") %>%
+  rename(doi = DOI,
+         title = Titel,
+         corresponding_author = `Corresp. Author`,
+         journal = `TI abrev. J9`,
+         issn = ISSN,
+         eissn = `E-ISSN`,
+         year = `Publ. Year`,
+         database = Identifier,
+         pmid = PMID,
+         publisher = Publisher,
+         authors = Autor,
+         document_type = `Doc.Type`) %>%
+  mutate(oa_indicator = NA,
+         oa_status = NA,
+         database = database %>% str_remove(":[:digit:]{15}")) %>%
+  select(colnames(publications)) %>%
+  filter(!(doi %in% publications$doi),
+         year != 0)
+
+publications <- rbind(publications, publications_2)
+
 
 #results files
 results_folder <- "results/"
@@ -64,6 +86,9 @@ publications <- publications %>%
 publications$OA_color[publications$OA_color %in% c("Kein Ergebnis", "kein Ergebnis")] <- NA
 
 
+#Sciscore results
+sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
+
 #----------------------------------------------------------------------------------------
 # combine results
 #----------------------------------------------------------------------------------------
@@ -72,13 +97,21 @@ publications$OA_color[publications$OA_color %in% c("Kein Ergebnis", "kein Ergebn
 length(open_data_results$doi) == length(unique(open_data_results$doi))
 length(open_data_manual$doi) == length(unique(open_data_manual$doi))
 length(barzooka_results$doi) == length(unique(barzooka_results$doi))
+length(sciscore$pmid) == length(unique(sciscore$pmid))
 
 
 dashboard_metrics <- publications %>%
   left_join(open_data_results, by = "doi") %>%
   left_join(open_data_manual, by = "doi") %>%
   left_join(barzooka_results, by = "doi") %>%
+  left_join(sciscore, by = "pmid") %>%
   mutate(pdf_downloaded = !is.na(is_open_data))
+
+#number of papers that are already screened by sciscore
+print(paste0("number of papers that are already screened by sciscore: ",
+             sum(!is.na(dashboard_metrics$sciscore))))
+print(paste0("not yet screened by sciscore: ",
+             sum(is.na(dashboard_metrics$sciscore))))
 
 
 #----------------------------------------------------------------------------------------

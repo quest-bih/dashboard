@@ -4,12 +4,14 @@ library(pdfRetrieve)
 email <- "nico.riedel@bihealth.de"
 
 #load new dataset
-publications <- read_csv("main/publication_table_library_280421.csv")
+publications <- read_csv("main/publication_table_library_2016_17.csv") %>%
+  rename(doi = DOI,
+         year = `Publ. Year`)
 
 #load & filter old PURE dataset
 load("./main/status_quo_table_2020.RData")
 publications_old <- status_quo_table_save %>%
-  filter(e_pub_year %in% 2018:2020) %>%
+  filter(e_pub_year %in% 2015:2020) %>%
   filter(Article == TRUE) %>%
   filter(`charite authors` > 0 | `BIH authors` > 0)
 
@@ -18,22 +20,24 @@ publications_old <- status_quo_table_save %>%
 publications_new <- publications %>%
   filter(!(doi %in% publications_old$doi))
 
-for(current_year in 2018:2020)
+for(current_year in 2016:2017)
 {
   publications_new_year <- publications_new %>%
     filter(year == current_year) %>%
     filter(doi != "") %>%
     filter(!is.na(doi)) %>%
-    filter(!(doi %>% str_detect("keine DOI")))
+    filter(!(doi %>% str_detect("keine DOI"))) %>%
+    filter(doi != "0")
 
   set.seed(539)
   dois <- sample(publications_new_year$doi)
 
   #download pdfs
   pdf_folder <- paste0("C:/Datenablage/charite_dashboard/PDFs_new/", current_year, "/")
-  pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(publications_new_year$doi, email, pdf_folder, sleep = 10)
+  pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(dois, email, pdf_folder, sleep = 10)
 
 }
+
 
 #------------------------------------------------------------------------------------------------
 # download Open Data publ for manual check separately
