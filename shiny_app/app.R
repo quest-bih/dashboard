@@ -283,8 +283,10 @@ server <- function(input, output, session)
                                      info_text = summary_results_tooltip)),
 
                 column(col_width, metric_box(title = "Timely publication of results",
-                                             value = paste(round(intovalue_dataset$percentage_published_2_years[5] * 100, 0), "%"),
-                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in 2013 published results
+                                             value = paste(round(intovalue_dataset$percentage_published_2_years %>% last() * 100, 0), "%"),
+                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
+                                                                 intovalue_dataset$completion_year %>% last(),
+                                                                 " published results
                                                                  within 2 years"),
                                              plot = plotlyOutput('plot_intovalue', height = "300px"),
                                              info_id = "infoIntoValue",
