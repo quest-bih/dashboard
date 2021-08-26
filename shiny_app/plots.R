@@ -193,7 +193,7 @@ plot_OC_total <- function(plot_data, color_palette)
 # Preprints
 plot_preprints <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~preprints,
+  plot_ly(plot_data %>% filter(year > 2015), x = ~year, y = ~preprints,
           name = 'Preprints',
           type = 'scatter', mode = 'lines+markers',
           line = list(color = color_palette[3], width = 3),
@@ -202,7 +202,7 @@ plot_preprints <- function(plot_data, color_palette)
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
     layout(yaxis = list(title = '<b>Total number</b>',
-                        range = c(0, 7000)),
+                        range = c(0, 8000)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -263,7 +263,7 @@ plot_intovalue_perc <- function(plot_data, color_palette)
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
     layout(yaxis = list(title = '<b>Percentage of trials</b>',
-                        range = c(0, 100)),
+                        range = c(0, 105)),
            xaxis = list(title = '<b>Trial completion year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
