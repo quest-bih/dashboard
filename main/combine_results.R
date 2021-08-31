@@ -162,9 +162,18 @@ no_check_oc <- (is.na(dashboard_metrics$is_open_code) &
                !is.na(dashboard_metrics$open_code_manual_check))
 dashboard_metrics[no_check_oc,]$open_code_manual_check <- NA
 
+#some PDFs were not correctly downloaded, for those set Barzooka results to NA
+#need to validate and delete PDFs before running Barzooka in the future
+dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$bar <- NA
+dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$pie <- NA
+dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$bardot <- NA
+dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$box <- NA
+dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$dot <- NA
+dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$hist <- NA
+dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$violin <- NA
 
 #----------------------------------------------------------------------------------------
-# save resulting tabe with relevant columns only
+# save resulting table with relevant columns only
 #----------------------------------------------------------------------------------------
 
 #only select columns relevant for shiny table
