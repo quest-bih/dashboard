@@ -1,0 +1,34 @@
+doi,is_open_data,open_data_category,open_data_manual_check,open_data_category_manual,open_data_statements,is_open_code,open_code_manual_check,open_code_category_manual,open_code_statements
+10.1001/jamaoncol.2016.5688,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1002/bdr2.1042,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1016/j.cell.2016.04.048,FALSE,,TRUE,general-purpose repository,,TRUE,TRUE,other repository/website,experimental procedures reproducible research we have provided the raw data and r scripts necessary to reproduce the primary mpra analyses (http://www.bloodgenes.org/rbc_mpra/).
+10.1016/j.jhep.2018.01.029,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1016/j.toxlet.2016.01.002,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1038/cdd.2017.54,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1038/leu.2016.324,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1038/ng.3719,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1038/ng.3863,FALSE,,TRUE,supplement,,TRUE,TRUE,github,nature genetics  code availability. ptdt software is available at https://github.com/ypaialex/ptdt.
+10.1038/s41598-017-18009-2,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1038/s41598-019-50341-7,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1038/sdata.2017.112,FALSE,,TRUE,"field-specific repository, general-purpose repository",,TRUE,FALSE,NA,the program to perform dpi decomposition-based peak identiﬁcation method is available at https://github.com/hkawaji/dpi1/.
+10.1038/srep28010,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1093/database/baw128,FALSE,,TRUE,general-purpose repository,,FALSE,NA,NA,
+10.1093/nar/gkv1192,FALSE,,TRUE,general-purpose repository,,FALSE,NA,NA,
+10.1093/nar/gkw1128,FALSE,,TRUE,general-purpose repository,,TRUE,FALSE,NA,these curated prefixes have been deposited in the prefix commons (https://github.com/prefixcommons) which similarly contains identifier prefixes used within the gene ontology (37) and bio2rdf (38).
+10.1093/nar/gkx1016,FALSE,,TRUE,general-purpose repository,,FALSE,NA,NA,
+10.1093/nar/gkx333,FALSE,,TRUE,general-purpose repository,,FALSE,NA,NA,
+10.1111/ddg.13408_g,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1126/science.aai8636,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1136/bmj.j337,FALSE,,TRUE,general-purpose repository,,FALSE,NA,NA,
+10.1136/jnnp-2017-317463,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1158/0008-5472.CAN-15-2298,FALSE,,TRUE,supplement,,TRUE,TRUE,github,supplementary materials for all the tcga survival analyses are shown in supplementary methods and all the r codes used to perform these analyses are stored at https://github.com/inesdesantiago/ survivaltcgaoc.
+10.1186/s12864-016-3001-y,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1186/s12868-016-0312-5,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1186/s12967-017-1208-6,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1186/s12974-017-0984-5,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1210/js.2017-00364,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1371/journal.pone.0167984,FALSE,,TRUE,supplement,,FALSE,NA,NA,
+10.1371/journal.pone.0206234,FALSE,,TRUE,field-specific repository,,FALSE,NA,NA,
+10.1098/rsif.2018.0012,TRUE,"general-purpose repository, supplement",FALSE,NA,introduction  electronic supplementary material is available online at https://dx.doi.org/10.6084/m9. figshare.c.4052777.  for this load case we studied the effect of variations of +108 in the load axis due to potential misalignments (see electronic supplementary material data s3).;     for a thorough description of the bone material properties assignation we refer to the electronic supplementary material data s4.;     the code for the assignation of m to the tetrahedral elements and the code for the final modelassembly are included as electronic supplementary material data s6.;     frequency plots of the microct images after densitometric calibration can be found in the electronic supplementary material data s2.;     heterogeneous fems to compare the age-matched genotypes under the same compression load led to similar strain distribution within the tibia when compared to the strains obtained with the homogeneous models (electronic supplementary material data s5).,FALSE,TRUE,supplement,
+10.1098/rsob.180076,TRUE,general-purpose repository,FALSE,NA,lamb e-mail: trevor.lamb@anu.edu.au  electronic supplementary material is available online at https://dx.doi.org/10.6084/m9. figshare.c.4164821.;     all code used here is available for download from dryad [10].;     consequences  to run the stochastic simulations and to integrate the downstream reactions in support of the findings in this article has been deposited in dryad at (http://dx.doi.org/10.5061/dryad.n774460) [10].,FALSE,TRUE,other repository/website,
+10.1126/science.aaq1723,TRUE,field-specific repository,TRUE,field-specific repository,data and materials availability: the sequencing data generated is available in geo under the accession gse103633.,FALSE,TRUE,github,
