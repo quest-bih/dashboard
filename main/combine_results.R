@@ -12,9 +12,11 @@ results_files <- list.files(results_folder)
 results_files <- paste0(results_folder, results_files)
 
 
-#manually checked Open Data results
-open_data_manual <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
-
+#manually checked Open Data results + additional cases that were not detected by algorithm
+#but found in manual searches or submitted by researchers for the LOM
+open_data_results <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
+open_data_manual_detection <- read_delim("./results/Open_Data_manual_detections.csv")
+open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
 
 #Barzooka results
 barzooka_files <- results_files[results_files %>% str_detect("Barzooka")]
@@ -42,13 +44,13 @@ sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
 #----------------------------------------------------------------------------------------
 
 #check if there are no duplicated dois in the results files (problem for left_join)
-length(open_data_manual$doi) == length(unique(open_data_manual$doi))
+length(open_data_results$doi) == length(unique(open_data_results$doi))
 length(barzooka_results$doi) == length(unique(barzooka_results$doi))
 length(sciscore$pmid) == length(unique(sciscore$pmid))
 
 
 dashboard_metrics <- publications %>%
-  left_join(open_data_manual, by = "doi") %>%
+  left_join(open_data_results, by = "doi") %>%
   left_join(barzooka_results, by = "doi") %>%
   left_join(sciscore, by = "pmid") %>%
   mutate(pdf_downloaded = !is.na(is_open_data))
