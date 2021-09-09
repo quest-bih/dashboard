@@ -149,9 +149,6 @@ preprints <- read_csv("./results/preprints.csv") %>%
   group_by(year) %>%
   summarize(preprints = n())
 
-total_publ_dimensions = read_csv("./results/Charite_publication_ids_dimensions_2006_19.csv") %>%
-  group_by(year) %>%
-  summarize(total_publ_dimensions = n())
 
 prospective_registration <- read_csv("./results/prospective_registration.csv")
 summary_results_12_month <- read_csv("./results/summary_results_12_month.csv")
