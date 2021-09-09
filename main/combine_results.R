@@ -4,31 +4,7 @@ library(tidyverse)
 # load results
 #----------------------------------------------------------------------------------------
 
-#load new publication dataset & merge the two publication lists
-publications_old <- read_rds("./results/Charite_publication_table.rds")
-publications <- read_csv("./main/publication_table_library_2018_20.csv")
-publications_2 <- read_csv("./main/publication_table_library_2016_17.csv") %>%
-  rename(doi = DOI,
-         title = Titel,
-         corresponding_author = `Corresp. Author`,
-         journal = `TI abrev. J9`,
-         issn = ISSN,
-         eissn = `E-ISSN`,
-         year = `Publ. Year`,
-         database = Identifier,
-         pmid = PMID,
-         publisher = Publisher,
-         authors = Autor,
-         document_type = `Doc.Type`) %>%
-  mutate(oa_indicator = NA,
-         oa_status = NA,
-         database = database %>% str_remove(":[:digit:]{15}")) %>%
-  select(colnames(publications)) %>%
-  filter(!(doi %in% publications$doi),
-         year != 0)
-
-publications <- rbind(publications, publications_2)
-
+publications <- read_csv("./main/publication_table_library_2016_20.csv")
 
 #results files
 results_folder <- "results/"
@@ -36,37 +12,8 @@ results_files <- list.files(results_folder)
 results_files <- paste0(results_folder, results_files)
 
 
-#Open Data results
-open_data_files <- results_files[results_files %>% str_detect("Open_Data")]
-open_data_results <- map(open_data_files, read_csv)
-open_data_results <- do.call(rbind, open_data_results) %>%
-  rename(doi = article) %>%
-  distinct(doi, .keep_all = TRUE) %>%
-  select(doi, is_open_data, open_data_category,
-         is_open_code, open_data_statements, open_code_statements)
-
-#convert dois to standard format
-open_data_results$doi <- open_data_results$doi %>%
-  str_remove(fixed(".txt")) %>%
-  str_replace_all(fixed("+"), fixed("/"))
-
-
 #manually checked Open Data results
-open_data_manual_files <- results_files[results_files %>% str_detect("OD_manual_check_")]
-open_data_manual <- open_data_manual_files %>%
-                    map(read_csv)
-#unify columns
-has_in_PURE <- map_lgl(open_data_manual, function(x) "in_PURE" %in% colnames(x))
-open_data_manual[has_in_PURE] <- open_data_manual[has_in_PURE] %>%
-  map(select, -in_PURE)
-#clean results
-open_data_manual <- do.call(rbind, open_data_manual) %>%
-  mutate(doi = (doi %>% (function(x) x %>%
-                           str_remove(fixed(".txt")) %>%
-                           str_replace_all(fixed("+"), "/")))) %>%
-  distinct(doi, .keep_all = TRUE) %>%
-  select(doi, open_data_manual_check, open_data_category_manual,
-         open_code_manual_check, open_code_category_manual)
+open_data_manual <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
 
 
 #Barzooka results
@@ -89,19 +36,18 @@ publications$OA_color[publications$OA_color %in% c("Kein Ergebnis", "kein Ergebn
 #Sciscore results
 sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
 
+
 #----------------------------------------------------------------------------------------
 # combine results
 #----------------------------------------------------------------------------------------
 
 #check if there are no duplicated dois in the results files (problem for left_join)
-length(open_data_results$doi) == length(unique(open_data_results$doi))
 length(open_data_manual$doi) == length(unique(open_data_manual$doi))
 length(barzooka_results$doi) == length(unique(barzooka_results$doi))
 length(sciscore$pmid) == length(unique(sciscore$pmid))
 
 
 dashboard_metrics <- publications %>%
-  left_join(open_data_results, by = "doi") %>%
   left_join(open_data_manual, by = "doi") %>%
   left_join(barzooka_results, by = "doi") %>%
   left_join(sciscore, by = "pmid") %>%
