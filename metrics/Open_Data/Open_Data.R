@@ -40,21 +40,28 @@ print("completed!")
 
 template_filename <- "./results/Open_Data_manual_check_template.csv"
 
+oddpub_results <- read_csv("./results/Open_Data.csv")
 oddpub_results_manual_check <- oddpub_results %>%
-  mutate(open_data_manual_check = "",
+  mutate(open_data_manual_check = NA,
          open_data_category_manual = "",
-         open_code_manual_check = "",
+         open_code_manual_check = NA,
          open_code_category_manual = "",
          doi = article %>% str_remove(fixed(".txt")) %>%
                            str_replace_all(fixed("+"), "/")) %>%
   select(doi, is_open_data, open_data_category, open_data_manual_check,
          open_data_category_manual, open_data_statements, is_open_code,
          open_code_manual_check, open_code_category_manual, open_code_statements)
+
+
+#this is the file with the manually checked results, already update the template file with them,
+#such that only the remaning cases need to be checked manually
+manual_check_results <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
+oddpub_results_manual_check <- rows_update(oddpub_results_manual_check,
+                                           manual_check_results, by = "doi")
+
+#now the new Open Data cases in the saved template file have to be checked manually
 oddpub_results_manual_check %>% write_csv(template_filename)
 
-
-#this is the file with the manually checked results
-manual_check_results <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
 
 #assertions for validity check of the manual results
 OD_manual_num <- sum(manual_check_results$open_data_manual_check, na.rm = TRUE)
