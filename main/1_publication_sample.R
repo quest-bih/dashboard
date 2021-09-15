@@ -24,6 +24,7 @@ publications_16_17 <- read_csv("./main/publication_table_library_2016_17.csv") %
          year != 0)
 
 publications <- rbind(publications_16_17, publications_18_20) %>%
+  mutate(doi = ifelse(str_detect(doi, "keine"), NA, doi)) %>%
   arrange(doi)
 
 publications %>% write_csv("./main/publication_table_library_2016_20.csv")
