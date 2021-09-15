@@ -1,4 +1,5 @@
 library(tidyverse)
+library(assertthat)
 
 #----------------------------------------------------------------------------------------
 # load results
@@ -15,25 +16,20 @@ results_files <- paste0(results_folder, results_files)
 #manually checked Open Data results + additional cases that were not detected by algorithm
 #but found in manual searches or submitted by researchers for the LOM
 open_data_results <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
-open_data_manual_detection <- read_delim("./results/Open_Data_manual_detections.csv")
+open_data_manual_detection <- read_csv("./results/Open_Data_manual_detections.csv")
 open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
 
 #Barzooka results
-barzooka_files <- results_files[results_files %>% str_detect("Barzooka")]
-barzooka_results <- map(barzooka_files, read_csv)
-barzooka_results <- map(barzooka_results, select,
-                        c(paper_id, bar, pie, bardot, box, dot, hist, violin)) %>%
-  bind_rows() %>%
+barzooka_results <- read_csv("./results/Barzooka.csv") %>%
   rename(doi = paper_id) %>%
+  select(doi, bar, pie, bardot, box, dot, hist, violin) %>%
   distinct(doi, .keep_all = TRUE)
-
 
 #Open Access results
 publications <- publications %>%
   rename(OA_color = oa_status) %>%
   mutate(OA_color = OA_color %>% str_replace("Gold", "gold"))
 publications$OA_color[publications$OA_color %in% c("Kein Ergebnis", "kein Ergebnis")] <- NA
-
 
 #Sciscore results
 sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
@@ -44,9 +40,9 @@ sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
 #----------------------------------------------------------------------------------------
 
 #check if there are no duplicated dois in the results files (problem for left_join)
-length(open_data_results$doi) == length(unique(open_data_results$doi))
-length(barzooka_results$doi) == length(unique(barzooka_results$doi))
-length(sciscore$pmid) == length(unique(sciscore$pmid))
+assert_that(length(open_data_results$doi) == length(unique(open_data_results$doi)))
+assert_that(length(barzooka_results$doi) == length(unique(barzooka_results$doi)))
+assert_that(length(sciscore$pmid) == length(unique(sciscore$pmid)))
 
 
 dashboard_metrics <- publications %>%
@@ -75,7 +71,7 @@ check_tbl <- dashboard_metrics %>%
          open_data_statements, open_code_statements,
          open_data_manual_check, open_data_category_manual,
          open_code_manual_check, open_code_category_manual)
-dim(check_tbl)
+assert_that(dim(check_tbl)[1] == 0)
 #write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
 
 
@@ -85,17 +81,10 @@ od_manual_pos <- (!is.na(dashboard_metrics$open_data_manual_check) &
                     dashboard_metrics$open_data_manual_check == "TRUE")
 dashboard_metrics[od_manual_pos,]$is_open_data <- TRUE
 
-no_access_pos <- (!is.na(dashboard_metrics$open_data_manual_check) &
-                    dashboard_metrics$open_data_manual_check == "no access")
-dashboard_metrics[no_access_pos,]$open_data_manual_check <- "FALSE"
-
 no_od_pos <- (is.na(dashboard_metrics$open_data_manual_check) &
                 !is.na(dashboard_metrics$is_open_data))
 dashboard_metrics[no_od_pos,]$open_data_manual_check <- "FALSE"
 
-no_check <- (is.na(dashboard_metrics$is_open_data) &
-               !is.na(dashboard_metrics$open_data_manual_check))
-dashboard_metrics[no_check,]$open_data_manual_check <- NA
 
 #need to do the same cleaning of the manual data for open code
 oc_manual_pos <- (!is.na(dashboard_metrics$open_code_manual_check) &
@@ -106,9 +95,6 @@ no_oc_pos <- (is.na(dashboard_metrics$open_code_manual_check) &
                 !is.na(dashboard_metrics$is_open_code))
 dashboard_metrics[no_oc_pos,]$open_code_manual_check <- FALSE
 
-no_check_oc <- (is.na(dashboard_metrics$is_open_code) &
-               !is.na(dashboard_metrics$open_code_manual_check))
-dashboard_metrics[no_check_oc,]$open_code_manual_check <- NA
 
 #some PDFs were not correctly downloaded, for those set Barzooka results to NA
 #need to validate and delete PDFs before running Barzooka in the future
