@@ -49,7 +49,7 @@ dashboard_metrics <- publications %>%
   left_join(open_data_results, by = "doi") %>%
   left_join(barzooka_results, by = "doi") %>%
   left_join(sciscore, by = "pmid") %>%
-  mutate(pdf_downloaded = !is.na(is_open_data))
+  mutate(pdf_downloaded = !is.na(bar))
 
 #number of papers that are already screened by sciscore
 print(paste0("number of papers that are already screened by sciscore: ",
@@ -59,7 +59,7 @@ print(paste0("not yet screened by sciscore: ",
 
 
 #----------------------------------------------------------------------------------------
-# further preprocessing needed for manually verified Open Data cases
+# further preprocessing & validation steps
 #----------------------------------------------------------------------------------------
 
 #data plausibility/quality check for the updated PDF dataset -> are there any new
@@ -73,38 +73,6 @@ check_tbl <- dashboard_metrics %>%
          open_code_manual_check, open_code_category_manual)
 assert_that(dim(check_tbl)[1] == 0)
 #write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
-
-
-#some of the open data cases were only manually detected
-#need to update the is_open_data status for them
-od_manual_pos <- (!is.na(dashboard_metrics$open_data_manual_check) &
-                    dashboard_metrics$open_data_manual_check == "TRUE")
-dashboard_metrics[od_manual_pos,]$is_open_data <- TRUE
-
-no_od_pos <- (is.na(dashboard_metrics$open_data_manual_check) &
-                !is.na(dashboard_metrics$is_open_data))
-dashboard_metrics[no_od_pos,]$open_data_manual_check <- "FALSE"
-
-
-#need to do the same cleaning of the manual data for open code
-oc_manual_pos <- (!is.na(dashboard_metrics$open_code_manual_check) &
-                    dashboard_metrics$open_code_manual_check == TRUE)
-dashboard_metrics[oc_manual_pos,]$is_open_code <- TRUE
-
-no_oc_pos <- (is.na(dashboard_metrics$open_code_manual_check) &
-                !is.na(dashboard_metrics$is_open_code))
-dashboard_metrics[no_oc_pos,]$open_code_manual_check <- FALSE
-
-
-#some PDFs were not correctly downloaded, for those set Barzooka results to NA
-#need to validate and delete PDFs before running Barzooka in the future
-dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$bar <- NA
-dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$pie <- NA
-dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$bardot <- NA
-dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$box <- NA
-dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$dot <- NA
-dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$hist <- NA
-dashboard_metrics[!dashboard_metrics$pdf_downloaded,]$violin <- NA
 
 #----------------------------------------------------------------------------------------
 # save resulting table with relevant columns only
