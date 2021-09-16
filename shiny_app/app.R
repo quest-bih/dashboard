@@ -26,8 +26,6 @@ dashboard_metrics <- read_csv("data/dashboard_metrics.csv")
 
 dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") %>%
   mutate(perc_prosp_reg = perc_prosp_reg * 100) %>%
-  mutate(perc_sum_res_12 = perc_sum_res_12 * 100) %>%
-  mutate(perc_sum_res_24 = perc_sum_res_24 * 100) %>%
   round(1)
 
 EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv") %>%
@@ -40,7 +38,6 @@ prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
   mutate_at(vars(nct_id, start_date, study_first_submitted_date,
                  days_reg_to_start, has_prospective_registration),
             as.character)
-summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
 preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
 
 orcid_dataset <- read_csv("data/orcid_results.csv")
@@ -400,11 +397,6 @@ server <- function(input, output, session)
     make_datatable(prosp_reg_dataset_shiny)
   })
 
-  output$data_table_sum_res <- DT::renderDataTable({
-    make_datatable(summary_results_dataset_shiny)
-  })
-
-
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
                      "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
@@ -479,21 +471,6 @@ server <- function(input, output, session)
   #---------------------------------
   # Clinical trials plots
   #---------------------------------
-
-  CTgov_plot_data_1 <- dashboard_metrics_aggregate %>%
-    select(year, perc_sum_res_12, perc_sum_res_24,
-           has_sum_res_12, has_sum_res_24,
-           no_sum_res_12, no_sum_res_24) %>%
-    filter(!is.na(perc_sum_res_12)) %>%
-    filter(year >= 2015) %>%
-    # for stacked bar graph of total numbers need 0-12 month + 12-24 month
-    mutate(has_sum_res_24_only = has_sum_res_24 - has_sum_res_12)
-
-  #for latest year, we only can check for summary results within 12 month
-  #need to use the number for trials without summ res in 12 month here
-  CTgov_plot_data_1$no_sum_res_24[is.na(CTgov_plot_data_1$no_sum_res_24)] <-
-    CTgov_plot_data_1$no_sum_res_12[is.na(CTgov_plot_data_1$no_sum_res_24)]
-
 
   output$plot_summary_results <- renderPlotly({
     if(input$checkbox_total_CT) {

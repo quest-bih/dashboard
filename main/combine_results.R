@@ -99,21 +99,19 @@ preprints_dataset_shiny <- read_csv("./results/preprints.csv") %>%
 write_csv(preprints_dataset_shiny, "./shiny_app/data/preprints_dataset_shiny.csv")
 
 
+orcid_dataset_shiny <- read_csv("./results/orcid.csv") %>%
+  distinct(date, .keep_all = TRUE)
+write_csv(orcid_dataset_shiny, "./shiny_app/data/orcid_results.csv")
+
+
 preprints <- read_csv("./results/preprints.csv") %>%
   group_by(year) %>%
   summarize(preprints = n())
 
-
 prospective_registration <- read_csv("./results/prospective_registration.csv")
-summary_results_12_month <- read_csv("./results/summary_results_12_month.csv")
-summary_results_24_month <- read_csv("./results/summary_results_24_month.csv")
-
 
 shiny_table_aggregate_metrics <- tibble(year = 2006:2020) %>%
   left_join(prospective_registration) %>%
-  left_join(summary_results_12_month) %>%
-  left_join(summary_results_24_month) %>%
-  left_join(total_publ_dimensions) %>%
   left_join(preprints)
 
 write_csv(shiny_table_aggregate_metrics, "shiny_app/data/dashboard_metrics_aggregate.csv")
