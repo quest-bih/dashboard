@@ -26,10 +26,10 @@ barzooka_results <- read_csv("./results/Barzooka.csv") %>%
   distinct(doi, .keep_all = TRUE)
 
 #Open Access results
-publications <- publications %>%
-  rename(OA_color = oa_status) %>%
-  mutate(OA_color = OA_color %>% str_replace("Gold", "gold"))
-publications$OA_color[publications$OA_color %in% c("Kein Ergebnis", "kein Ergebnis")] <- NA
+open_access_results <- read_csv("./results/Open_Access.csv") %>%
+  rename(OA_color = color) %>%
+  distinct(doi, .keep_all = TRUE) %>%
+  select(doi, OA_color)
 
 #Sciscore results
 sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
@@ -42,13 +42,13 @@ sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
 #check if there are no duplicated dois in the results files (problem for left_join)
 assert_that(length(open_data_results$doi) == length(unique(open_data_results$doi)))
 assert_that(length(barzooka_results$doi) == length(unique(barzooka_results$doi)))
-assert_that(length(sciscore$pmid) == length(unique(sciscore$pmid)))
+assert_that(length(open_access_results$doi) == length(unique(open_access_results$doi)))
 
 
 dashboard_metrics <- publications %>%
   left_join(open_data_results, by = "doi") %>%
   left_join(barzooka_results, by = "doi") %>%
-  left_join(sciscore, by = "pmid") %>%
+  left_join(open_access_results, by = "doi") %>%
   mutate(pdf_downloaded = !is.na(bar))
 
 #number of papers that are already screened by sciscore
@@ -80,8 +80,8 @@ assert_that(dim(check_tbl)[1] == 0)
 
 #only select columns relevant for shiny table
 shiny_table <- dashboard_metrics %>%
-  select(doi, pmid, title, journal,
-         year, pdf_downloaded, OA_color,
+  select(doi, pmid, year,
+         pdf_downloaded, OA_color,
          is_open_data, open_data_manual_check, open_data_category_manual,
          is_open_code, open_code_manual_check, open_code_category_manual,
          open_data_statements, open_code_statements,
