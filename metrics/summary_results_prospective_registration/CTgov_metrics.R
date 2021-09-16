@@ -130,36 +130,6 @@ summary_table_prosp_reg <- summary_prosp_reg[[1]]
 write_csv(summary_table_prosp_reg, "results/prospective_registration.csv")
 
 
-#results for the summary results registration metric
-summary_sum_res_12 <- CTgov_sample_Charite %>%
-  map(filter, completion_date >= "2006-01-01") %>%
-  map(filter, completion_date <= "2019-12-31") %>%
-  map(filter, study_type == "Interventional") %>%
-  map(filter, overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
-  map(function(x) table(year(x[["completion_date"]]), x[["summary_result_12_month"]])) %>%
-  map(function(x) tibble(year = rownames(x), no_sum_res_12 = x[,1],
-                         has_sum_res_12 = x[,2], perc_sum_res_12 = x[,2]/rowSums(x)))
-
-summary_table_sum_res_12 <- summary_sum_res_12[[1]]
-
-write_csv(summary_table_sum_res_12, "results/summary_results_12_month.csv")
-
-
-#results for the summary results registration metric
-summary_sum_res_24 <- CTgov_sample_Charite %>%
-  map(filter, completion_date >= "2006-01-01") %>%
-  map(filter, completion_date <= "2018-12-31") %>%
-  map(filter, study_type == "Interventional") %>%
-  map(filter, overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
-  map(function(x) table(year(x[["completion_date"]]), x[["summary_result_24_month"]])) %>%
-  map(function(x) tibble(year = rownames(x), no_sum_res_24 = x[,1],
-                         has_sum_res_24 = x[,2], perc_sum_res_24 = x[,2]/rowSums(x)))
-
-summary_table_sum_res_24 <- summary_sum_res_24[[1]]
-
-write_csv(summary_table_sum_res_24, "results/summary_results_24_month.csv")
-
-
 #save table with individual trials to display them in the Shiny app
 prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
   filter(start_date >= "2006-01-01") %>%
@@ -170,16 +140,11 @@ prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
 write_csv(prosp_reg_dataset_shiny, "results/prosp_reg_dataset_shiny.csv")
 
 
+#----------------------------------------------------------------------------------------------------------------------
+# get timely publication numbers from the combined iv dataset
+#----------------------------------------------------------------------------------------------------------------------
 
-#save table with individual trials to display them in the Shiny app
-summary_results_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
-  filter(completion_date >= "2006-01-01") %>%
-  filter(completion_date <= "2019-12-31") %>%
-  filter(study_type == "Interventional") %>%
-  filter(overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
-  select(nct_id, completion_date, results_first_submitted_date,
-         days_compl_to_summary, summary_result_12_month,
-         summary_result_24_month,
-         study_type, overall_status)
+iv_dataset <- read_csv("https://zenodo.org/record/5141343/files/iv_main_dataset.csv?download=1")
 
-write_csv(summary_results_dataset_shiny, "results/sum_res_dataset_shiny.csv")
+iv_dataset_charite <- iv_dataset %>%
+  filter(lead_cities %>% str_detect("Berlin"))
