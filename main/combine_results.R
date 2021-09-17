@@ -5,7 +5,7 @@ library(assertthat)
 # load results
 #----------------------------------------------------------------------------------------
 
-publications <- read_csv("./main/publication_table_library_2016_20.csv")
+publications <- read_csv("./main/publication_table.csv")
 
 #results files
 results_folder <- "results/"
@@ -73,6 +73,7 @@ check_tbl <- dashboard_metrics %>%
          open_code_manual_check, open_code_category_manual)
 assert_that(dim(check_tbl)[1] == 0)
 #write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
+
 
 #----------------------------------------------------------------------------------------
 # save resulting table with relevant columns only

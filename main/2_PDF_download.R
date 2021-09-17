@@ -3,7 +3,7 @@ library(pdfRetrieve)
 
 email <- "nico.riedel@bihealth.de"
 
-publications <- read_csv("./main/publication_table_library_2016_20.csv")
+publications <- read_csv("./main/publication_table.csv")
 
 #need doi for download
 publications_download <- publications %>%
@@ -15,7 +15,7 @@ publications_download <- publications %>%
 set.seed(539)
 dois <- sample(publications_download$doi)
 
-#download pdfs
+#download pdfs (only if not yet downloaded)
 pdf_folder <- paste0("C:/Datenablage/charite_dashboard/unified_dataset/PDFs/")
 pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(dois, email, pdf_folder, sleep = 5,
                                                    overwrite_files = FALSE)
