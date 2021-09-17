@@ -28,12 +28,11 @@ dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") 
   mutate(perc_prosp_reg = perc_prosp_reg * 100) %>%
   round(1)
 
-EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv") %>%
-  mutate(perc_reported = total_reported/total_due)
+EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv")
 intovalue_dataset <- read_csv("data/IntoValue_Results_years.csv")
 
 
-#datasets for the datatable
+#datasets for the datatables
 prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
   mutate_at(vars(nct_id, start_date, study_first_submitted_date,
                  days_reg_to_start, has_prospective_registration),
