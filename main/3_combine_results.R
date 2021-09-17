@@ -105,7 +105,7 @@ orcid_dataset_shiny <- read_csv("./results/orcid.csv") %>%
 write_csv(orcid_dataset_shiny, "./shiny_app/data/orcid_results.csv")
 
 EU_trialstracker_dataset_shiny <- read_csv("./results/EU_trialstracker.csv") %>%
-  mutate(perc_reported = total_reported/total_due)
+  mutate(perc_reported = round(total_reported/total_due, 3))
 write_csv(EU_trialstracker_dataset_shiny, "./shiny_app/data/EU_trialstracker_past_data.csv")
 
 preprints <- read_csv("./results/preprints.csv") %>%
