@@ -130,36 +130,6 @@ summary_table_prosp_reg <- summary_prosp_reg[[1]]
 write_csv(summary_table_prosp_reg, "results/prospective_registration.csv")
 
 
-#results for the summary results registration metric
-summary_sum_res_12 <- CTgov_sample_Charite %>%
-  map(filter, completion_date >= "2006-01-01") %>%
-  map(filter, completion_date <= "2019-12-31") %>%
-  map(filter, study_type == "Interventional") %>%
-  map(filter, overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
-  map(function(x) table(year(x[["completion_date"]]), x[["summary_result_12_month"]])) %>%
-  map(function(x) tibble(year = rownames(x), no_sum_res_12 = x[,1],
-                         has_sum_res_12 = x[,2], perc_sum_res_12 = x[,2]/rowSums(x)))
-
-summary_table_sum_res_12 <- summary_sum_res_12[[1]]
-
-write_csv(summary_table_sum_res_12, "results/summary_results_12_month.csv")
-
-
-#results for the summary results registration metric
-summary_sum_res_24 <- CTgov_sample_Charite %>%
-  map(filter, completion_date >= "2006-01-01") %>%
-  map(filter, completion_date <= "2018-12-31") %>%
-  map(filter, study_type == "Interventional") %>%
-  map(filter, overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
-  map(function(x) table(year(x[["completion_date"]]), x[["summary_result_24_month"]])) %>%
-  map(function(x) tibble(year = rownames(x), no_sum_res_24 = x[,1],
-                         has_sum_res_24 = x[,2], perc_sum_res_24 = x[,2]/rowSums(x)))
-
-summary_table_sum_res_24 <- summary_sum_res_24[[1]]
-
-write_csv(summary_table_sum_res_24, "results/summary_results_24_month.csv")
-
-
 #save table with individual trials to display them in the Shiny app
 prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
   filter(start_date >= "2006-01-01") %>%
@@ -170,16 +140,60 @@ prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
 write_csv(prosp_reg_dataset_shiny, "results/prosp_reg_dataset_shiny.csv")
 
 
+#----------------------------------------------------------------------------------------------------------------------
+# get timely publication numbers from the combined iv dataset
+#----------------------------------------------------------------------------------------------------------------------
 
-#save table with individual trials to display them in the Shiny app
-summary_results_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
-  filter(completion_date >= "2006-01-01") %>%
-  filter(completion_date <= "2019-12-31") %>%
-  filter(study_type == "Interventional") %>%
-  filter(overall_status %in% c("Completed", "Unknown status", "Terminated", "Suspended")) %>%
-  select(nct_id, completion_date, results_first_submitted_date,
-         days_compl_to_summary, summary_result_12_month,
-         summary_result_24_month,
-         study_type, overall_status)
+iv_dataset <- read_csv("https://zenodo.org/record/5141343/files/iv_main_dataset.csv?download=1")
 
-write_csv(summary_results_dataset_shiny, "results/sum_res_dataset_shiny.csv")
+iv_dataset_charite <- iv_dataset %>%
+  #get minimum of days to pub or to summary result
+  mutate(days_to_publ = pmin(days_cd_to_publication,
+                             days_cd_to_summary, na.rm = TRUE),
+         iv_version = case_when(
+           iv_version == 1 & !is_dupe  ~ "IV1",
+           iv_version == 1 & is_dupe  ~ "IV1_dupl",
+           iv_version == 2 & !is_dupe  ~ "IV2",
+           iv_version == 2 & is_dupe  ~ "IV2_dupl")) %>%
+  filter(lead_cities %>% str_detect("Berlin"),
+         #get newest results for each trial
+         iv_version %in% c("IV1", "IV2", "IV2_dupl"))
+
+
+calc_summary <- function(iv_data, years)
+{
+  cutoff_date_IV1 <- dmy("01.12.2017") - months(years * 12)
+  cutoff_date_IV2 <- dmy("01.09.2020") - months(years * 12)
+
+  has_long_followup_IV1 <- (iv_data$completion_date < cutoff_date_IV1)
+  has_long_followup_IV2 <- (iv_data$completion_date < cutoff_date_IV2)
+  is_IV1 <- iv_data[["iv_version"]] %in% c("IV1", "IV1_dupl")
+  is_IV2 <- iv_data[["iv_version"]] %in% c("IV2", "IV2_dupl")
+
+  has_long_followup <- (has_long_followup_IV1 & is_IV1) | (has_long_followup_IV2 & is_IV2)
+
+  iv_summary <- iv_data[has_long_followup,] %>%
+    group_by(completion_year) %>%
+    summarize(trials_with_publ = sum(days_to_publ < years*365,
+                                     na.rm = TRUE),
+              total_trials     = n(),
+              percentage_publ  = (trials_with_publ/
+                                    total_trials) %>%
+                round(3))
+
+  colnames(iv_summary) <- c("completion_year",
+                       paste0("trials_with_publication_", years, "_years"),
+                       paste0("total_trials_", years, "_years"),
+                       paste0("percentage_published_", years, "_years"))
+
+  return(iv_summary)
+}
+
+iv_results_2years <- iv_dataset_charite %>% calc_summary(2)
+iv_results_5years <- iv_dataset_charite %>% calc_summary(5)
+
+iv_results_years <- iv_results_2years %>%
+  left_join(iv_results_5years, by = "completion_year")
+
+write_csv(iv_results_years, "./shiny_app/data/IntoValue_Results_years.csv")
+
