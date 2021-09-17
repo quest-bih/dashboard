@@ -210,6 +210,23 @@ plot_preprints <- function(plot_data, color_palette)
            legend = list(xanchor = "right"))
 }
 
+# Orcid
+plot_orcid <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~as.Date(date, format= "%Y-%m-%d"), y = ~orcid_count,
+          name = 'Registered ORCIDs',
+          type = 'scatter', mode = 'lines+markers',
+          line = list(color = color_palette[3], width = 4),
+          marker = list(color = color_palette[3], size = 1)) %>%
+    layout(yaxis = list(title = '<b>Registered ORCIDs</b>',
+                        range = c(0, 1700)),
+           xaxis = list(title = '<b>Date</b>',
+                        type = 'date'),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9])
+}
+
+
 
 #------------------------------------------------------------------------
 # Clinical trials plots

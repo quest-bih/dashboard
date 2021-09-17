@@ -245,7 +245,7 @@ server <- function(input, output, session)
                                      value = orcid_dataset$orcid_count %>% last(),
                                      value_text = paste0("Charité researchers with an ORCID (as of ",
                                                          orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
-                                     plot = NULL,
+                                     plot = plotlyOutput('plot_orcid', height = "300px"),
                                      info_id = "infoOrcid",
                                      info_title = "ORCID",
                                      info_text = orcid_tooltip))
@@ -464,6 +464,11 @@ server <- function(input, output, session)
 
   output$plot_preprints <- renderPlotly({
     plot_preprints(preprints_plot_data, color_palette)
+  })
+
+  # Orcid
+  output$plot_orcid <- renderPlotly({
+    plot_orcid(orcid_dataset, color_palette)
   })
 
 
