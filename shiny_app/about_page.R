@@ -4,7 +4,7 @@ about_page <- tabPanel("About", value = "tabAbout",
                        h4("Publication search"),
                        helpText(HTML('The publication list was kindly provided by the
                                      <a href="https://bibliothek.charite.de">Charité medical library</a>
-                                     team: Flitner, Ursula, ...')),
+                                     team.')),
                        br(),
                        h4("Open Access data"),
                        helpText(HTML('The open access data were also provided by the
