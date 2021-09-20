@@ -368,7 +368,8 @@ plot_barzooka_problem_perc <- function(plot_data, color_palette)
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Percentage of publications</b>'),
+           yaxis = list(title = '<b>Percentage of publications</b>',
+                        range = c(0, 28)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -419,7 +420,8 @@ plot_barzooka_inform_perc <- function(plot_data, color_palette)
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) %>%
     layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Percentage of publications</b>'),
+           yaxis = list(title = '<b>Percentage of publications</b>',
+                        range = c(0, 28)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
