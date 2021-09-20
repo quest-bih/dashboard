@@ -99,6 +99,10 @@ preprints_dataset_shiny <- read_csv("./results/preprints.csv") %>%
   select(doi, title, journal.title, year)
 write_csv(preprints_dataset_shiny, "./shiny_app/data/preprints_dataset_shiny.csv")
 
+prosp_reg_dataset_shiny <- read_csv("./results/prosp_reg_dataset_shiny.csv") %>%
+  rename(registration_date = study_first_submitted_date) %>%
+  select(nct_id, start_date, registration_date, has_prospective_registration)
+write_csv(prosp_reg_dataset_shiny, "./shiny_app/data/prosp_reg_dataset_shiny.csv")
 
 orcid_dataset_shiny <- read_csv("./results/orcid.csv") %>%
   distinct(date, .keep_all = TRUE)
@@ -113,6 +117,7 @@ preprints <- read_csv("./results/preprints.csv") %>%
   summarize(preprints = n())
 
 prospective_registration <- read_csv("./results/prospective_registration.csv")
+
 
 shiny_table_aggregate_metrics <- tibble(year = 2006:2020) %>%
   left_join(prospective_registration) %>%

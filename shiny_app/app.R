@@ -34,8 +34,8 @@ intovalue_dataset <- read_csv("data/IntoValue_Results_years.csv")
 
 #datasets for the datatables
 prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
-  mutate_at(vars(nct_id, start_date, study_first_submitted_date,
-                 days_reg_to_start, has_prospective_registration),
+  mutate_at(vars(nct_id, start_date, registration_date,
+                 has_prospective_registration),
             as.character)
 preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
 
@@ -169,7 +169,7 @@ ui <- tagList(
            bsCollapse(id = "datasetPanels_PublicationDataset",
                       bsCollapsePanel(strong("Timely publication dataset"),
                                       HTML('This dataset was already published
-                        <a href="https://osf.io/fh426/">here</a>.'),
+                        <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
                                       style = "default"))
   ),
   about_page,
