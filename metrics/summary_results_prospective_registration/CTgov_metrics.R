@@ -97,13 +97,13 @@ CTgov_sample_full <- AACT_datasets$studies %>%
 
 #add calculated columns to dataset - time to summary results & prospective registration
 CTgov_sample_full <- CTgov_sample_full %>%
-  mutate(days_prim_compl_to_summary = results_first_submitted_date - primary_completion_date) %>%
   mutate(days_compl_to_summary = results_first_submitted_date - completion_date) %>%
   mutate(days_reg_to_start = start_date - study_first_submitted_date)
 
 #calculate the metrics of interest
 CTgov_sample_full <- CTgov_sample_full %>%
-  mutate(has_prospective_registration = days_reg_to_start > -60) %>%
+  mutate(has_prospective_registration = floor_date(start_date, unit = "month") >=
+                                        floor_date(study_first_submitted_date, unit = "month")) %>%
   mutate(summary_result_12_month = days_compl_to_summary < 365) %>%
   mutate(summary_result_24_month = days_compl_to_summary < 2*365) %>%
   mutate(summary_result_12_month = replace_na(summary_result_12_month, FALSE)) %>%
@@ -123,7 +123,7 @@ summary_prosp_reg <- CTgov_sample_Charite %>%
   map(filter, start_date < "2020-12-31") %>%
   map(function(x) table(year(x[["start_date"]]), x[["has_prospective_registration"]])) %>%
   map(function(x) tibble(year = rownames(x), no_prosp_reg = x[,1],
-                         has_prosp_reg = x[,2], perc_prosp_reg = x[,2]/rowSums(x)))
+                         has_prosp_reg = x[,2], perc_prosp_reg = round(x[,2]/rowSums(x), 3)))
 
 summary_table_prosp_reg <- summary_prosp_reg[[1]]
 

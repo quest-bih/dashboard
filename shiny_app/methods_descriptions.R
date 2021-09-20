@@ -239,8 +239,9 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         the date the study was first submitted to the registry with the
                         start date given in the registry. As some of the earlier dates in the database
                         only stated the month but not the exact day and to account for other possible delays
-                        we chose a conservative estimate of prospective registration and allow for a delay
-                        between start and registration date of up to 60 days.",
+                        we chose a conservative estimate of prospective registration and counted
+                        a registration as prospective registration if the study was registered
+                        in the month of the study start or earlier.",
 
                                   "Like in the case of the summary results metric, we only focused on the
                         ClinicalTrials.gov while there are other available registries as well.
