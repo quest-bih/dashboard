@@ -13,15 +13,13 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
          bsCollapse(id = "methodsPanels_PublicationSearch",
                     bsCollapsePanel(strong("Publication Search"),
                                     p("Many of the assessed metrics are publication-based metrics.
-                        To assess those metrics
-                        on the institutional level, we first need to identify the publications that
-                        can be assigned to the Charité. For this, we search the publication databases
-                        Pubmed and Embase for biomedical publications with at least one of the
+                        To assess those metrics on the institutional level, we first need to
+                        identify the publications that can be assigned to the Charité.
+                        For this, we use a list of publications kindly provided by the Charité medical library.
+                        They obtained this publication list by searching the publication databases
+                        Web of Science and Embase for biomedical publications with at least one of the
                         authors affiliated to the Charité or the Berlin Institute of Health.
-                        Subsequently, the search results from both databases were merged and deduplicated.
-                        After a final filtering step for the publication year (2015 - 2019) and for
-                        research articles, we obtained a list of institutional publications that
-                        was used to calculate the publication-based metrics."),
+                        Subsequently, the search results from both databases were merged and deduplicated."),
                                     value = "methodsPanels_PublicationSearch",
                                     style = "default")),
 
@@ -38,8 +36,9 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         to all other researchers in the world and thus help to distribute
                         research results transparently, openly and fast.",
 
-                                  HTML('Using the obtained list of institutional publications, we query the
-                        unpaywall database via its <a href="https://unpaywall.org/products/api">API</a>
+                                  HTML('Using the list of institutional publications, the
+                        Charité medical library queried the unpaywall database via its
+                        <a href="https://unpaywall.org/products/api">API</a>
                         to obtain information on the Open Access (OA) status of the publications.
                         Unpaywall is today the most comprehensive database of Open Access
                         information on research articles. It can be queried using publication
@@ -53,21 +52,19 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         voluntarily by the journal but which might lose its OA status again.
                         Thus we only consider the OA categories gold, green and hybrid here.
                         As one publication can have several OA versions (e.g. a gold version
-                        in an OA journal as well as a green version in a repository), we define
-                        a hierarchy of the OA categories and for each publication only assign
-                        the OA category with the highest priority. We use a hierarchy of
-                        gold - hybrid - green (journal version before repository version),
-                        as also implemented in the unpaywall database itself.
-                        After querying the unpaywall API for all publication DOIs, we group
-                        the results by OA status and publication year.
+                        in an OA journal as well as a green version in a repository), Unpaywall defines
+                        a hierarchy of the OA categories and for each publication only assigns
+                        the OA category with the highest priority. The standard hierarchy used here is
+                        gold - hybrid - green (journal version before repository version).
+                        We group the results from unpaywall by OA status and publication year.
                         One important point that has to be considered with OA data is, that
                         the OA percentage is not a fixed number but is changing over time.
                         This comes from the repository versions that are often made available
                         with a delay, such that the OA percentage for a given year is typically
                         rising retrospectively. Thus the point in time of data retrieval is important
-                        for the OA percentage. The current OA data were retrieved on: 14.09.2020.'),
+                        for the OA percentage. The current OA data were retrieved on: 16.09.2021.'),
 
-                                  "The unpaywall only stores information for publications that have
+                                  "Unpaywall only stores information for publications that have
                         a DOI assigned by crossref. Articles without crossref DOI have to
                         be excluded from the OA analysis. However, in the most recent years
                         this is the case for a tiny minority (<1%) of the publications."),
@@ -242,8 +239,9 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         the date the study was first submitted to the registry with the
                         start date given in the registry. As some of the earlier dates in the database
                         only stated the month but not the exact day and to account for other possible delays
-                        we chose a conservative estimate of prospective registration and allow for a delay
-                        between start and registration date of up to 60 days.",
+                        we chose a conservative estimate of prospective registration and counted
+                        a registration as prospective registration if the study was registered
+                        in the month of the study start or earlier.",
 
                                   "Like in the case of the summary results metric, we only focused on the
                         ClinicalTrials.gov while there are other available registries as well.
@@ -348,6 +346,8 @@ intovalue_tooltip <- strwrap("This metric measures how many clinical trials regi
                         results on the trials registry within 2 or 5 years after completion. Trials
                         completed between 2009 and 2013 were considered. The results were previously
                         published as part of the IntoValue study (https://s-quest.bihealth.org/intovalue/).
+                        As not all trials could be followed up for at least 5 years at the time the studies
+                        were conducted, not all years have numbers for results publication within 5 years.
                         Clinical trials are expensive and have often many contributing patients.
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing

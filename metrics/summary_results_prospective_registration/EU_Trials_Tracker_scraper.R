@@ -22,13 +22,13 @@ var_values <- var_names %>%
   map_chr(extract_var, text = webpage) %>%
   as.integer()
 
-EU_data_charite <- tibble(total_unreported = var_values[1],
+EU_data_charite <- tibble(retrieval_date = as.character(Sys.Date()),
+                          total_unreported = var_values[1],
                           total_reported = var_values[2],
                           total_due = var_values[3],
                           not_yet_due_trials = var_values[4],
                           inconsistent_trials = var_values[5],
-                          total_trials = var_values[6],
-                          retrieval_date = as.character(Sys.Date())) %>%
-  mutate(perc_reported = total_reported/total_due)
+                          total_trials = var_values[6])
 
-write_csv(EU_data_charite, "./shiny_app/data/EU_trialstracker.csv")
+write_csv(EU_data_charite, "./shiny_app/data/EU_trialstracker.csv",
+          append = TRUE)

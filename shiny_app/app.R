@@ -22,26 +22,21 @@ source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
 source("datasets_panel.R")
 
-dashboard_metrics <- read_csv("data/dashboard_metrics.csv") %>%
-  rename(year = e_pub_year)
+dashboard_metrics <- read_csv("data/dashboard_metrics.csv")
 
 dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") %>%
   mutate(perc_prosp_reg = perc_prosp_reg * 100) %>%
-  mutate(perc_sum_res_12 = perc_sum_res_12 * 100) %>%
-  mutate(perc_sum_res_24 = perc_sum_res_24 * 100) %>%
   round(1)
 
-EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv") %>%
-  mutate(perc_reported = total_reported/total_due)
+EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv")
 intovalue_dataset <- read_csv("data/IntoValue_Results_years.csv")
 
 
-#datasets for the datatable
+#datasets for the datatables
 prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
-  mutate_at(vars(nct_id, start_date, study_first_submitted_date,
-                 days_reg_to_start, has_prospective_registration),
+  mutate_at(vars(nct_id, start_date, registration_date,
+                 has_prospective_registration),
             as.character)
-summary_results_dataset_shiny <- read_csv("data/sum_res_dataset_shiny.csv")
 preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
 
 orcid_dataset <- read_csv("data/orcid_results.csv")
@@ -174,7 +169,7 @@ ui <- tagList(
            bsCollapse(id = "datasetPanels_PublicationDataset",
                       bsCollapsePanel(strong("Timely publication dataset"),
                                       HTML('This dataset was already published
-                        <a href="https://osf.io/fh426/">here</a>.'),
+                        <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
                                       style = "default"))
   ),
   about_page,
@@ -250,7 +245,7 @@ server <- function(input, output, session)
                                      value = orcid_dataset$orcid_count %>% last(),
                                      value_text = paste0("Charité researchers with an ORCID (as of ",
                                                          orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
-                                     plot = NULL,
+                                     plot = plotlyOutput('plot_orcid', height = "300px"),
                                      info_id = "infoOrcid",
                                      info_title = "ORCID",
                                      info_text = orcid_tooltip))
@@ -284,8 +279,10 @@ server <- function(input, output, session)
                                      info_text = summary_results_tooltip)),
 
                 column(col_width, metric_box(title = "Timely publication of results",
-                                             value = paste(round(intovalue_dataset$percentage_published_2_years[5] * 100, 0), "%"),
-                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in 2013 published results
+                                             value = paste(round(intovalue_dataset$percentage_published_2_years %>% last() * 100, 0), "%"),
+                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
+                                                                 intovalue_dataset$completion_year %>% last(),
+                                                                 " published results
                                                                  within 2 years"),
                                              plot = plotlyOutput('plot_intovalue', height = "300px"),
                                              info_id = "infoIntoValue",
@@ -399,11 +396,6 @@ server <- function(input, output, session)
     make_datatable(prosp_reg_dataset_shiny)
   })
 
-  output$data_table_sum_res <- DT::renderDataTable({
-    make_datatable(summary_results_dataset_shiny)
-  })
-
-
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
                      "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
@@ -474,25 +466,15 @@ server <- function(input, output, session)
     plot_preprints(preprints_plot_data, color_palette)
   })
 
+  # Orcid
+  output$plot_orcid <- renderPlotly({
+    plot_orcid(orcid_dataset, color_palette)
+  })
+
 
   #---------------------------------
   # Clinical trials plots
   #---------------------------------
-
-  CTgov_plot_data_1 <- dashboard_metrics_aggregate %>%
-    select(year, perc_sum_res_12, perc_sum_res_24,
-           has_sum_res_12, has_sum_res_24,
-           no_sum_res_12, no_sum_res_24) %>%
-    filter(!is.na(perc_sum_res_12)) %>%
-    filter(year >= 2015) %>%
-    # for stacked bar graph of total numbers need 0-12 month + 12-24 month
-    mutate(has_sum_res_24_only = has_sum_res_24 - has_sum_res_12)
-
-  #for latest year, we only can check for summary results within 12 month
-  #need to use the number for trials without summ res in 12 month here
-  CTgov_plot_data_1$no_sum_res_24[is.na(CTgov_plot_data_1$no_sum_res_24)] <-
-    CTgov_plot_data_1$no_sum_res_12[is.na(CTgov_plot_data_1$no_sum_res_24)]
-
 
   output$plot_summary_results <- renderPlotly({
     if(input$checkbox_total_CT) {
