@@ -14,12 +14,12 @@ make_oddpub_plot_data <- function(data_table)
       x %>% str_split(",") %>% map_chr(head, 1)))) %>%
     group_by(year) %>%
     summarize(open_data_manual_count = sum(open_data_manual_check, na.rm = TRUE),
-              open_data_neg_count = sum(!open_data_manual_check, na.rm = TRUE),
-              open_data_NA_count = sum(is.na(open_data_manual_check), na.rm = TRUE),
+              open_data_neg_count = sum(!is_open_data | !open_data_manual_check, na.rm = TRUE),
+              open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
 
               open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
-              open_code_neg_count = sum(!open_code_manual_check, na.rm = TRUE),
-              open_code_NA_count = sum(is.na(open_code_manual_check), na.rm = TRUE),
+              open_code_neg_count = sum(!is_open_code | !open_code_manual_check, na.rm = TRUE),
+              open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
 
               OD_field_specific_count = sum(open_data_category_priority == "field-specific repository", na.rm = TRUE),
               OD_general_purpose_count = sum(open_data_category_priority == "general-purpose repository", na.rm = TRUE),
