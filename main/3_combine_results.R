@@ -31,9 +31,6 @@ open_access_results <- read_csv("./results/Open_Access.csv") %>%
   distinct(doi, .keep_all = TRUE) %>%
   select(doi, OA_color)
 
-#Sciscore results
-sciscore <- read_csv("metrics/Sciscore/sciscore_reports.csv")
-
 
 #----------------------------------------------------------------------------------------
 # combine results

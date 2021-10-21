@@ -93,6 +93,11 @@ ui <- tagList(
                         to improve your own research practices, click one of the following buttons."),
                       h4(style = "margin-left:0cm",
                          "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
+                      h4(style = "margin-left:0cm",
+                         HTML('For more detailed Open Access metrics you can visit the
+                         <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
+                         developed by the Charité medical library.')),
+
                       br()),
                column(4,
                       hr(),
