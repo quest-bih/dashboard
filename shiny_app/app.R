@@ -160,7 +160,9 @@ ui <- tagList(
            br(),
            bsCollapse(id = "datasetPanels_PublicationDataset",
                       bsCollapsePanel(strong("Publication dataset"),
-                                      DT::dataTableOutput("data_table_publ"),
+                                      "The publication dataset was created using the
+                                      databases Web of Science and EMBASE.
+                                      More detailed information on the dataset will follow in the future.",
                                       style = "default")),
            br(),
            bsCollapse(id = "datasetPanels_PreprintDataset",

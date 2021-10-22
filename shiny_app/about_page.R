@@ -3,12 +3,12 @@ about_page <- tabPanel("About", value = "tabAbout",
                        br(),
                        h4("Publication search"),
                        helpText(HTML('The publication list was kindly provided by the
-                                     <a href="https://bibliothek.charite.de">Charité medical library</a>
+                                     <a href="https://medbib-charite.github.io/oa-dashboard/#about">Charité medical library</a>
                                      team.')),
                        br(),
                        h4("Open Access data"),
                        helpText(HTML('The open access data were also provided by the
-                                     <a href="https://bibliothek.charite.de">Charité medical library</a>
+                                     <a href="https://medbib-charite.github.io/oa-dashboard/#about">Charité medical library</a>
                                      team.')),
                        br(),
                        h4("ODDPub - Open Data & Code detection"),
