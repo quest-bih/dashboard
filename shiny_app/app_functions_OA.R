@@ -19,7 +19,8 @@ make_OA_plot_data_total <- function(data_table)
 make_OA_plot_data <- function(data_table)
 {
   OA_plot_data <- data_table %>%
-    filter(!is.na(OA_color)) %>%
+    #do not filter the missing OA publications to be in line with library numbers
+    #filter(!is.na(OA_color)) %>%
     group_by(year, OA_color) %>%
     summarize(count = n()) %>%
     calculate_OA_percentages(c("gold", "green", "hybrid", "bronze")) %>%

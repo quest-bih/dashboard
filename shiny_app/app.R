@@ -51,6 +51,8 @@ metrics_show_year <- dashboard_metrics_aggregate %>% filter(year == show_year)
 
 OA_data <- dashboard_metrics %>%
   make_OA_plot_data() %>%
+  #do not count the bronze category for the total number of publ
+  filter(category != "bronze") %>%
   group_by(year) %>%
   summarize(OA_perc = sum(perc))
 
