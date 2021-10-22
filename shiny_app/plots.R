@@ -18,6 +18,10 @@ plot_OA_perc <- function(plot_data, color_palette)
               marker = list(color = color_palette[7],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
+    add_trace(y = ~bronze, name = 'Bronze',
+              marker = list(color = color_palette[4],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
     layout(barmode = 'stack',
            legend = list(title = list(text = '<b> Category </b>',
                                       xanchor = "right")),

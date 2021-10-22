@@ -25,12 +25,6 @@ barzooka_results <- read_csv("./results/Barzooka.csv") %>%
   select(doi, bar, pie, bardot, box, dot, hist, violin) %>%
   distinct(doi, .keep_all = TRUE)
 
-#Open Access results
-open_access_results <- read_csv("./results/Open_Access.csv") %>%
-  rename(OA_color = color) %>%
-  distinct(doi, .keep_all = TRUE) %>%
-  select(doi, OA_color)
-
 
 #----------------------------------------------------------------------------------------
 # combine results
@@ -39,20 +33,13 @@ open_access_results <- read_csv("./results/Open_Access.csv") %>%
 #check if there are no duplicated dois in the results files (problem for left_join)
 assert_that(length(open_data_results$doi) == length(unique(open_data_results$doi)))
 assert_that(length(barzooka_results$doi) == length(unique(barzooka_results$doi)))
-assert_that(length(open_access_results$doi) == length(unique(open_access_results$doi)))
 
 
 dashboard_metrics <- publications %>%
   left_join(open_data_results, by = "doi") %>%
   left_join(barzooka_results, by = "doi") %>%
-  left_join(open_access_results, by = "doi") %>%
-  mutate(pdf_downloaded = !is.na(bar))
-
-#number of papers that are already screened by sciscore
-print(paste0("number of papers that are already screened by sciscore: ",
-             sum(!is.na(dashboard_metrics$sciscore))))
-print(paste0("not yet screened by sciscore: ",
-             sum(is.na(dashboard_metrics$sciscore))))
+  mutate(pdf_downloaded = !is.na(bar)) %>%
+  rename(OA_color = oa_status)
 
 
 #----------------------------------------------------------------------------------------

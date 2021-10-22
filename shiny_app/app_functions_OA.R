@@ -22,7 +22,7 @@ make_OA_plot_data <- function(data_table)
     filter(!is.na(OA_color)) %>%
     group_by(year, OA_color) %>%
     summarize(count = n()) %>%
-    calculate_OA_percentages(c("gold", "green", "hybrid")) %>%
+    calculate_OA_percentages(c("gold", "green", "hybrid", "bronze")) %>%
     rename(category = OA_color)
 
   return(OA_plot_data)
