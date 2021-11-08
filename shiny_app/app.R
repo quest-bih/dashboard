@@ -79,7 +79,7 @@ barzooka_data <- dashboard_metrics %>%
 #----------------------------------------------------------------------------------------------------------------------
 
 ui <- tagList(
-  #tags$head(tags$script(type="text/javascript", src = "code.js")),
+  tags$head(tags$script(type="text/javascript", src = "code.js")),
   navbarPage(
   "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
   tabPanel("Start page", value = "tabStart",
@@ -109,13 +109,7 @@ ui <- tagList(
 
                       br()),
                column(4,
-                      br(),
-                      tags$a(img(src = "BIH-QUEST_Logo_2021_rgb_large.png", height = 78, width = 200),
-                                      href="https://quest.bihealth.org"),
-                      tags$a(img(src = "Strategie_2030_logo.jpg", height = 113, width = 153),
-                             href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/"),
-                      br(),
-                      br(),
+                      hr(),
                       br(),
                       br(),
                       actionButton(style = "color: white; background-color: #aa1c7d;",
