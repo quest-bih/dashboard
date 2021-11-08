@@ -79,7 +79,7 @@ barzooka_data <- dashboard_metrics %>%
 #----------------------------------------------------------------------------------------------------------------------
 
 ui <- tagList(
-  tags$head(tags$script(type="text/javascript", src = "code.js")),
+  #tags$head(tags$script(type="text/javascript", src = "code.js")),
   navbarPage(
   "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
   tabPanel("Start page", value = "tabStart",
@@ -87,10 +87,17 @@ ui <- tagList(
              br(),
              fluidRow(
                column(8,
-                      h1(style = "margin-left:0cm", strong("Charité Metrics Dashboard"), align = "left"),
+                      h1(style = "margin-left:0cm", strong("Charité Dashboard on Open and Responsible Research Practices"), align = "left"),
+                      h4(style = "margin-left:0cm",
+                         HTML('Charité has committed itself to establish, promote and maintain a
+                              research environment which enhances the robustness of research and
+                              the reproducibility of results
+                              (<a href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/">
+                              The Rethinking Health – Charité 2030</a>)')),
                       h4(style = "margin-left:0cm",
                          "This dashboard gives an overview of several metrics of open and responsible
-                        research at the Charité (including the Berlin Institute of Health). For more detailed information on the methods used to
+                        research at the Charité (including the Berlin Institute of Health).
+                        For more detailed information on the methods used to
                         calculate those metrics, the dataset underlying the metrics, or resources
                         to improve your own research practices, click one of the following buttons."),
                       h4(style = "margin-left:0cm",
@@ -102,7 +109,13 @@ ui <- tagList(
 
                       br()),
                column(4,
-                      hr(),
+                      br(),
+                      tags$a(img(src = "BIH-QUEST_Logo_2021_rgb_large.png", height = 78, width = 200),
+                                      href="https://quest.bihealth.org"),
+                      tags$a(img(src = "Strategie_2030_logo.jpg", height = 113, width = 153),
+                             href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/"),
+                      br(),
+                      br(),
                       br(),
                       br(),
                       actionButton(style = "color: white; background-color: #aa1c7d;",

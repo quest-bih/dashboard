@@ -76,7 +76,7 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in)
   if(zoom_in) {
     yrange <- c(0, 20)
   } else {
-    yrange <- c(0, 100)
+    yrange <- c(0, 50)
   }
 
   plot_ly(plot_data, x = ~year, y = ~OD_field_specific_perc,
@@ -138,7 +138,7 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in)
   if(zoom_in) {
     yrange <- c(0, 5)
   } else {
-    yrange <- c(0, 100)
+    yrange <- c(0, 50)
   }
 
   plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
