@@ -15,7 +15,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                     p("Many of the assessed metrics are publication-based metrics.
                         To assess those metrics on the institutional level, we first need to
                         identify the publications that can be assigned to the Charité.
-                        For this, we use a list of publications kindly provided by the Charité medical library.
+                        For this, we use a list of publications kindly provided by the Charité Medical Library.
                         They obtained this publication list by searching the publication databases
                         Web of Science and Embase for biomedical publications with at least one of the
                         authors affiliated to the Charité or the Berlin Institute of Health.
@@ -37,7 +37,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         research results transparently, openly and fast.",
 
                                   HTML('Using the list of institutional publications, the
-                        Charité medical library queried the unpaywall database via its
+                        Charité Medical Library queried the unpaywall database via its
                         <a href="https://unpaywall.org/products/api">API</a>
                         to obtain information on the Open Access (OA) status of the publications.
                         Unpaywall is today the most comprehensive database of Open Access

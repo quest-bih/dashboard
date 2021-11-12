@@ -105,7 +105,7 @@ ui <- tagList(
                       h4(style = "margin-left:0cm",
                          HTML('For more detailed Open Access metrics you can visit the
                          <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
-                         developed by the Charité medical library.')),
+                         developed by the Charité Medical Library.')),
 
                       br()),
                column(4,
@@ -167,8 +167,9 @@ ui <- tagList(
            br(),
            bsCollapse(id = "datasetPanels_PublicationDataset",
                       bsCollapsePanel(strong("Publication dataset"),
-                                      "The publication dataset was created using the
-                                      databases Web of Science and EMBASE.
+                                      "The publication dataset was created by the
+                                      Charité Medical Library, incorporating data
+                                      from the databases Web of Science and EMBASE.
                                       More detailed information on the dataset will follow in the future.",
                                       style = "default")),
            br(),

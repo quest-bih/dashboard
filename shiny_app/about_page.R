@@ -3,32 +3,35 @@ about_page <- tabPanel("About", value = "tabAbout",
                        br(),
                        h4("Publication search"),
                        helpText(HTML('The publication list was kindly provided by the
-                                     <a href="https://medbib-charite.github.io/oa-dashboard/#about">Charité medical library</a>
-                                     team.')),
+                                     <a href="https://medbib-charite.github.io/oa-dashboard/#about">Charité Medical Library</a>
+                                     team: Jenny Delasalle (Concept); Ursula Flitner (Concept, Data collection);
+                                     Manuela Gregor (Data collection); Katja Maly (Data collection); Anja Siebert (Data collection);
+                                     Jan Taubitz (Concept, Technical implementation)
+')),
                        br(),
                        h4("Open Access data"),
                        helpText(HTML('The open access data were also provided by the
-                                     <a href="https://medbib-charite.github.io/oa-dashboard/#about">Charité medical library</a>
+                                     <a href="https://medbib-charite.github.io/oa-dashboard/#about">Charité Medical Library</a>
                                      team.')),
                        br(),
                        h4("ODDPub - Open Data & Code detection"),
-                       helpText('Riedel, Nico (Conceptualization, Methodology, Technical Implementation, Validation);
-                                Bobrov, Evgeny (Conceptualization, Methodology, Validation); Kip, Miriam (Conceptualization, Methodology)'),
+                       helpText('Nico Riedel (Conceptualization, Methodology, Technical Implementation, Validation);
+                                Evgeny Bobrov (Conceptualization, Methodology, Validation); Miriam Kip (Conceptualization, Methodology)'),
                        br(),
                        h4("Barzooka - Visualization type detection"),
-                       helpText('Riedel, Nico (Conceptualization, Methodology, technical implementation);
-                                Weissgerber, Tracey (Conceptualization, Methodology); Schultz, Robert (Validation)'),
+                       helpText('Nico Riedel (Conceptualization, Methodology, technical implementation);
+                                Tracey Weissgerber (Conceptualization, Methodology); Robert Schultz (Validation)'),
                        br(),
                        h4("Clinical trial metrics"),
-                       helpText('Riedel, Nico (Conceptualization, Methodology, technical implementation);
-                                Strech, Daniel (Conceptualization, Methodology); Wieschowski, Susanne (Conceptualization, Methodology);
-                                Grabitz, Peter (Conceptualization, Methodology); Franzen, Delwen (Conceptualization, Methodology);
-                                Salholz-Hillel, Maia (Conceptualization, Methodology)'),
+                       helpText('Nico Riedel (Conceptualization, Methodology, technical implementation);
+                                Daniel Strech (Conceptualization, Methodology); Susanne Wieschowski (Conceptualization, Methodology);
+                                Peter Grabitz (Conceptualization, Methodology); Delwen Franzen (Conceptualization, Methodology);
+                                Maia Salholz-Hillel (Conceptualization, Methodology)'),
                        br(),
                        h4("Shiny app"),
-                       helpText('Riedel, Nico (Conceptualization, Technical Implementation); Weissgerber, Tracey (Conceptualization);
-                                Dirnagl, Ulrich (Conceptualization); Bobrov, Evgeny (Conceptualization); Strech, Daniel (Conceptualization);
-                                Franzen, Delwen (Conceptualization); Salholz-Hillel, Maia (Conceptualization)'),
+                       helpText('Nico Riedel (Conceptualization, Technical Implementation); Tracey Weissgerber (Conceptualization);
+                                Ulrich Dirnagl (Conceptualization); Evgeny Bobrov (Conceptualization); Daniel Strech (Conceptualization);
+                                Delwen Franzen (Conceptualization); Maia Salholz-Hillel (Conceptualization)'),
                        br(),
                        h3('Acknowledgment'),
                        helpText('We greatfully acknowledge funding by the Wellcome Trust (Charite-BIH Translational Partnership)'),
