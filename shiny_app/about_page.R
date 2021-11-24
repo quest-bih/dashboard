@@ -9,7 +9,7 @@ about_page <- tabPanel("About", value = "tabAbout",
                                      Jan Taubitz (Concept, Technical implementation)
 ')),
                        br(),
-                       h4("Open Access data"),
+                       h4("Open access data"),
                        helpText(HTML('The open access data were also provided by the
                                      <a href="https://medbib-charite.github.io/oa-dashboard/#about">Charité Medical Library</a>
                                      team.')),

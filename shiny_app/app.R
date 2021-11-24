@@ -103,7 +103,7 @@ ui <- tagList(
                       h4(style = "margin-left:0cm",
                          "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
                       h4(style = "margin-left:0cm",
-                         HTML('For more detailed Open Access metrics you can visit the
+                         HTML('For more detailed open access metrics you can visit the
                          <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
                          developed by the Charité Medical Library.')),
 
@@ -230,7 +230,7 @@ server <- function(input, output, session)
               fluidRow(
                 column(col_width, metric_box(title = "Open Access",
                                      value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
-                                     value_text = paste0("of publications were Open Access in ", show_year),
+                                     value_text = paste0("of publications were open access in ", show_year),
                                      plot = plotlyOutput('plot_OA', height = "300px"),
                                      info_id = "infoOA",
                                      info_title = "Open Access",

@@ -15,11 +15,11 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                     p("Many of the assessed metrics are publication-based metrics.
                         To assess those metrics on the institutional level, we first need to
                         identify the publications that can be assigned to the Charité.
-                        For this, we use a list of publications kindly provided by the Charité Medical Library.
-                        They obtained this publication list by searching the publication databases
-                        Web of Science and Embase for biomedical publications with at least one of the
-                        authors affiliated to the Charité or the Berlin Institute of Health.
-                        Subsequently, the search results from both databases were merged and deduplicated."),
+                        The Charité Medical Library provided this list of publications, which
+                        was created by merging, deduplicating and improving data resulting from
+                        searches in two separate publication databases. Web of Science and Embase
+                        were both searched for biomedical publications with at least one author
+                        affiliated to the Charité or the Berlin Institute of Health."),
                                     value = "methodsPanels_PublicationSearch",
                                     style = "default")),
 
@@ -30,44 +30,47 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
                     methods_panel("Open Access",
 
-                                  "The Open Access metric measures the degree of openness of the
-                        publications published by the Charité researchers. Open Access
-                        publications are freely and (usually) immediately available
-                        to all other researchers in the world and thus help to distribute
-                        research results transparently, openly and fast.",
+                                  "The open access metric measures the degree of openness
+                        of the publications by Charité researchers. Open access publications
+                        are available to everyone worldwide for free, helping to distribute
+                        research results quickly and transparently.",
 
-                                  HTML('Using the list of institutional publications, the
-                        Charité Medical Library queried the unpaywall database via its
-                        <a href="https://unpaywall.org/products/api">API</a>
-                        to obtain information on the Open Access (OA) status of the publications.
-                        Unpaywall is today the most comprehensive database of Open Access
-                        information on research articles. It can be queried using publication
-                        DOIs. There are different Open Access statuses a publication can have,
-                        which are color-coded. Gold OA denotes publication in a pure OA journal.
-                        Green OA denotes a freely available repository version. Hybrid OA denotes
-                        an OA publication in a journal with offers both a subscription based model
-                        as well as an Open Access option. Bronze OA denotes a publication which is
-                        freely available on the journal page, but without a clear open license.
-                        Those can be articles in a non-OA journal which have been made available
-                        voluntarily by the journal but which might lose its OA status again.
-                        Thus we only consider the OA categories gold, green and hybrid here.
-                        As one publication can have several OA versions (e.g. a gold version
-                        in an OA journal as well as a green version in a repository), Unpaywall defines
-                        a hierarchy of the OA categories and for each publication only assigns
-                        the OA category with the highest priority. The standard hierarchy used here is
-                        gold - hybrid - green (journal version before repository version).
-                        We group the results from unpaywall by OA status and publication year.
-                        One important point that has to be considered with OA data is, that
-                        the OA percentage is not a fixed number but is changing over time.
-                        This comes from the repository versions that are often made available
-                        with a delay, such that the OA percentage for a given year is typically
-                        rising retrospectively. Thus the point in time of data retrieval is important
-                        for the OA percentage. The current OA data were retrieved on: 16.09.2021.'),
+                                  HTML('The Charité Medical Library first created a list
+                        of journal article publications by Charité researchers, then queried
+                        the Unpaywall database via its API to obtain information on the
+                        Open Access (OA) status of those publications. Unpaywall is today
+                        the most comprehensive database of open access information on
+                        research articles. It has been queried using Digital Object
+                        Identifiers (DOIs) for each of the publications. There are different
+                        OA statuses a publication can have, which are color-coded. Gold OA
+                        denotes publication in a pure OA journal. Green OA denotes a freely
+                        available repository version. Hybrid OA denotes an OA publication
+                        in a paywalled journal where the author(s) have opted to pay for
+                        their article to be open access. Bronze OA denotes a publication
+                        which is freely available on the publisher website, but without a
+                        clear open license enabling re-use: this includes articles in a
+                        paywalled journal which have been made free to read but access
+                        might be withdrawn at any time. Thus we only consider the categories
+                        gold, green and hybrid to be true open access here. As one
+                        publication can have several OA versions (e.g. a gold version in an
+                        OA journal as well as a green version in a repository), a hierarchy
+                        is used so that each publication is assigned the OA category with the
+                        highest level of openness. The standard hierarchy used here is
+                        gold - hybrid - green (journal version before repository version,
+                        excepting bronze). We group the results from Unpaywall by OA status
+                        and publication year. One important point for OA status is that it
+                        may change over time: the OA percentage is not a fixed number.
+                        Repository versions (green OA) are often made available after a
+                        delay, such that the OA percentage for a given year typically rises
+                        retrospectively. Thus the point in time of data retrieval is
+                        important for understanding the OA percentage. The current OA status
+                        data were retrieved on: 16.09.2021.'),
 
-                                  "Unpaywall only stores information for publications that have
-                        a DOI assigned by crossref. Articles without crossref DOI have to
-                        be excluded from the OA analysis. However, in the most recent years
-                        this is the case for a tiny minority (<1%) of the publications."),
+                                  "Unpaywall only stores information for publications that
+                        have a DOI assigned by Crossref. Articles without a Crossref DOI
+                        have to be excluded from the OA analysis. However, in the most
+                        recent years DOIs are missing for only a tiny minority (<1%) of
+                        the publications.."),
 
 
                     methods_panel("Open Data and Open Code",
@@ -118,7 +121,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         with available full texts, which could indeed be screened.'),
 
                                   "Several limitations apply:
-                        Only full texts for Open Access publications or publications in journals
+                        Only full texts for open access publications or publications in journals
                         that are subscribed by the Charité could be retrieved
                         (~85% of all detected publications). ODDPub only finds ~75% of all Open Data
                         publications and finds false positive cases (no manual check of the results
@@ -284,14 +287,14 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 #------------------------------------------------------------------------
 
 
-open_access_tooltip <- strwrap("The Open Access metric shows the percentage of Charité original
-                             research publications that are published as Open Access (OA) articles.
+open_access_tooltip <- strwrap("The open access metric shows the percentage of Charité original
+                             research publications that are published as open access (OA) articles.
                              Gold OA denotes publication in a pure OA journal.
                              Green OA denotes a freely available repository version. Hybrid OA denotes
                              an OA publication in a journal with offers both a subscription based model
-                             as well as an Open Access option. Bronze OA denotes a publication which is
+                             as well as an open access option. Bronze OA denotes a publication which is
                              freely available on the journal page, but without a clear open license.
-                             Closed articles are not freely available. For some articles no Open Access
+                             Closed articles are not freely available. For some articles no open access
                              information was available.
                              - Click for methods details.") %>%
   paste(collapse = " ")
