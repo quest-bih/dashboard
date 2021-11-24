@@ -1,6 +1,5 @@
 library(plotly)
 library(shiny)
-library(shinydashboard)
 library(tidyverse)
 library(ggvis)
 library(ggplot2)
@@ -13,6 +12,7 @@ library(DT)
 # load data & functions
 #----------------------------------------------------------------------------------------------------------------------
 
+source("impressum.R", encoding="UTF-8")
 source("app_functions_OA.R")
 source("app_functions_oddpub.R")
 source("ui_elements.R")
@@ -21,6 +21,7 @@ source("resources_descriptions.R", encoding = "UTF-8")
 source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
 source("datasets_panel.R")
+
 
 dashboard_metrics <- read_csv("data/dashboard_metrics.csv")
 
@@ -153,7 +154,17 @@ ui <- tagList(
                                             info_text = vis_inform_tooltip,
                                             info_alignment = "left"))
                      )
-           )
+           ),
+           br(),
+           br(),
+           br(),
+           hr(),
+           bsCollapsePanel(strong("Impressum"),
+                           impressum_text,
+                           style = "default"),
+           bsCollapsePanel(strong("Datenschutz"),
+                           datenschutz_text,
+                           style = "default")
   ),
   methods_panel,
   resources_panel,
@@ -187,7 +198,23 @@ ui <- tagList(
                       bsCollapsePanel(strong("Timely publication dataset"),
                                       HTML('This dataset was already published
                         <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
-                                      style = "default"))
+                                      style = "default")),
+           br(),
+           br(),
+           br(),
+           br(),
+           br(),
+           br(),
+           br(),
+           br(),
+           br(),
+           hr(),
+           bsCollapsePanel(strong("Impressum"),
+                           impressum_text,
+                           style = "default"),
+           bsCollapsePanel(strong("Datenschutz"),
+                           datenschutz_text,
+                           style = "default")
   ),
   about_page,
 

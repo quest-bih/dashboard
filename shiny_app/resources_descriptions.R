@@ -29,5 +29,17 @@ resources_panel <- tabPanel("Educational resources", value = "tabRessources",
          h4(tags$b("Webinar")),
          h4(HTML('<a href="https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility">
                     https://elifesciences.org/inside-elife/5114d8e9/webinar-report-transforming-data-visualisation-to-improve-transparency-and-reproducibility </a>'))
-      )
+      ),
+      br(),
+      br(),
+      br(),
+      br(),
+      br(),
+      hr(),
+      bsCollapsePanel(strong("Impressum"),
+                      impressum_text,
+                      style = "default"),
+      bsCollapsePanel(strong("Datenschutz"),
+                      datenschutz_text,
+                      style = "default")
 )

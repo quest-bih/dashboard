@@ -278,7 +278,20 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
                                   "Barzooka detects the graph types with different accuracies and in particular
                         for the categories of bar graphs for continuous data and appropriate bar graphs
-                        (for count data) there can be erroneous assignments."))
+                        (for count data) there can be erroneous assignments.")),
+
+         br(),
+         br(),
+         br(),
+         br(),
+         br(),
+         hr(),
+         bsCollapsePanel(strong("Impressum"),
+                         impressum_text,
+                         style = "default"),
+         bsCollapsePanel(strong("Datenschutz"),
+                         datenschutz_text,
+                         style = "default")
 )
 
 

@@ -43,5 +43,17 @@ about_page <- tabPanel("About", value = "tabAbout",
                        helpText('10178 Berlin, Germany'),
                        helpText('quest@bihealth.de'),
                        helpText(HTML('<a href="https://www.bihealth.org/quest-center/">
-                                      https://www.bihealth.org/quest-center/ </a>'))
+                                      https://www.bihealth.org/quest-center/ </a>')),
+                       br(),
+                       br(),
+                       br(),
+                       br(),
+                       br(),
+                       hr(),
+                       bsCollapsePanel(strong("Impressum"),
+                                       impressum_text,
+                                       style = "default"),
+                       bsCollapsePanel(strong("Datenschutz"),
+                                       datenschutz_text,
+                                       style = "default")
 )
