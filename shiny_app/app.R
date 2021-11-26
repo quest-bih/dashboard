@@ -88,7 +88,7 @@ ui <- tagList(
              br(),
              fluidRow(
                column(8,
-                      h1(style = "margin-left:0cm", strong("Charité Dashboard on Open and Responsible Research Practices"), align = "left"),
+                      h1(style = "margin-left:0cm", strong("Charité Dashboard on Responsible Research"), align = "left"),
                       h4(style = "margin-left:0cm",
                          HTML('Charité has committed itself to establish, promote and maintain a
                               research environment which enhances the robustness of research and
