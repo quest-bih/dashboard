@@ -93,8 +93,7 @@ ui <- tagList(
                          HTML('Charité has committed itself to establish, promote and maintain a
                               research environment which enhances the robustness of research and
                               the reproducibility of results
-                              (<a href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/">
-                              The Rethinking Health – Charité 2030</a>)')),
+                              (<a href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/">Rethinking Health – Charité 2030</a>).')),
                       h4(style = "margin-left:0cm",
                          "This dashboard gives an overview of several metrics of open and responsible
                         research at the Charité (including the Berlin Institute of Health).
