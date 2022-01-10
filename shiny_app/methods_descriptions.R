@@ -104,8 +104,8 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         we use the text-mining algorithm ODDPub
                         (Code: <a href="https://github.com/quest-bih/oddpub">
                         https://github.com/quest-bih/oddpub</a>,
-                        preprint: <a href="https://doi.org/10.1101/2020.05.11.088021">
-                        https://doi.org/10.1101/2020.05.11.088021</a>),
+                        publication: <a href="https://doi.org/10.5334/dsj-2020-042">
+                        https://doi.org/10.5334/dsj-2020-042</a>),
                         which was developed by QUEST. ODDPub searches the publication full-text
                         for statements indicating sharing of raw data or analysis code.
                         It does however not check the shared data itself.
