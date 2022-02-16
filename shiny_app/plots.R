@@ -147,7 +147,7 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in)
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
     add_trace(y = ~OC_other_perc,
-              name = 'other repository or website',
+              name = 'other repository <br>or website',
               marker = list(color = color_palette[6],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
@@ -156,8 +156,8 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           legend = list(title = list(text = '<b> Category </b>',
-                                      xanchor = "right")),
+           legend = list(title = list(text = '<b> Category </b>'),
+                         xanchor = "right"),
            yaxis = list(title = '<b>Percentage of publications</b>',
                         range = yrange),
            xaxis = list(title = '<b>Year</b>',
