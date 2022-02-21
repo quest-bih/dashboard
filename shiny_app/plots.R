@@ -23,14 +23,13 @@ plot_OA_perc <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           legend = list(title = list(text = '<b> Category </b>',
-                                      xanchor = "right")),
            yaxis = list(title = '<b>Percentage Open Access</b>',
                         range = c(0, 100)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_OA_total <- function(plot_data, color_palette)
@@ -60,13 +59,13 @@ plot_OA_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           legend=list(title=list(text='<b> Category </b>')),
            yaxis = list(title = '<b>Publications</b>',
                         range = c(0, 6300)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -94,14 +93,14 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           legend = list(title = list(text = '<b> Category </b>'),
-                         xanchor = "right"),
+           legend = list(xanchor = "right"),
            yaxis = list(title = '<b>Percentage of publications</b>',
                         range = yrange),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_OD_total <- function(plot_data, color_palette)
@@ -122,13 +121,13 @@ plot_OD_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           legend=list(title=list(text='<b> Category </b>')),
            yaxis = list(title = '<b>Number of publications</b>',
                         range = c(0, 6300)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -156,14 +155,14 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           legend = list(title = list(text = '<b> Category </b>',
-                                      xanchor = "right")),
+           legend = list(xanchor = "right"),
            yaxis = list(title = '<b>Percentage of publications</b>',
                         range = yrange),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_OC_total <- function(plot_data, color_palette)
@@ -184,13 +183,13 @@ plot_OC_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           legend=list(title=list(text='<b> Category </b>')),
            yaxis = list(title = '<b>Number of publications</b>',
                         range = c(0, 6300)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -211,7 +210,8 @@ plot_preprints <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right"))
+           legend = list(xanchor = "right")) %>%
+    config(displayModeBar = FALSE)
 }
 
 # Orcid
@@ -227,7 +227,8 @@ plot_orcid <- function(plot_data, color_palette)
            xaxis = list(title = '<b>Date</b>',
                         type = 'date'),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -250,7 +251,8 @@ plot_summary_results_perc <- function(plot_data, color_palette)
                         type = 'date'),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right"))
+           legend = list(xanchor = "right")) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_summary_results_total <- function(plot_data, color_palette)
@@ -267,7 +269,8 @@ plot_summary_results_total <- function(plot_data, color_palette)
            xaxis = list(title = '<b>Date</b>',
                         type = 'date'),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -289,7 +292,8 @@ plot_intovalue_perc <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right"))
+           legend = list(xanchor = "right")) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_intovalue_total <- function(plot_data, color_palette)
@@ -317,7 +321,8 @@ plot_intovalue_total <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right"))
+           legend = list(xanchor = "right")) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -333,7 +338,8 @@ plot_prosp_reg_perc <- function(plot_data, color_palette)
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_prosp_reg_total <- function(plot_data, color_palette)
@@ -353,7 +359,8 @@ plot_prosp_reg_total <- function(plot_data, color_palette)
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -371,13 +378,13 @@ plot_barzooka_problem_perc <- function(plot_data, color_palette)
     add_trace(y = ~round(has_pie/total*100, 1), name = 'pie chart', mode = 'lines+markers',
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) %>%
-    layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Percentage of publications</b>',
+    layout(yaxis = list(title = '<b>Percentage of publications</b>',
                         range = c(0, 28)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_barzooka_problem_total<- function(plot_data, color_palette)
@@ -392,12 +399,12 @@ plot_barzooka_problem_total<- function(plot_data, color_palette)
     add_trace(y = ~total, name = 'accessible publications', mode = 'lines+markers',
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) %>%
-    layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Publications with graph type</b>'),
+    layout(yaxis = list(title = '<b>Publications with graph type</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 
@@ -423,13 +430,13 @@ plot_barzooka_inform_perc <- function(plot_data, color_palette)
     add_trace(y = ~round(has_violin/total*100, 1), name = 'violin plot', mode = 'lines+markers',
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) %>%
-    layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Percentage of publications</b>',
+    layout(yaxis = list(title = '<b>Percentage of publications</b>',
                         range = c(0, 28)),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 plot_barzooka_inform_total <- function(plot_data, color_palette)
@@ -456,10 +463,219 @@ plot_barzooka_inform_total <- function(plot_data, color_palette)
     add_trace(y = ~total, name = 'accessible publications', mode = 'lines+markers',
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) %>%
-    layout(legend=list(title=list(text='<b> Category </b>')),
-           yaxis = list(title = '<b>Publications with graph type</b>'),
+    layout(yaxis = list(title = '<b>Publications with graph type</b>'),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9])
+           plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
+
+#------------------------------------------------------------------------
+# FAIR assessment
+#------------------------------------------------------------------------
+
+plot_fair_license_perc <- function(plot_data, color_palette)
+{
+  pal_lic <- colorRampPalette(c("#FFFFCC", "#F1BA50", "#F16A50"))
+  pal_license <- c(rev(pal_lic(6)), "#879C9D")
+
+  plot_data %>%
+    plot_ly(
+      x = ~ perc,
+      y = ~ rep_type_2,
+      color = ~ license_fuji,
+      colors = pal_license,
+      marker = list(line = list(color = "#000000",
+                                width = 1)),
+      text = ~ license_fuji,
+      textposition = 'inside',
+      insidetextanchor = "middle",
+      textangle = 0,
+      textfont = list(color = "#ffffff", size = 14)
+    ) %>%
+    add_bars() %>%
+    layout(
+      margin = list(l = 4, b = 10, pad = 0),
+      barmode = "stack",
+      xaxis = list(
+        title = FALSE,
+        side = "top",
+        tickformat = ",.0%"
+      ),
+      yaxis = list(title = FALSE, side = "right"),
+      uniformtext = list(minsize = 8, mode = "hide"),
+      legend = list(
+        orientation = 'h',
+        traceorder = "normal",
+        x = 1,
+        xanchor = "right",
+        font = list(size = 10)
+      ),
+      paper_bgcolor = color_palette[9],
+      plot_bgcolor = color_palette[9]
+    ) %>%
+    config(displayModeBar = FALSE)
+}
+
+plot_fair_license_total <- function(plot_data, color_palette)
+{
+  pal_lic <- colorRampPalette(c("#FFFFCC", "#F1BA50", "#F16A50"))
+  pal_license <- c(rev(pal_lic(6)), "#879C9D")
+
+  plot_data %>%
+    plot_ly(
+      x = ~ n,
+      y = ~ rep_type_2,
+      color = ~ license_fuji,
+      colors = pal_license,
+      marker = list(line = list(color = "#000000",
+                                width = 1)),
+      text = ~ license_fuji,
+      textposition = 'inside',
+      insidetextanchor = "middle",
+      textangle = 0,
+      textfont = list(color = "#ffffff", size = 14)
+    ) %>%
+    add_bars() %>%
+    layout(
+      margin = list(l = 4, b = 10, pad = 0),
+      barmode = "stack",
+      xaxis = list(
+        title = FALSE,
+        side = "top"
+      ),
+      yaxis = list(title = FALSE, side = "right"),
+      uniformtext = list(minsize = 12, mode = "hide"),
+      legend = list(
+        orientation = 'h',
+        traceorder = "normal",
+        x = 1,
+        xanchor = "right",
+        font = list(size = 10)
+      ),
+      paper_bgcolor = color_palette[9],
+      plot_bgcolor = color_palette[9]
+    ) %>%
+    config(displayModeBar = FALSE)
+}
+
+
+plot_fair_principle_perc <- function(plot_data, color_palette)
+{
+  plot_data %>%
+    mutate(jitter = value + round(runif(nrow(.),-0.02, 0.02), 3)) %>%
+    ggplot(aes(
+      x = name,
+      y = jitter,
+      fill = repository_type,
+      group = name,
+      text = paste0(
+        "FAIR Principle: ",
+        name,
+        "<br>FAIR Score: ",
+        round(value, 2) * 100,
+        "%",
+        "<br>Repository: ",
+        repository_re3data
+      )
+    )) +
+    geom_violin(trim = TRUE,
+                scale = "width",
+                na.rm = TRUE) +
+    geom_quasirandom(
+      width = 0.45, # 0.45
+      bandwidth = 0.2, # 0.2
+      varwidth = TRUE,
+      size = 0.1, #0.4
+      alpha = 0.4, # 0.4
+      shape = 21, #21
+      method = "quasirandom",
+      na.rm = TRUE,
+      color = "#000000"
+    ) +
+    stat_summary(
+      fun = mean,
+      geom = "crossbar",
+      width = 0.3,
+      size = 0.25,
+      color = "#000000",
+      na.rm = TRUE
+    ) +
+    facet_wrap(~ repository_type) +
+    theme_minimal() +
+    theme(
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      legend.position = "none",
+      panel.grid.major = element_blank()
+    ) +
+    scale_y_continuous(labels = scales::percent) +
+    scale_fill_manual(values = c(color_palette[2], color_palette[3]))
+
+    ggplotly(tooltip = "text") %>% #list("AB" = "name", "XY" = "value")
+    layout(yaxis = list(
+             title = list(text = "FAIR score according to F-UJI", font = list(size = 12))),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9]) %>%
+      config(displayModeBar = FALSE)
+}
+
+
+plot_fair_treemap <- function(plot_data, color_palette)
+{
+  # Prepare hovertext for str_glue()
+  hovertext <-
+    c(
+      "<b>{repository_re3data}</b><span style='font-family:courier'>
+          n = {n}
+          FAIR = {fair_score}%
+          F = {f_score}%
+          A = {a_score}%
+          I = {i_score}%
+          R = {r_score}%</span>"
+    )
+
+  plot_data %>% plot_ly(
+    labels = ~ repository,
+    parents = ~ repository_type,
+    values = ~ n,
+    type = "treemap",
+    branchvalues = "total",
+    textinfo = "label",
+    hoverinfo = "text",
+    hovertext = ~ str_glue(hovertext),
+    marker = list(
+      colorscale = list(c(0, 0.35, 1), c("#AA493A", "#F1BA50", "#007265")),
+      cmin = 0,
+      cmid = 0.35,
+      cmax = 1,
+      colors = ~ fair_score / 100,
+      showscale = TRUE,
+      line = list(color = color_palette[9], width = 0.5),
+      pad = list(b = 5, l = 5,r = 5,t = 25),
+      colorbar = list(title = "FAIR<br>Score",
+                      tickformat = ".0%",
+                      tickfont = list(size = 10),
+                      outlinecolor = color_palette[9])
+    ),
+    pathbar = list(visible = FALSE),
+    outsidetextfont=list(size=20),
+    insidetextfont=list(size=25)
+  ) %>%
+    layout(paper_bgcolor = color_palette[9],
+           margin=list(l=0, r=0, b=5, t=0)) %>%
+    config(displayModeBar = FALSE) #  plot_bgcolor = pal_bg
+}
+
+
+# plot_fair_principle_perc(make_fair_principle_plot_data(plot_data), color_palette)
+
+# plot_data <- read_csv("shiny_app/data/fair_assessment.csv")
+#
+# color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+#                    "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
+#                    "#DCE3E5")
+#
+# plot_fair_license_total(plot_data, color_palette)
+# plot_fair_license_perc(plot_data, color_palette)

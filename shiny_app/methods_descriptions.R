@@ -6,7 +6,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
          h4(HTML('You can extend the panels to view the detailed methods for
               the individual metrics. The code for the actual implementation
               of the methods can be found on
-                 <a href="https://github.com/quest-bih/dashboard">Github</a>')),
+                 <a href="https://github.com/quest-bih/dashboard">Github</a>.')),
 
 
          h2("Publication search"),
@@ -70,7 +70,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         have a DOI assigned by Crossref. Articles without a Crossref DOI
                         have to be excluded from the OA analysis. However, in the most
                         recent years DOIs are missing for only a tiny minority (<1%) of
-                        the publications.."),
+                        the publications."),
 
 
                     methods_panel("Open Data and Open Code",
@@ -280,6 +280,24 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         for the categories of bar graphs for continuous data and appropriate bar graphs
                         (for count data) there can be erroneous assignments.")),
 
+         hr(),
+         h2("Data Reusability"),
+
+         bsCollapse(id = "methodsPanels_FAIR",
+
+
+                    methods_panel("FAIR data",
+
+                                  "In order for research data to be reused, it — and the data repositories that host them —
+                                  must meet certain quality criteria that ensure the data is Findable, Accessible, Interoperable, and Reusable (FAIR).
+                                  For this purpose the data must be stored together with detailed metadata that must conform to a defined standard.
+                                  In addition, datasets are easier to reuse if the corresponding metadata is machine-readable and uses a standardized vocabulary.
+                                  ",
+
+                                  HTML("To analyse the FAIRness of research data we used the automated screening tool <a href='https://www.f-uji.net'>F-UJI</a>."),
+
+                                  "Suitable tests do not exist for all metrics. The quality of metadata and compliance with FAIR principles depends on the repository providers
+                                  and can therefore only be influenced by the creators of the datasets to a limited extent.")),
          br(),
          br(),
          br(),
@@ -399,5 +417,26 @@ vis_inform_tooltip <- strwrap("Bar graphs for continuous data are common but are
                                 Bar graphs of continuous data should be replaced with more informative graphs
                                 that provide information about the data distribution and sample size,
                                 such as dot plots, box plots, violin plots or histograms.
+                                - Click for more info.") %>%
+  paste(collapse = " ")
+
+fair_repositories_tooltip <- strwrap("This metric measures the average FAIR score (in percent) by data repositories
+                                for research data published in 2020 by data repositories.
+                                Data repositories have a major impact on the FAIR score of research data because
+                                they provide the infrastructure that ensures Findability, Accessibility, Interoperability,
+                                and Reusability of digital assets.
+                                The FAIR score is based on 17? metrics ....
+                                - Click for more info.") %>%
+  paste(collapse = " ")
+
+fair_principles_tooltip <- strwrap("This metric measures the average FAIR score (in percent)
+                                by the four main principles Findability, Accessibility, Interoperability,
+                                and Reusability for research data published in 2020.
+                                The FAIR score is based on 17? metrics ....
+                                - Click for more info.") %>%
+  paste(collapse = " ")
+
+fair_licenses_tooltip <- strwrap("This metric measures if a standard, machine readable license is specified
+                                under which research data published in 2020 can be reused.
                                 - Click for more info.") %>%
   paste(collapse = " ")

@@ -8,6 +8,9 @@ library(shinyBS)
 library(shinyjs)
 library(DT)
 
+library(ggbeeswarm)
+library(scales)
+
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
 #----------------------------------------------------------------------------------------------------------------------
@@ -15,6 +18,7 @@ library(DT)
 source("impressum.R", encoding="UTF-8")
 source("app_functions_OA.R")
 source("app_functions_oddpub.R")
+source("app_functions_fair.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
 source("resources_descriptions.R", encoding = "UTF-8")
@@ -42,6 +46,8 @@ preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
 
 orcid_dataset <- read_csv("data/orcid_results.csv")
 
+# fair dataset
+fair_dataset <- read_csv("data/fair_assessment.csv")
 
 #----------------------------------------------------------------------------------------------------------------------
 # preprocessing, need to move somewhere else later
@@ -105,7 +111,7 @@ ui <- tagList(
                       h4(style = "margin-left:0cm",
                          HTML('For more detailed open access metrics you can visit the
                          <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
-                         developed by the Charité Medical Library.DOH')),
+                         developed by the Charité Medical Library.')),
 
                       br()),
                column(4,
@@ -154,6 +160,9 @@ ui <- tagList(
                                             info_alignment = "left"))
                      )
            ),
+
+           uiOutput("DataReusability_metrics"),
+
            br(),
            br(),
            br(),
@@ -198,6 +207,13 @@ ui <- tagList(
                                       HTML('This dataset was already published
                         <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
                                       style = "default")),
+
+           br(),
+           bsCollapse(id = "datasetPanels_PublicationDataset",
+                      bsCollapsePanel(strong("Data reusability (FAIR data) dataset"),
+                                      DT::dataTableOutput("data_table_FAIR"),
+                                      style = "default")),
+
            br(),
            br(),
            br(),
@@ -252,7 +268,8 @@ server <- function(input, output, session)
               h2(strong("Open Science"), align = "left"),
               fluidRow(
                 column(2, checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE)),
-                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))),
+                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))
+                ),
               fluidRow(
                 column(col_width, metric_box(title = "Open Access",
                                      value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
@@ -287,7 +304,7 @@ server <- function(input, output, session)
                 column(col_width, metric_box(title = "ORCID",
                                      value = orcid_dataset$orcid_count %>% last(),
                                      value_text = paste0("Charité researchers with an ORCID (as of ",
-                                                         orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
+                                                                 orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
                                      plot = plotlyOutput('plot_orcid', height = "300px"),
                                      info_id = "infoOrcid",
                                      info_title = "ORCID",
@@ -344,7 +361,47 @@ server <- function(input, output, session)
     )
   })
 
+  output$DataReusability_metrics <- renderUI({
+    req(input$width)
+    if(input$width < 1400) {
+      col_width <- 6
+      alignment <- "left"
+    } else {
+      col_width <- 6
+      alignment <- "right"
+    }
 
+    wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
+              h2(strong("Data Reusability (FAIR data)"), align = "left"),
+              checkboxInput("checkbox_total_FAIR", strong("Show absolute numbers"), value = FALSE),
+              fluidRow(
+                column(col_width, metric_box(title = "FAIR scores by repositories",
+                                             value = paste0(fair_dataset$fuji_percent %>% mean(na.rm = TRUE) %>% round(0), " %"),
+                                             value_text = "is the average FAIR score of datasets from 2020",
+                                             plot = plotlyOutput('plot_fair_treemap', height = "300px"),
+                                             info_id = "infoFAIRrepository",
+                                             info_title = "FAIR scores by repositories",
+                                             info_text = fair_repositories_tooltip,
+                                             info_alignment = "right")),
+                column(col_width, metric_box(title = "FAIR scores by principles",
+                                             value = "18 %",
+                                             value_text = "is the average FAIR score of datasets from 2020",
+                                             plot = plotlyOutput('plot_fair_principle', height = "300px"),
+                                             info_id = "infoFAIRprinciples",
+                                             info_title = "FAIR scores by principles",
+                                             info_text = fair_principles_tooltip,
+                                             info_alignment = alignment)),
+                column(col_width, metric_box(title = "Dataset licenses",
+                                             value = "51 %",
+                                             value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
+                                             plot = plotlyOutput('plot_fair_license', height = "300px"),
+                                             info_id = "infoFAIRlicenses",
+                                             info_title = "Dataset license",
+                                             info_text = fair_licenses_tooltip,
+                                             info_alignment = "right"))
+              )
+    )
+  })
 
 
   #actionButton to switch tabs
@@ -425,6 +482,24 @@ server <- function(input, output, session)
                       selected = "tabRessources")
   })
 
+  observeEvent(input$infoFAIRrepository, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
+  observeEvent(input$infoFAIRprinciples, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
+  observeEvent(input$infoFAIRlicenses, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
 
   #data table to show the underlying datasets
   output$data_table_publ <- DT::renderDataTable({
@@ -439,6 +514,9 @@ server <- function(input, output, session)
     make_datatable(prosp_reg_dataset_shiny)
   })
 
+  output$data_table_FAIR <- DT::renderDataTable({
+    make_datatable(fair_dataset)
+  })
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
                      "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
@@ -512,6 +590,37 @@ server <- function(input, output, session)
   # Orcid
   output$plot_orcid <- renderPlotly({
     plot_orcid(orcid_dataset, color_palette)
+  })
+
+  # FAIR license
+
+  fair_license_plot_data <- fair_dataset %>%
+    make_fair_license_plot_data()
+
+  output$plot_fair_license <- renderPlotly({
+    if(input$checkbox_total_FAIR) {
+      return(plot_fair_license_total(fair_license_plot_data, color_palette))
+    } else {
+      return(plot_fair_license_perc(fair_license_plot_data, color_palette))
+    }
+  })
+
+  # FAIR principle
+
+  fair_principle_plot_data <- fair_dataset %>%
+    make_fair_principle_plot_data()
+
+  output$plot_fair_principle <- renderPlotly({
+    plot_fair_principle_perc(fair_principle_plot_data, color_palette)
+  })
+
+  # FAIR repository treemap
+
+  fair_treemap_plot_data <- fair_dataset %>%
+    make_fair_treemap_plot_data()
+
+  output$plot_fair_treemap <- renderPlotly({
+    plot_fair_treemap(fair_treemap_plot_data, color_palette)
   })
 
 
