@@ -136,6 +136,55 @@ make_fair_treemap_plot_data <- function(data_table)
   return(fair_treemap_plot_data)
 }
 
+# Data for FAIR repository sunburst chart
+
+make_fair_sunburst_plot_data <- function(data_table)
+{
+  # Function to combine round() and mean()
+  rounded_mean <- compose(
+    partial(round, digits = 1),
+    partial(mean, na.rm = TRUE)
+  )
+
+  fair_sunburst_plot_data_head_1 <- data_table %>%
+    summarise(n = n(), fair_score = rounded_mean(fuji_percent)) %>%
+    mutate(guid_scheme_fuji = "All repositories", .before = n)
+
+  fair_sunburst_plot_data_head_2 <- data_table %>%
+    group_by(repository_type) %>%
+    summarise(n = n(), fair_score = rounded_mean(fuji_percent)) %>%
+    mutate(guid_scheme_fuji = repository_type) %>%
+    mutate(repository_type = "All repositories")
+
+  fair_sunburst_plot_data <- data_table %>%
+    group_by(guid_scheme_fuji, repository_type) %>%
+    summarise(n = n(), fair_score = rounded_mean(fuji_percent)) %>%
+    ungroup() %>%
+    complete(guid_scheme_fuji, repository_type, fill = list(n =0, fair_score = 0))
+
+  fair_sunburst_plot_data <-
+    bind_rows(fair_sunburst_plot_data_head_1,
+              fair_sunburst_plot_data_head_2,
+              fair_sunburst_plot_data) %>%
+    mutate(across(
+      where(is.character),
+      ~ case_when(
+        str_detect(., "field-specific repository") ~ "Disciplinary repositories",
+        str_detect(., "general-purpose repository") ~ "General-purpose rep.",
+        TRUE ~ as.character(.)
+      )
+    )) %>%
+    mutate(repository_type = case_when(str_detect(repository_type, "Disciplinary repositories") ~ "All repositories - Disciplinary repositories",
+                                       str_detect(repository_type, "General-purpose rep.") ~ "All repositories - General-purpose rep.",
+                                       TRUE ~ as.character(repository_type))) %>%
+    mutate(ids = paste0(repository_type, " - ", guid_scheme_fuji)) %>%
+    mutate(ids = str_remove(ids, "NA - ")) %>%
+    drop_na(guid_scheme_fuji)
+
+  return(fair_sunburst_plot_data)
+}
+
+
 # plot_data <- read_csv("shiny_app/data/fair_assessment.csv")
 # make_fair_treemap_plot_data(plot_data)
 # paste0(plot_data$fuji_percent %>% mean(na.rm = TRUE) %>% round(0), "%")

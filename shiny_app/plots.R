@@ -23,8 +23,9 @@ plot_OA_perc <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
-           yaxis = list(title = '<b>Percentage Open Access</b>',
-                        range = c(0, 100)),
+           yaxis = list(title = '<b>Open Access</b>',
+                        range = c(0, 100),
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -94,8 +95,9 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in)
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend = list(xanchor = "right"),
-           yaxis = list(title = '<b>Percentage of publications</b>',
-                        range = yrange),
+           yaxis = list(title = '<b>Publications</b>',
+                        range = yrange,
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -156,8 +158,9 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in)
                                         width = 1.5))) %>%
     layout(barmode = 'stack',
            legend = list(xanchor = "right"),
-           yaxis = list(title = '<b>Percentage of publications</b>',
-                        range = yrange),
+           yaxis = list(title = '<b>Publications</b>',
+                        range = yrange,
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -245,8 +248,9 @@ plot_summary_results_perc <- function(plot_data, color_palette)
           type = 'scatter', mode = 'lines+markers',
           line = list(color = color_palette[3], width = 3),
           marker = list(color = color_palette[3], size = 8)) %>%
-    layout(yaxis = list(title = '<b>Percentage of trials</b>',
-                        range = c(0, 100)),
+    layout(yaxis = list(title = '<b>Trials</b>',
+                        range = c(0, 100),
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Date</b>',
                         type = 'date'),
            paper_bgcolor = color_palette[9],
@@ -286,8 +290,9 @@ plot_intovalue_perc <- function(plot_data, color_palette)
               name = 'results within 5 years', mode = 'lines+markers',
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
-    layout(yaxis = list(title = '<b>Percentage of trials</b>',
-                        range = c(0, 105)),
+    layout(yaxis = list(title = '<b>Trials</b>',
+                        range = c(0, 105),
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Trial completion year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -333,8 +338,9 @@ plot_prosp_reg_perc <- function(plot_data, color_palette)
           marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
-    layout(yaxis = list(title = '<b>Percentage of trials</b>',
-                        range = c(0, 100)),
+    layout(yaxis = list(title = '<b>Trials</b>',
+                        range = c(0, 100),
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -378,8 +384,9 @@ plot_barzooka_problem_perc <- function(plot_data, color_palette)
     add_trace(y = ~round(has_pie/total*100, 1), name = 'pie chart', mode = 'lines+markers',
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) %>%
-    layout(yaxis = list(title = '<b>Percentage of publications</b>',
-                        range = c(0, 28)),
+    layout(yaxis = list(title = '<b>Publications</b>',
+                        range = c(0, 28),
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -430,8 +437,9 @@ plot_barzooka_inform_perc <- function(plot_data, color_palette)
     add_trace(y = ~round(has_violin/total*100, 1), name = 'violin plot', mode = 'lines+markers',
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) %>%
-    layout(yaxis = list(title = '<b>Percentage of publications</b>',
-                        range = c(0, 28)),
+    layout(yaxis = list(title = '<b>Publications</b>',
+                        range = c(0, 28),
+                        ticksuffix = "%"),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
@@ -477,6 +485,14 @@ plot_barzooka_inform_total <- function(plot_data, color_palette)
 
 plot_fair_license_perc <- function(plot_data, color_palette)
 {
+
+  hovertext <-
+    c(
+      "<b>{license_fuji}</b>
+          prop.: {perc*100}%
+          n: {n}"
+    )
+
   pal_lic <- colorRampPalette(c("#FFFFCC", "#F1BA50", "#F16A50"))
   pal_license <- c(rev(pal_lic(6)), "#879C9D")
 
@@ -492,7 +508,9 @@ plot_fair_license_perc <- function(plot_data, color_palette)
       textposition = 'inside',
       insidetextanchor = "middle",
       textangle = 0,
-      textfont = list(color = "#ffffff", size = 14)
+      textfont = list(color = "auto", size = 14), #color = #ffffff
+      hoverinfo = "text",
+      hovertext = ~ str_glue(hovertext)
     ) %>%
     add_bars() %>%
     layout(
@@ -508,8 +526,8 @@ plot_fair_license_perc <- function(plot_data, color_palette)
       legend = list(
         orientation = 'h',
         traceorder = "normal",
-        x = 1,
-        xanchor = "right",
+        x = 0, #1
+        xanchor = "left", # right
         font = list(size = 10)
       ),
       paper_bgcolor = color_palette[9],
@@ -520,6 +538,14 @@ plot_fair_license_perc <- function(plot_data, color_palette)
 
 plot_fair_license_total <- function(plot_data, color_palette)
 {
+
+  hovertext <-
+    c(
+      "<b>{license_fuji}</b>
+          prop.: {perc*100}%
+          n: {n}"
+    )
+
   pal_lic <- colorRampPalette(c("#FFFFCC", "#F1BA50", "#F16A50"))
   pal_license <- c(rev(pal_lic(6)), "#879C9D")
 
@@ -535,7 +561,9 @@ plot_fair_license_total <- function(plot_data, color_palette)
       textposition = 'inside',
       insidetextanchor = "middle",
       textangle = 0,
-      textfont = list(color = "#ffffff", size = 14)
+      textfont = list(color = "auto", size = 14),
+      hoverinfo = "text",
+      hovertext = ~ str_glue(hovertext)
     ) %>%
     add_bars() %>%
     layout(
@@ -615,14 +643,15 @@ plot_fair_principle_perc <- function(plot_data, color_palette)
 
     ggplotly(tooltip = "text") %>% #list("AB" = "name", "XY" = "value")
     layout(yaxis = list(
-             title = list(text = "FAIR score according to F-UJI", font = list(size = 12))),
+             title = list(text = "FAIR score", font = list(size = 12))),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9]) %>%
       config(displayModeBar = FALSE)
 }
 
+# Function for treemap plot for FAIR score by repository
 
-plot_fair_treemap <- function(plot_data, color_palette)
+plot_fair_treemap <- function(plot_data, color_palette, fair_perc)
 {
   # Prepare hovertext for str_glue()
   hovertext <-
@@ -650,7 +679,7 @@ plot_fair_treemap <- function(plot_data, color_palette)
       cmin = 0,
       cmid = 0.35,
       cmax = 1,
-      colors = ~ fair_score / 100,
+      colors = ~ eval(as.symbol(fair_perc)) / 100, #fair_score
       showscale = TRUE,
       line = list(color = color_palette[9], width = 0.5),
       pad = list(b = 5, l = 5,r = 5,t = 25),
@@ -664,11 +693,212 @@ plot_fair_treemap <- function(plot_data, color_palette)
     insidetextfont=list(size=25)
   ) %>%
     layout(paper_bgcolor = color_palette[9],
-           margin=list(l=0, r=0, b=5, t=0)) %>%
+           margin=list(l=0, r=0, b=10, t=0)) %>%
     config(displayModeBar = FALSE) #  plot_bgcolor = pal_bg
 }
 
+# Function for sunburst plot for FAIR score by guid
 
+plot_fair_sunburst <- function(plot_data, color_palette)
+{
+  # Prepare hovertext for str_glue()
+  hovertext <-
+    c(
+      "<b>{guid_scheme_fuji}</b>
+          n = {n}
+          FAIR = {fair_score}%"
+    )
+
+  plot_data %>% plot_ly(
+    ids = ~ ids,
+    labels = ~ guid_scheme_fuji,
+    parents = ~ repository_type,
+    values = ~ n,
+    type = "sunburst",
+    branchvalues = "total",
+    hoverinfo = "text",
+    hovertext = ~ str_glue(hovertext),
+    marker = list(
+      colorscale = list(c(0, 0.35, 1), c("#AA493A", "#F1BA50", "#007265")), #cmin = 0, cmax = 1
+      cmin = 0,
+      cmid = 0.35,
+      cmax = 1,
+      colors = ~ fair_score / 100,
+      showscale = TRUE,
+     # line = list(color = color_palette[9], width = 2),
+     # pad = list(b = 5, l = 5,r = 5,t = 25),
+      colorbar = list(title = "FAIR<br>Score",
+                      tickformat = ".0%",
+                      tickfont = list(size = 10),
+                      outlinecolor = color_palette[9]))) %>%
+    layout(paper_bgcolor = color_palette[9],
+           margin=list(l=0, r=0, b=5, t=0)) %>%
+    config(displayModeBar = FALSE)
+
+}
+
+
+# Function for sunburst plot for FAIR score by guid
+
+plot_fair_principle_sunburst <- function(plot_data, color_palette, select_repository)
+{
+
+  if (select_repository == "all repositories") {
+    plot_data <- plot_data
+  } else if (select_repository == "field-specific repositories") {
+    plot_data <- plot_data %>% filter(repository_type == "field-specific repository")
+  } else if (select_repository == "general-purpose repositories") {
+    plot_data <- plot_data %>% filter(repository_type == "general-purpose repository")
+  } else {
+    plot_data <- plot_data %>% filter(repository_re3data %in% select_repository)
+  }
+
+
+  plot_data <- plot_data %>%
+    #filter(repository_type == "field-specific repository") %>%
+    #filter(repository_re3data == "figshare") %>%
+    select(starts_with("fuji_percent"), starts_with("FsF")) %>%
+    summarise(across(where(is.numeric), ~ mean(.)), n = n()) %>%
+    pivot_longer(cols = c(starts_with("fuji_percent"), starts_with("FsF"))) %>%
+    mutate(name = factor(
+      name,
+      levels = c(
+        "fuji_percent",
+        "fuji_percent_f",
+        "fuji_percent_a",
+        "fuji_percent_i",
+        "fuji_percent_r",
+        "fuji_percent_f1",
+        "fuji_percent_f2",
+        "fuji_percent_f3",
+        "fuji_percent_f4",
+        "fuji_percent_a1",
+        "fuji_percent_i1",
+        "fuji_percent_i3",
+        "fuji_percent_r1",
+        "fuji_percent_r1_1",
+        "fuji_percent_r1_2",
+        "fuji_percent_r1_3",
+        "FsF-F1-01D", "FsF-F1-02D", "FsF-F2-01M", "FsF-F3-01M", "FsF-F4-01M",
+        "FsF-A1-01M", "FsF-A1-02M", "FsF-A1-03D",
+        "FsF-I1-01M", "FsF-I1-02M", "FsF-I3-01M",
+        "FsF-R1-01MD", "FsF-R1.1-01M", "FsF-R1.2-01M", "FsF-R1.3-01M", "FsF-R1.3-02D"
+      ),
+      labels =
+        c("FAIR", "F", "A", "I", "R",
+          "F1", "F2", "F3", "F4",
+          "A1",
+          "I1", "I3",
+          "R1", "R1.1", "R1.2", "R1.3",
+          "FsF-F1-01D", "FsF-F1-02D", "FsF-F2-01M", "FsF-F3-01M", "FsF-F4-01M",
+          "FsF-A1-01M", "FsF-A1-02M", "FsF-A1-03D",
+          "FsF-I1-01M", "FsF-I1-02M", "FsF-I3-01M",
+          "FsF-R1-01MD", "FsF-R1.1-01M", "FsF-R1.2-01M", "FsF-R1.3-01M", "FsF-R1.3-02D")
+    )) %>%
+    arrange(name) %>%
+    mutate(parent = name) %>%
+    mutate(parent = str_replace(parent, "^FAIR$", NA_character_)) %>%
+    mutate(parent = str_replace(parent, "^[FAIR]$", "FAIR")) %>%
+    mutate(parent = str_replace_all(parent, "[0-9.]", "")) %>%
+    mutate(parent = case_when(str_detect(name, "^FsF.*") ~ as.character(str_extract(name, "(?<=-)(.*)(?=-)")),
+                              TRUE ~ parent)) %>%
+    mutate(score = c(24,
+                     7, 3, 4, 10,
+                     2, 2, 1, 2, 3, 3, 1, 4, 2, 2, 2,
+                     1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 4, 2, 2, 1, 1)) %>%
+    mutate(name = factor(name, levels = rev(levels(name)))) %>%
+   # mutate(name = if(select_chart == "sunburst"){factor(name, levels = rev(levels(name)))}else{factor(name, levels = levels(name))}) %>%
+    arrange(name) %>%
+    mutate(principle = case_when(name == "FAIR" ~ "FAIR",
+                                 name == "F" ~ "Findability",
+                                 name == "A" ~ "Accessibility",
+                                 name == "I" ~ "Interoperability",
+                                 name == "R" ~ "Reusability",
+                                 name == "F1" ~ "F1 — (Meta)data are assigned a globally unique and persistent identifier",
+                                 name == "F2" ~ "F2 — Data are described with rich metadata (defined by R1 below)",
+                                 name == "F3" ~ "F3 — Metadata clearly and explicitly include the identifier of the data they describe",
+                                 name == "F4" ~ "F4 — (Meta)data are registered or indexed in a searchable resource",
+                                 name == "A1" ~ "A1 — (Meta)data are retrievable by their identifier using a standardised communications protocol",
+                                 name == "I1" ~ "I1 — (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation",
+                                 name == "I3" ~ "I3 — (Meta)data include qualified references to other (meta)data",
+                                 name == "R1" ~ "R1 — Meta(data) are richly described with a plurality of accurate and relevant attributes",
+                                 name == "R1.1" ~ "R1.1 — (Meta)data are released with a clear and accessible data usage license",
+                                 name == "R1.2" ~ "R1.2 — (Meta)data are associated with detailed provenance",
+                                 name == "R1.3" ~ "R1.3 — (Meta)data meet domain-relevant community standards",
+                                 name == "FsF-F1-01D" ~ "FsF-F1-01D — Data is assigned a globally unique identifier.",
+                                 name == "FsF-F1-02D" ~ "FsF-F1-02D — Data is assigned a persistent identifier.",
+                                 name == "FsF-F2-01M" ~ "FsF-F2-01M — Metadata includes descriptive core elements (creator, title, data identifier, publisher, publication date, summary and keywords) to support data findability.",
+                                 name == "FsF-F3-01M" ~ "FsF-F3-01M — Metadata includes the identifier of the data it describes.",
+                                 name == "FsF-F4-01M" ~ "FsF-F4-01M — Metadata is offered in such a way that it can be retrieved programmatically.",
+                                 name == "FsF-A1-01M" ~ "FsF-A1-01M — Metadata contains access level and access conditions of the data.",
+                                 name == "FsF-A1-02M" ~ "FsF-A1-02M — Metadata is accessible through a standardized communication protocol.",
+                                 name == "FsF-A1-03D" ~ "FsF-A1-03D — Data is accessible through a standardized communication protocol.",
+                                 name == "FsF-I1-01M" ~ "FsF-I1-01M — Metadata is represented using a formal knowledge representation language.",
+                                 name == "FsF-I1-02M" ~ "FsF-I1-02M — Metadata uses semantic resources",
+                                 name == "FsF-I3-01M" ~ "FsF-I3-01M — Metadata includes links between the data and its related entities.",
+                                 name == "FsF-R1-01MD" ~ "FsF-R1-01MD — Metadata specifies the content of the data.",
+                                 name == "FsF-R1.1-01M" ~ "FsF-R1.1-01M — Metadata includes license information under which data can be reused.",
+                                 name == "FsF-R1.2-01M" ~ "FsF-R1.2-01M — Metadata includes provenance information about data creation or generation.",
+                                 name == "FsF-R1.3-01M" ~ "FsF-R1.3-01M — Metadata follows a standard recommended by the target research community of the data.",
+                                 name == "FsF-R1.3-02D" ~ "FsF-R1.3-02D — Data is available in a file format recommended by the target research community."
+    )) %>%
+    mutate(principle = str_wrap(principle, width = 50))
+
+  hovertext <-
+    c(
+      "<b>{principle}</b>
+    Score = {round(value, 1)}%
+    Weight = {round(score/0.24, 1)}%"
+    )
+
+  caption <- glue::glue("n = {n}
+                      Click on chart to see corresponding metrics
+                      Size of wedges correspond to the weight of the FAIR assessment sections",
+                        n = first(plot_data$n))
+
+
+  plot_data %>% plot_ly(
+    labels = ~ name,
+    parents = ~ parent,
+    values = ~ score,
+    #text = ~ paste0(round(value, 0),"%"),
+    type = "sunburst",
+    maxdepth = 3,
+    branchvalues = "total",
+    rotation = 90,
+    sort = FALSE,
+    hoverinfo = "text",
+    hovertext = ~ str_glue(hovertext),
+    textinfo = "label",
+    insidetextfont = list(size = 14),
+    marker = list(
+      colorscale = list(c(0, 0.35, 1), c("#AA493A", "#F1BA50", "#007265")), # viridis c("#FDE725FF", "#21908CFF", "#440154FF") # red green c("#AA493A", "#F1BA50", "#007265")
+      cmin = 0,
+      cmid = 0.35,
+      cmax = 1,
+      colors = ~ value / 100,
+      showscale = TRUE,
+     # line = list(width = 1.5),
+     # pad = list(b = 5, l = 5,r = 5,t = 25),
+      colorbar = list(title = "FAIR<br>Score",
+                      tickformat = ".0%",
+                      tickfont = list(size = 10),
+                      outlinecolor = color_palette[9])
+    )
+  ) %>%
+    layout(paper_bgcolor = color_palette[9],
+           margin=list(l=0, r=0, b=30, t=0),
+           annotations =
+             list(x = 0, y = -0.08, text = caption,
+                  align = "left",
+                  showarrow = F, xref='paper', yref='paper',
+                  xanchor='auto', yanchor='auto', xshift=0, yshift=0,
+                  font=list(size=10))) %>%
+    config(displayModeBar = FALSE)
+}
+
+
+#
 # plot_fair_principle_perc(make_fair_principle_plot_data(plot_data), color_palette)
 
 # plot_data <- read_csv("shiny_app/data/fair_assessment.csv")
