@@ -651,7 +651,7 @@ plot_fair_principle_perc <- function(plot_data, color_palette)
 
 # Function for treemap plot for FAIR score by repository
 
-plot_fair_treemap <- function(plot_data, color_palette, fair_perc)
+plot_fair_treemap <- function(plot_data, color_palette, fair_perc, color_seq)
 {
   # Prepare hovertext for str_glue()
   hovertext <-
@@ -675,7 +675,7 @@ plot_fair_treemap <- function(plot_data, color_palette, fair_perc)
     hoverinfo = "text",
     hovertext = ~ str_glue(hovertext),
     marker = list(
-      colorscale = list(c(0, 0.35, 1), c("#AA493A", "#F1BA50", "#007265")),
+      colorscale = list(c(0, 0.35, 1), color_seq), # c("#AA493A", "#F1BA50", "#007265")
       cmin = 0,
       cmid = 0.35,
       cmax = 1,
@@ -699,7 +699,7 @@ plot_fair_treemap <- function(plot_data, color_palette, fair_perc)
 
 # Function for sunburst plot for FAIR score by guid
 
-plot_fair_sunburst <- function(plot_data, color_palette)
+plot_fair_sunburst <- function(plot_data, color_palette, color_seq)
 {
   # Prepare hovertext for str_glue()
   hovertext <-
@@ -719,7 +719,7 @@ plot_fair_sunburst <- function(plot_data, color_palette)
     hoverinfo = "text",
     hovertext = ~ str_glue(hovertext),
     marker = list(
-      colorscale = list(c(0, 0.35, 1), c("#AA493A", "#F1BA50", "#007265")), #cmin = 0, cmax = 1
+      colorscale = list(c(0, 0.35, 1), color_seq), # c("#AA493A", "#F1BA50", "#007265")
       cmin = 0,
       cmid = 0.35,
       cmax = 1,
@@ -738,9 +738,9 @@ plot_fair_sunburst <- function(plot_data, color_palette)
 }
 
 
-# Function for sunburst plot for FAIR score by guid
+# Function for sunburst plot for FAIR assessment according to F-UJI
 
-plot_fair_principle_sunburst <- function(plot_data, color_palette, select_repository)
+plot_fair_principle_sunburst <- function(plot_data, color_palette, select_repository, color_seq)
 {
 
   if (select_repository == "all repositories") {
@@ -872,7 +872,7 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
     textinfo = "label",
     insidetextfont = list(size = 14),
     marker = list(
-      colorscale = list(c(0, 0.35, 1), c("#AA493A", "#F1BA50", "#007265")), # viridis c("#FDE725FF", "#21908CFF", "#440154FF") # red green c("#AA493A", "#F1BA50", "#007265")
+      colorscale = list(c(0, 0.35, 1), color_seq), # viridis c("#FDE725FF", "#21908CFF", "#440154FF") # red green c("#AA493A", "#F1BA50", "#007265")
       cmin = 0,
       cmid = 0.35,
       cmax = 1,
@@ -896,16 +896,3 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
                   font=list(size=10))) %>%
     config(displayModeBar = FALSE)
 }
-
-
-#
-# plot_fair_principle_perc(make_fair_principle_plot_data(plot_data), color_palette)
-
-# plot_data <- read_csv("shiny_app/data/fair_assessment.csv")
-#
-# color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
-#                    "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
-#                    "#DCE3E5")
-#
-# plot_fair_license_total(plot_data, color_palette)
-# plot_fair_license_perc(plot_data, color_palette)

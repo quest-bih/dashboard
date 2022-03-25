@@ -184,7 +184,3 @@ make_fair_sunburst_plot_data <- function(data_table)
   return(fair_sunburst_plot_data)
 }
 
-
-# plot_data <- read_csv("shiny_app/data/fair_assessment.csv")
-# make_fair_treemap_plot_data(plot_data)
-# paste0(plot_data$fuji_percent %>% mean(na.rm = TRUE) %>% round(0), "%")

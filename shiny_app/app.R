@@ -409,26 +409,55 @@ server <- function(input, output, session)
         setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]))
     )
 
+    # wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+    #           h2(strong("FAIR assessment"), align = "left"),
+    #           fluidRow(
+    #             column(8, selectInput("select_repository", label = "Select repository type or repository",
+    #                                      choices = choices,
+    #                                      selected = 1))
+    #           ),
+    #           fluidRow(
+    #             column(8, metric_box(title = "FAIR assessment by F-UJI",
+    #                                  value = textOutput("select_perc"),
+    #                                  value_text = textOutput("select_text"),
+    #                                  plot = plotlyOutput('plot_fair_principle_sunburst', height = "400px"),
+    #                                  info_id = "infoFAIRfuji",
+    #                                  info_title = "FAIR assessment by F-UJI",
+    #                                  info_text = fair_fuji_tooltip,
+    #                                  info_alignment = "bottom")),
+    #             column(4, includeMarkdown("texts/text_FAIR.md"))
+    #           )
+    # )
+
+    title <- "FAIR assessment by F-UJI"
+    value <- textOutput("select_perc")
+    value_text <- textOutput("select_text")
+    plot <- plotlyOutput('plot_fair_principle_sunburst', height = "400px")
+
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
               h2(strong("FAIR assessment"), align = "left"),
               fluidRow(
                 column(8, selectInput("select_repository", label = "Select repository type or repository",
-                                         choices = choices,
-                                         selected = 1))
-              ),
+                                      choices = choices,
+                                      selected = 1))),
               fluidRow(
-                column(8, metric_box(title = "FAIR assessment by F-UJI",
-                                     value = textOutput("select_perc"),
-                                     value_text = textOutput("select_text"),
-                                     plot = plotlyOutput('plot_fair_principle_sunburst', height = "400px"),
-                                     info_id = "infoFAIRfuji",
-                                     info_title = "FAIR assessment by F-UJI",
-                                     info_text = fair_fuji_tooltip,
-                                     info_alignment = "bottom")),
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                                    fluidRow(
+                                      column(8, align="left", h4(strong(title)))
+                                    ),
+                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    plot)),
                 column(4, includeMarkdown("texts/text_FAIR.md"))
               )
     )
+
   })
+
+
+
+
+
 
   output$select_perc <- renderText({
     if(input$select_repository == "all repositories") {
@@ -454,6 +483,11 @@ server <- function(input, output, session)
 
   output$DataReusability_1_metrics <- renderUI({
 
+    title <- "FAIR scores by repositories"
+    value <- textOutput("var")
+    value_text <- textOutput("text")
+    plot <- plotlyOutput('plot_fair_treemap', height = "400px")
+
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
               h2(strong("FAIR assessment by repositories"), align = "left"),
               fluidRow(
@@ -462,14 +496,13 @@ server <- function(input, output, session)
                                       selected = "fair_score"))
               ),
               fluidRow(
-                column(8, metric_box(title = "FAIR scores by repositories",
-                                     value = textOutput("var"),
-                                     value_text = textOutput("text"),
-                                      plot = plotlyOutput('plot_fair_treemap', height = "400px"),
-                                      info_id = "infoFAIRrepository",
-                                      info_title = "FAIR scores by repositories",
-                                      info_text = fair_repositories_tooltip,
-                                      info_alignment = "bottom")),
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                                    fluidRow(
+                                      column(8, align="left", h4(strong(title)))
+                                    ),
+                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    plot)),
                 column(4, includeMarkdown("texts/text_repositories.md"))
               )
     )
@@ -544,7 +577,7 @@ server <- function(input, output, session)
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "FAIR scores by identifiers",
                                              value = "29 %",
-                                             value_text = "of 2020 datasets have a persistent identifier (e.g., DOI, Handle), indicating a higher FAIR score",
+                                             value_text = "of 2020 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
                                              plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
                                              info_id = "infoFAIRidentifiers",
                                              info_title = "Dataset identifiers",
@@ -858,7 +891,14 @@ server <- function(input, output, session)
 
   output$plot_fair_treemap <- renderPlotly({
     fair_perc <- glue::glue_collapse(input$checkbox_FAIR)
-    plot_fair_treemap(fair_treemap_plot_data, color_palette, fair_perc)
+
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_treemap(fair_treemap_plot_data, color_palette, fair_perc, color_seq)
   })
 
   # FAIR identifiers sunburst
@@ -867,16 +907,29 @@ server <- function(input, output, session)
     make_fair_sunburst_plot_data()
 
   output$plot_fair_sunburst <- renderPlotly({
-    plot_fair_sunburst(fair_sunburst_plot_data, color_palette)
+
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_sunburst(fair_sunburst_plot_data, color_palette, color_seq)
   })
 
   # FAIR principles sunburst
 
   output$plot_fair_principle_sunburst <- renderPlotly({
     select_repository <- input$select_repository
-    plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository)
-  })
 
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725") # db colors c("#634587", "#F1BA50", "#007265") # viridis c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository, color_seq)
+  })
 
 }
 

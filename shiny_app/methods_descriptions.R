@@ -11,7 +11,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
          h2("Publication search"),
          bsCollapse(id = "methodsPanels_PublicationSearch",
-                    bsCollapsePanel(strong("Publication Search"),
+                    bsCollapsePanel("Publication Search",
                                     p("Many of the assessed metrics are publication-based metrics.
                         To assess those metrics on the institutional level, we first need to
                         identify the publications that can be assigned to the Charité.
@@ -294,12 +294,12 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                   In addition, datasets are easier to reuse if the corresponding metadata is machine-readable and uses a standardized vocabulary.
                                   "),
 
-                                  HTML("Based on the text-mining algorithm <a href = 'https://doi.org/10.5334/dsj-2020-042'>ODDPub</a>
+                                  HTML("Based on the results of the text-mining algorithm <a href = 'https://doi.org/10.5334/dsj-2020-042'>ODDPub</a>
                                   we manually screened the detected data statements and extracted one research dataset ID per mentioned repository.
                                   We then used the extracted dataset IDs to query the automated screening tool <a href='https://www.f-uji.net'>F-UJI</a>.
                                   F-UJI assesses the FAIRness of research data objects based on <a href = 'https://zenodo.org/record/4081213#.YhdU_C8w1pQ'>metrics</a>
                                   developed by the <a href = 'https://www.fairsfair.eu'>FAIRsFAIR</a> project.
-                                       The results were then aggregated and enriched with data from <a href = 'https://www.re3data.org'>re3data</a>."),
+                                       The results were then aggregated and enriched with data from <a href = 'https://www.re3data.org'>re3data</a> to include further information about the data repositories in the analysis."),
 
                                   "F-UJI does not provide suitable automatic tests for all FAIR principles. FAIR principles A1.1, A1.2 and I2 are not assessed. The quality of metadata and compliance with FAIR principles depends mainly
                                   on the repository providers and can therefore only be influenced by the creators of the datasets to a limited extent.")),
