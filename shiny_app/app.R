@@ -557,8 +557,8 @@ server <- function(input, output, session)
 
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "FAIR scores by principles",
-                                             value = paste0(fair_dataset %>% filter(repository_type == "general-purpose repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0), " %"),
-                                             value_text = "is the average FAIR score of datasets from 2020 in general-purpose repositories",
+                                             value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
+                                             value_text = "is the average FAIR score of datasets from 2020 in disciplinary repositories",
                                              plot = plotlyOutput('plot_fair_principle', height = "300px"),
                                              info_id = "infoFAIRprinciples",
                                              info_title = "FAIR scores by principles",
@@ -567,7 +567,7 @@ server <- function(input, output, session)
 
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "Dataset licenses",
-                                             value = "51 %",
+                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository" & fair_dataset$license_fuji != "no license", ])/nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository", ])*100, 0)),
                                              value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
                                              plot = plotlyOutput('plot_fair_license', height = "300px"),
                                              info_id = "infoFAIRlicenses",
@@ -576,7 +576,7 @@ server <- function(input, output, session)
                                              info_alignment = "bottom")),
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "FAIR scores by identifiers",
-                                             value = "29 %",
+                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
                                              value_text = "of 2020 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
                                              plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
                                              info_id = "infoFAIRidentifiers",
