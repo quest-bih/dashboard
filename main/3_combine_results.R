@@ -65,7 +65,8 @@ assert_that(dim(check_tbl)[1] == 0)
 
 #only select columns relevant for shiny table
 shiny_table <- dashboard_metrics %>%
-  select(doi, pmid, year,
+  select(doi, pmid, title, journal, year,
+         publisher, issn, e_issn,
          pdf_downloaded, OA_color,
          is_open_data, open_data_manual_check, open_data_category_manual,
          is_open_code, open_code_manual_check, open_code_category_manual,
