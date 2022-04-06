@@ -183,4 +183,3 @@ make_fair_sunburst_plot_data <- function(data_table)
 
   return(fair_sunburst_plot_data)
 }
-

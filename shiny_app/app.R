@@ -2,18 +2,17 @@
 # Load libraries
 #----------------------------------------------------------------------------------------------------------------------
 
-library(plotly)
-library(shiny)
-library(tidyverse)
+library(DT)
+library(ggbeeswarm)
 library(ggvis)
 library(ggplot2)
-library(shinythemes)
+library(plotly)
+library(scales)
+library(shiny)
 library(shinyBS)
 library(shinyjs)
-library(DT)
-
-library(ggbeeswarm) # JT added
-library(scales) # JT added
+library(shinythemes)
+library(tidyverse)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -26,7 +25,7 @@ source("app_functions_fair.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
 source("resources_descriptions.R", encoding = "UTF-8")
-source("fair_panel.R", encoding = "UTF-8") # added for test by JT
+source("fair_panel.R", encoding = "UTF-8")
 source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
 source("datasets_panel.R")
@@ -176,7 +175,6 @@ ui <-
   #possibly let users choose which dataset (publications/clinical trials) is shown
   #instead of showing both
 
-  # JT remove strong from title in order to updateCollapse()
   tabPanel("Datasets", value = "tabDatasets",
            h1("Datasets"),
            h4("The following tables contain the datasets underlying the numbers and plots
@@ -241,7 +239,7 @@ ui <-
                           Shiny.onInputChange("width", width);
                         });
                         ')),
-  # Change color of selectize dropdown
+  # Change color of selectize dropdown in FAIR panel
  tags$head(tags$style(HTML('#select_repository+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}'))),
  tags$head(tags$style(HTML('#checkbox_FAIR+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}')))
 
@@ -409,26 +407,6 @@ server <- function(input, output, session)
         setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]))
     )
 
-    # wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-    #           h2(strong("FAIR assessment"), align = "left"),
-    #           fluidRow(
-    #             column(8, selectInput("select_repository", label = "Select repository type or repository",
-    #                                      choices = choices,
-    #                                      selected = 1))
-    #           ),
-    #           fluidRow(
-    #             column(8, metric_box(title = "FAIR assessment by F-UJI",
-    #                                  value = textOutput("select_perc"),
-    #                                  value_text = textOutput("select_text"),
-    #                                  plot = plotlyOutput('plot_fair_principle_sunburst', height = "400px"),
-    #                                  info_id = "infoFAIRfuji",
-    #                                  info_title = "FAIR assessment by F-UJI",
-    #                                  info_text = fair_fuji_tooltip,
-    #                                  info_alignment = "bottom")),
-    #             column(4, includeMarkdown("texts/text_FAIR.md"))
-    #           )
-    # )
-
     title <- "FAIR assessment by F-UJI"
     value <- textOutput("select_perc")
     value_text <- textOutput("select_text")
@@ -453,11 +431,6 @@ server <- function(input, output, session)
     )
 
   })
-
-
-
-
-
 
   output$select_perc <- renderText({
     if(input$select_repository == "all repositories") {
@@ -605,7 +578,7 @@ server <- function(input, output, session)
                       selected = "tabDatasets")
   })
 
-
+  #actionButton on FAIR tab to switch tabs
   observeEvent(input$buttonMethodsFAIR, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
@@ -650,7 +623,6 @@ server <- function(input, output, session)
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_OpenScience", open = "ORCID")
   })
-
 
   observeEvent(input$infoSumRes, {
     updateTabsetPanel(session, "navbarTabs",
