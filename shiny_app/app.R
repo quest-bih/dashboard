@@ -181,9 +181,10 @@ ui <-
               shown for the metrics included in this Shiny app."),
            br(),
            bsCollapse(id = "datasetPanels_PublicationDataset",
-                      bsCollapsePanel(strong("Publication dataset"),
-                                      DT::dataTableOutput("data_table_publ"),
-                                      style = "default")),
+                      "The publication dataset was created by the
+                      Charité Medical Library, incorporating data
+                      from the databases Web of Science and EMBASE.
+                      More detailed information on the dataset will follow in the future."),
            br(),
            bsCollapse(id = "datasetPanels_PreprintDataset",
                       bsCollapsePanel("Preprint dataset",
