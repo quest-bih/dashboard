@@ -359,14 +359,11 @@ server <- function(input, output, session)
   })
 
   output$Visualizations_metrics <- renderUI({
-    req(input$width)
-    if(input$width < 1400) {
-      col_width <- 6
-      alignment <- "left"
-    } else {
-      col_width <- 3
-      alignment <- "right"
-    }
+
+    #always show two tabs in one row for the visualization metrics
+    col_width <- 6
+    alignment <- "left"
+
 
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
             h2(strong("Visualizations"),
