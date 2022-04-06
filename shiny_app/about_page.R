@@ -25,8 +25,8 @@ about_page <- tabPanel("About", value = "tabAbout",
                        h4("Clinical trial metrics"),
                        helpText(HTML('Nico Riedel (Conceptualization, Methodology, technical implementation);
                                 Daniel Strech (Conceptualization, Methodology); Susanne Wieschowski (Conceptualization, Methodology);
-                                Peter Grabitz (Conceptualization, Methodology); <a href="https://www.bihealth.org/en/translation/innovation-enabler/quest-center/teams/rg-strech" title="Contact person for Clinical trial metrics">Delwen Franzen</a> (Conceptualization, Methodology);
-                                Maia Salholz-Hillel (Conceptualization, Methodology)')),
+                                Peter Grabitz (Conceptualization, Methodology); Delwen Franzen (Conceptualization, Methodology);
+                                <a href="https://www.bihealth.org/en/translation/innovation-enabler/quest-center/teams/rg-strech" title="Contact person for Clinical trial metrics">Maia Salholz-Hillel</a> (Conceptualization, Methodology)')),
                        br(),
                        h4("Data Reusability - FAIR data"),
                        helpText(HTML('<a href="https://www.bihealth.org/de/translation/innovationstreiber/quest-center/projekte/quality/berlin-university-alliance-open-science-dashboards" title= "Contact person for FAIR data metrics">Jan Taubitz</a> (Conceptualization, Methodology, Technical Implementation);
