@@ -295,6 +295,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                   "),
 
                                   HTML("Based on the results of the text-mining algorithm <a href = 'https://doi.org/10.5334/dsj-2020-042'>ODDPub</a>
+                                   — which identifies publications mentioning the generation and sharing of research data objects —
                                   we manually screened the detected data statements and extracted one research dataset ID per mentioned repository.
                                   We then used the extracted dataset IDs to query the automated screening tool <a href='https://www.f-uji.net'>F-UJI</a>.
                                   F-UJI assesses the FAIRness of research data objects based on <a href = 'https://zenodo.org/record/4081213#.YhdU_C8w1pQ'>metrics</a>

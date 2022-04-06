@@ -11,8 +11,8 @@ fair_panel <-
                          HTML("The FAIR data metrics in this dashboard indicate how well research data objects shared by Charité researchers and the repositories used to deposit them conform with the FAIR principles.")),
                       h4(style = "margin-left:0cm",
                          HTML("It is important that the FAIR metrics are not to be understood as evaluations, but rather as assistance. This is true at the repository level and even more so at the publication level. Individual researchers have limited influence on the FAIRness of research data objects, which is primarily determined by the data repositories.")),
-                      checkboxInput("checkbox_colorblind", "Click for colorblind-friendly charts", value = FALSE),
-                      br()),
+                      checkboxInput("checkbox_colorblind", "Click for colorblind-friendly charts", value = FALSE)
+                      ),
                column(4,
                       hr(),
                       br(),
@@ -22,8 +22,8 @@ fair_panel <-
                                    style = "color: white; background-color: #aa1c7d;"),
                       actionButton(inputId = 'buttonDatasetFAIR',
                                    label = 'See dataset',
-                                   style = "color: white; background-color: #aa1c7d;"),
-                      br()),
+                                   style = "color: white; background-color: #aa1c7d;")
+                      ),
              )
            ),
 

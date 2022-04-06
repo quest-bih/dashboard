@@ -169,7 +169,7 @@ ui <-
   fair_panel,
 
   # Methods and resources are displayed in a fold-out menu due to lack of space in the navbar.
-  navbarMenu("Methods/Ressources",
+  navbarMenu("Methods/Resources/Data",
   methods_panel,
   resources_panel,
 

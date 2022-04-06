@@ -887,12 +887,12 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
     )
   ) %>%
     layout(paper_bgcolor = color_palette[9],
-           margin=list(l=0, r=0, b=30, t=0),
+           margin=list(l=0, r=0, b=35, t=0),
            annotations =
              list(x = 0, y = -0.08, text = caption,
                   align = "left",
                   showarrow = F, xref='paper', yref='paper',
                   xanchor='auto', yanchor='auto', xshift=0, yshift=0,
-                  font=list(size=10))) %>%
+                  font=list(size=11))) %>%
     config(displayModeBar = FALSE)
 }
