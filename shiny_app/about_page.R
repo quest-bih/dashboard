@@ -15,35 +15,39 @@ about_page <- tabPanel("About", value = "tabAbout",
                                      team.')),
                        br(),
                        h4("ODDPub - Open Data & Code detection"),
-                       helpText('Nico Riedel (Conceptualization, Methodology, Technical Implementation, Validation);
-                                Evgeny Bobrov (Conceptualization, Methodology, Validation); Miriam Kip (Conceptualization, Methodology)'),
+                       helpText(HTML('<a href="https://www.bihealth.org/de/translation/innovationstreiber/quest-center/teams/team-quest-services" title="Contact person for ODDPub">Nico Riedel</a> (Conceptualization, Methodology, Technical Implementation, Validation);
+                                Evgeny Bobrov (Conceptualization, Methodology, Validation); Miriam Kip (Conceptualization, Methodology)')),
                        br(),
                        h4("Barzooka - Visualization type detection"),
-                       helpText('Nico Riedel (Conceptualization, Methodology, technical implementation);
-                                Tracey Weissgerber (Conceptualization, Methodology); Robert Schultz (Validation)'),
+                       helpText(HTML('Nico Riedel (Conceptualization, Methodology, Technical Implementation);
+                                <a href="https://www.bihealth.org/en/translation/innovation-enabler/quest-center/teams/research-group-weissgerber" title="Contact person for Barzooka metrics">Tracey Weissgerber</a> (Conceptualization, Methodology); Robert Schulz (Validation)')),
                        br(),
                        h4("Clinical trial metrics"),
-                       helpText('Nico Riedel (Conceptualization, Methodology, technical implementation);
+                       helpText(HTML('Nico Riedel (Conceptualization, Methodology, Technical Implementation);
                                 Daniel Strech (Conceptualization, Methodology); Susanne Wieschowski (Conceptualization, Methodology);
                                 Peter Grabitz (Conceptualization, Methodology); Delwen Franzen (Conceptualization, Methodology);
-                                Maia Salholz-Hillel (Conceptualization, Methodology)'),
+                                <a href="https://www.bihealth.org/en/translation/innovation-enabler/quest-center/teams/rg-strech" title="Contact person for Clinical trial metrics">Maia Salholz-Hillel</a> (Conceptualization, Methodology), Benjamin Gregory Carlisle (Conceptualization, Methodology)')),
+                       br(),
+                       h4("Data Reusability - FAIR data"),
+                       helpText(HTML('<a href="https://www.bihealth.org/de/translation/innovationstreiber/quest-center/projekte/quality/berlin-university-alliance-open-science-dashboards" title= "Contact person for FAIR data metrics">Jan Taubitz</a> (Conceptualization, Methodology, Technical Implementation);
+                                Evgeny Bobrov (Conceptualization, Methodology, Validation), Anastasiia Iarkaeva (Validation)')),
                        br(),
                        h4("Shiny app"),
-                       helpText('Nico Riedel (Conceptualization, Technical Implementation); Tracey Weissgerber (Conceptualization);
+                       helpText(HTML('<a href="https://www.bihealth.org/de/translation/innovationstreiber/quest-center/teams/team-quest-services" title="Contact person for Shiny app">Nico Riedel</a> (Conceptualization, Technical Implementation); Tracey Weissgerber (Conceptualization);
                                 Ulrich Dirnagl (Conceptualization); Evgeny Bobrov (Conceptualization); Daniel Strech (Conceptualization);
-                                Delwen Franzen (Conceptualization); Maia Salholz-Hillel (Conceptualization)'),
+                                Delwen Franzen (Conceptualization); Maia Salholz-Hillel (Conceptualization); Jan Taubitz (Conceptualization, Technical Implementation)')),
                        br(),
                        h3('Acknowledgment'),
-                       helpText('We greatfully acknowledge funding by the Wellcome Trust (Charite-BIH Translational Partnership)'),
+                       helpText('We gratefully acknowledge funding by the Wellcome Trust (Charite-BIH Translational Partnership) and the Berlin University Alliance (Objective 3: Advancing Research Quality and Value).'),
                        br(),
                        h3('Contact address'),
                        helpText('QUEST Center for Responsible Research '),
                        helpText('Berlin Institute of Health at Charité – Universitätsmedizin Berlin'),
                        helpText('Anna-Louisa-Karsch-Str. 2'),
                        helpText('10178 Berlin, Germany'),
-                       helpText('quest@bihealth.de'),
-                       helpText(HTML('<a href="https://www.bihealth.org/quest-center/">
-                                      https://www.bihealth.org/quest-center/ </a>')),
+                       helpText('quest@bih-charite.de'),
+                       helpText(HTML('<a href="https://www.bihealth.org/de/translation/innovationstreiber/quest-center">
+                                      https://www.bihealth.org/de/translation/innovationstreiber/quest-center</a>')),
                        br(),
                        br(),
                        br(),

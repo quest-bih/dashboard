@@ -109,3 +109,11 @@ shiny_table_aggregate_metrics <- tibble(year = 2006:2020) %>%
   left_join(preprints)
 
 write_csv(shiny_table_aggregate_metrics, "shiny_app/data/dashboard_metrics_aggregate.csv")
+
+#----------------------------------------------------------------------------------------
+# fair assessment
+#----------------------------------------------------------------------------------------
+
+fair_table <- read_csv("./results/fair_assessment.csv")
+write_csv(fair_table, "./shiny_app/data/fair_assessment.csv")
+

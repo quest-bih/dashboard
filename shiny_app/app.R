@@ -1,12 +1,18 @@
-library(plotly)
-library(shiny)
-library(tidyverse)
+#----------------------------------------------------------------------------------------------------------------------
+# Load libraries
+#----------------------------------------------------------------------------------------------------------------------
+
+library(DT)
+library(ggbeeswarm)
 library(ggvis)
 library(ggplot2)
-library(shinythemes)
+library(plotly)
+library(scales)
+library(shiny)
 library(shinyBS)
 library(shinyjs)
-library(DT)
+library(shinythemes)
+library(tidyverse)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -15,9 +21,11 @@ library(DT)
 source("impressum.R", encoding="UTF-8")
 source("app_functions_OA.R")
 source("app_functions_oddpub.R")
+source("app_functions_fair.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
 source("resources_descriptions.R", encoding = "UTF-8")
+source("fair_panel.R", encoding = "UTF-8")
 source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
 source("datasets_panel.R")
@@ -42,6 +50,17 @@ preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
 
 orcid_dataset <- read_csv("data/orcid_results.csv")
 
+# fair dataset
+fair_dataset <- read_csv("data/fair_assessment.csv")
+
+# fair dataset for datatables
+fair_dataset_datatable <- fair_dataset %>%
+  select(-repository) %>%
+  rename(article_doi = article,
+         dataset_id = best_identifier,
+         repository_name = repository_re3data,
+         guid_scheme = guid_scheme_fuji) %>%
+  arrange(repository_name, article_doi)
 
 #----------------------------------------------------------------------------------------------------------------------
 # preprocessing, need to move somewhere else later
@@ -79,7 +98,8 @@ barzooka_data <- dashboard_metrics %>%
 # ui
 #----------------------------------------------------------------------------------------------------------------------
 
-ui <- tagList(
+ui <-
+  tagList(
   tags$head(tags$script(type="text/javascript", src = "code.js")),
   navbarPage(
   "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
@@ -122,7 +142,7 @@ ui <- tagList(
                                    'buttonDatasets',
                                    'See dataset'),
                       br())
-             )
+             ),
            ),
 
            # generate Open Science & Clinical trial metrics UI dynamically to determine column width during start of the app
@@ -130,30 +150,8 @@ ui <- tagList(
 
            uiOutput("CT_metrics"),
 
-           wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                     h2(strong("Visualizations"),
-                        align = "left"),
-                     checkboxInput("checkbox_total_vis", strong("Show absolute numbers"), value = FALSE),
-                     fluidRow(
-                       column(6, metric_box(title = "Problematic graph types",
-                                            value = paste((filter(barzooka_data, year == show_year)$has_bar/
-                                                     filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
-                                            value_text = paste0("of publications from ", show_year, " used bar graphs for continuous data"),
-                                            plot = plotlyOutput('plot_barzooka_problem', height = "300px"),
-                                            info_id = "infoVisProblem",
-                                            info_title = "Problematic graph types",
-                                            info_text = vis_problem_tooltip)),
-                       column(6, metric_box(title = "More informative graph types for continuous data",
-                                            value = paste((filter(barzooka_data, year == show_year)$has_informative/
-                                                     filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
-                                            value_text = paste0("of publications from ", show_year, " used more informative graph types"),
-                                            plot = plotlyOutput('plot_barzooka_inform', height = "300px"),
-                                            info_id = "infoVisInform",
-                                            info_title = "More informative graph types",
-                                            info_text = vis_inform_tooltip,
-                                            info_alignment = "left"))
-                     )
-           ),
+           uiOutput("Visualizations_metrics"),
+
            br(),
            br(),
            br(),
@@ -165,11 +163,18 @@ ui <- tagList(
                            datenschutz_text,
                            style = "default")
   ),
+
+  # FAIR data metrics are shown in separate dashboard tab
+  fair_panel,
+
+  # Methods and resources are displayed in a fold-out menu due to lack of space in the navbar.
+  navbarMenu("Methods/Resources/Data",
   methods_panel,
   resources_panel,
 
   #possibly let users choose which dataset (publications/clinical trials) is shown
   #instead of showing both
+
   tabPanel("Datasets", value = "tabDatasets",
            h1("Datasets"),
            h4("The following tables contain the datasets underlying the numbers and plots
@@ -181,20 +186,27 @@ ui <- tagList(
                                       style = "default")),
            br(),
            bsCollapse(id = "datasetPanels_PreprintDataset",
-                      bsCollapsePanel(strong("Preprint dataset"),
+                      bsCollapsePanel("Preprint dataset",
                                       DT::dataTableOutput("data_table_preprints"),
                                       style = "default")),
            br(),
            bsCollapse(id = "datasetPanels_PublicationDataset",
-                      bsCollapsePanel(strong("Prospective registration dataset"),
+                      bsCollapsePanel("Prospective registration dataset",
                                       DT::dataTableOutput("data_table_prosp_reg"),
                                       style = "default")),
            br(),
            bsCollapse(id = "datasetPanels_PublicationDataset",
-                      bsCollapsePanel(strong("Timely publication dataset"),
+                      bsCollapsePanel("Timely publication dataset",
                                       HTML('This dataset was already published
                         <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
                                       style = "default")),
+
+           br(),
+           bsCollapse(id = "datasetPanels_PublicationDatasetFAIR",
+                      bsCollapsePanel(title = "Data reusability (FAIR data) dataset",
+                                      DT::dataTableOutput("data_table_FAIR"),
+                                      style = "default")),
+
            br(),
            br(),
            br(),
@@ -211,6 +223,7 @@ ui <- tagList(
            bsCollapsePanel(strong("Datenschutz"),
                            datenschutz_text,
                            style = "default")
+  )
   ),
   about_page,
 
@@ -222,10 +235,13 @@ ui <- tagList(
                           width = window.innerWidth;
                           Shiny.onInputChange("width", width);
                         });
-                        '))
-)
-)
+                        ')),
+  # Change color of selectize dropdown in FAIR panel
+ tags$head(tags$style(HTML('#select_repository+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}'))),
+ tags$head(tags$style(HTML('#checkbox_FAIR+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}')))
 
+)
+)
 #----------------------------------------------------------------------------------------------------------------------
 # server
 #----------------------------------------------------------------------------------------------------------------------
@@ -249,7 +265,8 @@ server <- function(input, output, session)
               h2(strong("Open Science"), align = "left"),
               fluidRow(
                 column(2, checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE)),
-                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))),
+                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))
+                ),
               fluidRow(
                 column(col_width, metric_box(title = "Open Access",
                                      value = paste(round((OA_data %>% filter(year == show_year))[["OA_perc"]], 0), "%"),
@@ -284,7 +301,7 @@ server <- function(input, output, session)
                 column(col_width, metric_box(title = "ORCID",
                                      value = orcid_dataset$orcid_count %>% last(),
                                      value_text = paste0("Charité researchers with an ORCID (as of ",
-                                                         orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
+                                                                 orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
                                      plot = plotlyOutput('plot_orcid', height = "300px"),
                                      info_id = "infoOrcid",
                                      info_title = "ORCID",
@@ -341,7 +358,204 @@ server <- function(input, output, session)
     )
   })
 
+  output$Visualizations_metrics <- renderUI({
+    req(input$width)
+    if(input$width < 1400) {
+      col_width <- 6
+      alignment <- "left"
+    } else {
+      col_width <- 3
+      alignment <- "right"
+    }
 
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+            h2(strong("Visualizations"),
+               align = "left"),
+            checkboxInput("checkbox_total_vis", strong("Show absolute numbers"), value = FALSE),
+            fluidRow(
+              column(col_width, metric_box(title = "Problematic graph types",
+                                   value = paste((filter(barzooka_data, year == show_year)$has_bar/
+                                                    filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
+                                   value_text = paste0("of publications from ", show_year, " used bar graphs for continuous data"),
+                                   plot = plotlyOutput('plot_barzooka_problem', height = "300px"),
+                                   info_id = "infoVisProblem",
+                                   info_title = "Problematic graph types",
+                                   info_text = vis_problem_tooltip)),
+              column(col_width, metric_box(title = "More informative graph types for continuous data",
+                                   value = paste((filter(barzooka_data, year == show_year)$has_informative/
+                                                    filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%"),
+                                   value_text = paste0("of publications from ", show_year, " used more informative graph types"),
+                                   plot = plotlyOutput('plot_barzooka_inform', height = "300px"),
+                                   info_id = "infoVisInform",
+                                   info_title = "More informative graph types",
+                                   info_text = vis_inform_tooltip,
+                                   info_alignment = "left"))
+            ))
+  })
+
+  output$DataReusability_2_metrics <- renderUI({
+
+    # Create choices for selectInput
+    choices <- list(
+      `Repository types`  = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) %>% setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
+      `General-purpose repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])) %>%
+        setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])),
+      `Field-specific repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"])) %>%
+        setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]))
+    )
+
+    title <- "FAIR assessment by F-UJI"
+    value <- textOutput("select_perc")
+    value_text <- textOutput("select_text")
+    plot <- plotlyOutput('plot_fair_principle_sunburst', height = "400px")
+
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+              h2(strong("FAIR assessment"), align = "left"),
+              fluidRow(
+                column(8, selectInput("select_repository", label = "Select repository type or repository",
+                                      choices = choices,
+                                      selected = 1))),
+              fluidRow(
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                                    fluidRow(
+                                      column(8, align="left", h4(strong(title)))
+                                    ),
+                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    plot)),
+                column(4, includeMarkdown("texts/text_FAIR.md"))
+              )
+    )
+
+  })
+
+  output$select_perc <- renderText({
+    if(input$select_repository == "all repositories") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$select_repository == "general-purpose repositories") {
+      glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "general-purpose repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$select_repository == "field-specific repositories") {
+      glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else {
+      glue::glue("{n} %", n = fair_dataset %>% filter(repository_re3data == input$select_repository) %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    }
+  })
+
+  output$select_text <- renderText({
+    if(input$select_repository == "field-specific repositories") {
+      "is the average FAIR score of research data objects in disciplinary repositories"
+    } else {
+      glue::glue("is the average FAIR score of research data objects in {input$select_repository}")
+    }
+  })
+
+
+
+  output$DataReusability_1_metrics <- renderUI({
+
+    title <- "FAIR scores by repositories"
+    value <- textOutput("var")
+    value_text <- textOutput("text")
+    plot <- plotlyOutput('plot_fair_treemap', height = "400px")
+
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+              h2(strong("FAIR assessment by repositories"), align = "left"),
+              fluidRow(
+                column(8, selectInput("checkbox_FAIR", label = "Select FAIR principle",
+                                      choices = list(`Select all FAIR principles` = list("all FAIR principles" = "fair_score"), `Select individual FAIR principles` = list("Findability" = "f_score", "Accessibility" = "a_score", "Interoperability" = "i_score", "Reusability" = "r_score")),
+                                      selected = "fair_score"))
+              ),
+              fluidRow(
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                                    fluidRow(
+                                      column(8, align="left", h4(strong(title)))
+                                    ),
+                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    plot)),
+                column(4, includeMarkdown("texts/text_repositories.md"))
+              )
+    )
+  })
+
+  output$text <- renderText({
+    if(input$checkbox_FAIR == "fair_score") {
+      "is the average FAIR score of research data objects"
+    } else if (input$checkbox_FAIR == "f_score") {
+      "is the average Findability score of research data objects"
+    } else if (input$checkbox_FAIR == "a_score") {
+      "is the average Accessibility score of research data objects"
+    } else if (input$checkbox_FAIR == "i_score") {
+      "is the average Interoperability score of research data objects"
+    } else if (input$checkbox_FAIR == "r_score") {
+      "is the average Reusability score of research data objects"
+    }
+  })
+
+  output$var <- renderText({
+    if(input$checkbox_FAIR == "fair_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "f_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_f) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "a_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_a) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "i_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_i) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "r_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_r) %>% mean(na.rm = TRUE) %>% round(0))
+    }
+  })
+
+
+  output$DataReusability_metrics <- renderUI({
+
+    req(input$width)
+    if(input$width < 1400 & input$width > 700) {
+      col_width <- 6
+      alignment <- "left"
+      style_resp <- "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5" #"overflow: scroll; height = 500px; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5"
+    } else {
+      col_width <- 4
+      alignment <- "right"
+      style_resp <- "padding-top: 0px; padding-bottom: 10px; background-color:#DCE3E5"
+    }
+
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+              h2(strong("FAIR assessment (other metrics)"), align = "left"),
+              checkboxInput("checkbox_total_FAIR", strong("Show absolute numbers"), value = FALSE),
+              fluidRow(
+
+                column(col_width, metric_box(style_resp = style_resp,
+                                             title = "FAIR scores by principles",
+                                             value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
+                                             value_text = "is the average FAIR score of datasets from 2020 in disciplinary repositories",
+                                             plot = plotlyOutput('plot_fair_principle', height = "300px"),
+                                             info_id = "infoFAIRprinciples",
+                                             info_title = "FAIR scores by principles",
+                                             info_text = fair_principles_tooltip,
+                                             info_alignment = "bottom")),
+
+                column(col_width, metric_box(style_resp = style_resp,
+                                             title = "Dataset licenses",
+                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository" & fair_dataset$license_fuji != "no license", ])/nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository", ])*100, 0)),
+                                             value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
+                                             plot = plotlyOutput('plot_fair_license', height = "300px"),
+                                             info_id = "infoFAIRlicenses",
+                                             info_title = "Dataset licenses",
+                                             info_text = fair_licenses_tooltip,
+                                             info_alignment = "bottom")),
+                column(col_width, metric_box(style_resp = style_resp,
+                                             title = "FAIR scores by identifiers",
+                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
+                                             value_text = "of 2020 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
+                                             plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
+                                             info_id = "infoFAIRidentifiers",
+                                             info_title = "Dataset identifiers",
+                                             info_text = fair_identifiers_tooltip,
+                                             info_alignment = "bottom"))
+              )
+    )
+  })
 
 
   #actionButton to switch tabs
@@ -359,6 +573,20 @@ server <- function(input, output, session)
   observeEvent(input$buttonDatasets, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabDatasets")
+  })
+
+  #actionButton on FAIR tab to switch tabs
+  observeEvent(input$buttonMethodsFAIR, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
+  observeEvent(input$buttonDatasetFAIR, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabDatasets")
+    updateCollapse(session, "datasetPanels_PublicationDatasetFAIR",
+                   open = "Data reusability (FAIR data) dataset")
   })
 
 
@@ -393,7 +621,6 @@ server <- function(input, output, session)
     updateCollapse(session, "methodsPanels_OpenScience", open = "ORCID")
   })
 
-
   observeEvent(input$infoSumRes, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
@@ -422,6 +649,35 @@ server <- function(input, output, session)
                       selected = "tabRessources")
   })
 
+  observeEvent(input$infoFAIRrepository, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
+    observeEvent(input$infoFAIRrepository, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
+  observeEvent(input$infoFAIRprinciples, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
+  observeEvent(input$infoFAIRlicenses, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
+
+  observeEvent(input$infoFAIRidentifiers, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
 
   #data table to show the underlying datasets
   output$data_table_publ <- DT::renderDataTable({
@@ -436,6 +692,9 @@ server <- function(input, output, session)
     make_datatable(prosp_reg_dataset_shiny)
   })
 
+  output$data_table_FAIR <- DT::renderDataTable({
+    make_datatable(fair_dataset_datatable)
+  })
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
                      "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
@@ -565,6 +824,80 @@ server <- function(input, output, session)
     } else {
       return(plot_barzooka_inform_perc(barzooka_data, color_palette))
     }
+  })
+
+  #---------------------------------
+  # Data reusability (FAIR) plots
+  #---------------------------------
+
+  # FAIR license
+
+  fair_license_plot_data <- fair_dataset %>%
+    make_fair_license_plot_data()
+
+  output$plot_fair_license <- renderPlotly({
+    if(input$checkbox_total_FAIR) {
+      return(plot_fair_license_total(fair_license_plot_data, color_palette))
+    } else {
+      return(plot_fair_license_perc(fair_license_plot_data, color_palette))
+    }
+  })
+
+  # FAIR principle
+
+  fair_principle_plot_data <- fair_dataset %>%
+    make_fair_principle_plot_data()
+
+  output$plot_fair_principle <- renderPlotly({
+    plot_fair_principle_perc(fair_principle_plot_data, color_palette)
+  })
+
+
+  # FAIR repository treemap
+
+  fair_treemap_plot_data <- fair_dataset %>%
+    make_fair_treemap_plot_data()
+
+  output$plot_fair_treemap <- renderPlotly({
+    fair_perc <- glue::glue_collapse(input$checkbox_FAIR)
+
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_treemap(fair_treemap_plot_data, color_palette, fair_perc, color_seq)
+  })
+
+  # FAIR identifiers sunburst
+
+  fair_sunburst_plot_data <- fair_dataset %>%
+    make_fair_sunburst_plot_data()
+
+  output$plot_fair_sunburst <- renderPlotly({
+
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_sunburst(fair_sunburst_plot_data, color_palette, color_seq)
+  })
+
+  # FAIR principles sunburst
+
+  output$plot_fair_principle_sunburst <- renderPlotly({
+    select_repository <- input$select_repository
+
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725") # db colors c("#634587", "#F1BA50", "#007265") # viridis c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository, color_seq)
   })
 
 }
