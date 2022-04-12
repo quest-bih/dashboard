@@ -252,7 +252,8 @@ ui <-
 server <- function(input, output, session)
 {
 
-  # URI routing with clientData$url_hash (see: https://stackoverflow.com/questions/71541259/uri-routing-with-shiny-router-and-navbarpage-in-a-r-shiny-app/71807248?noredirect=1#comment126924825_71807248)
+  # URI routing
+  # (see: https://stackoverflow.com/questions/71541259/uri-routing-with-shiny-router-and-navbarpage-in-a-r-shiny-app/71807248?noredirect=1#comment126924825_71807248)
   observeEvent(session$clientData$url_hash, {
     currentHash <- sub("#", "", session$clientData$url_hash)
     if(is.null(input$navbarTabs) || !is.null(currentHash) && currentHash != input$navbarTabs){
@@ -269,45 +270,6 @@ server <- function(input, output, session)
       updateQueryString(pushQueryString, mode = "push", session)
     }
   }, priority = 0)
-
-  # URI routing getQueryString(session)$page
-  # observeEvent(input$navbarTabs, {
-  #
-  #   newURL <- paste0("?page=", input$navbarTabs)
-  #   updateQueryString(newURL, mode = "push", session)
-  # })
-  #
-  # observe({
-  #   currentTab <- getQueryString(session)$page # alternative: parseQueryString(session$clientData$url_search)$page
-  #   if(!is.null(currentTab)){
-  #     updateTabsetPanel(session, "navbarTabs", selected = currentTab)
-  #   }
-  # })
-
-  # URI routing w/o browser navigation
-
-  # observeEvent(input$navbarTabs, {
-  #
-  #   newURL <- paste0(
-  #     session$clientData$url_protocol,
-  #     "//",
-  #     session$clientData$url_hostname,
-  #     ":",
-  #     session$clientData$url_port,
-  #     session$clientData$url_pathname,
-  #     "#",
-  #     input$navbarTabs
-  #   )
-  #   updateQueryString(newURL, mode = "replace", session)
-  # })
-  #
-  # observe({
-  #   currentTab <- sub("#", "", session$clientData$url_hash)
-  #   if(!is.null(currentTab)){
-  #     updateTabsetPanel(session, "navbarTabs", selected = currentTab)
-  #   }
-  # })
-
 
   # dynamically determine column width of Open Science metrics at program start
   # four columns if resolution large enough, otherwise two columns
