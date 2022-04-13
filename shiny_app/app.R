@@ -252,6 +252,25 @@ ui <-
 server <- function(input, output, session)
 {
 
+  # URI routing
+  # (see: https://stackoverflow.com/questions/71541259/uri-routing-with-shiny-router-and-navbarpage-in-a-r-shiny-app/71807248?noredirect=1#comment126924825_71807248)
+  observeEvent(session$clientData$url_hash, {
+    currentHash <- sub("#", "", session$clientData$url_hash)
+    if(is.null(input$navbarTabs) || !is.null(currentHash) && currentHash != input$navbarTabs){
+      freezeReactiveValue(input, "navbarTabs")
+      updateTabsetPanel(session, "navbarTabs", selected = currentHash)
+    }
+  }, priority = 1)
+
+  observeEvent(input$navbarTabs, {
+    currentHash <- sub("#", "", session$clientData$url_hash)
+    pushQueryString <- paste0("#", input$navbarTabs)
+    if(is.null(currentHash) || currentHash != input$navbarTabs){
+      freezeReactiveValue(input, "navbarTabs")
+      updateQueryString(pushQueryString, mode = "push", session)
+    }
+  }, priority = 0)
+
   # dynamically determine column width of Open Science metrics at program start
   # four columns if resolution large enough, otherwise two columns
   output$OpenScience_metrics <- renderUI({
