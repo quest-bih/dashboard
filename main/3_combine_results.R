@@ -25,7 +25,6 @@ barzooka_results <- read_csv("./results/Barzooka.csv") %>%
   select(doi, bar, pie, bardot, box, dot, hist, violin) %>%
   distinct(doi, .keep_all = TRUE)
 
-
 #----------------------------------------------------------------------------------------
 # combine results
 #----------------------------------------------------------------------------------------
@@ -90,11 +89,15 @@ prosp_reg_dataset_shiny <- read_csv("./results/prosp_reg_dataset_shiny.csv") %>%
 write_csv(prosp_reg_dataset_shiny, "./shiny_app/data/prosp_reg_dataset_shiny.csv")
 
 orcid_dataset_shiny <- read_csv("./results/orcid.csv") %>%
-  distinct(date, .keep_all = TRUE)
+  distinct(date, .keep_all = TRUE) %>%
+  mutate(orcid_count = if_else(str_length(orcid_count) > 5, str_sub(orcid_count, 1, 4),
+                               orcid_count),
+         orcid_count = as.numeric(orcid_count))
 write_csv(orcid_dataset_shiny, "./shiny_app/data/orcid_results.csv")
 
 EU_trialstracker_dataset_shiny <- read_csv("./results/EU_trialstracker.csv") %>%
-  mutate(perc_reported = round(total_reported/total_due, 3))
+  mutate(perc_reported = round(total_reported/total_due, 3)) %>%
+  arrange(desc(retrieval_date))
 write_csv(EU_trialstracker_dataset_shiny, "./shiny_app/data/EU_trialstracker_past_data.csv")
 
 preprints <- read_csv("./results/preprints.csv") %>%
@@ -104,7 +107,7 @@ preprints <- read_csv("./results/preprints.csv") %>%
 prospective_registration <- read_csv("./results/prospective_registration.csv")
 
 
-shiny_table_aggregate_metrics <- tibble(year = 2006:2020) %>%
+shiny_table_aggregate_metrics <- tibble(year = 2006:2021) %>%
   left_join(prospective_registration) %>%
   left_join(preprints)
 

@@ -71,7 +71,7 @@ plot_OA_total <- function(plot_data, color_palette)
 
 
 # Open Data
-plot_OD_perc <- function(plot_data, color_palette, zoom_in)
+plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
 {
   if(zoom_in) {
     yrange <- c(0, 20)
@@ -79,7 +79,7 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in)
     yrange <- c(0, 50)
   }
 
-  plot_ly(plot_data, x = ~year, y = ~OD_field_specific_perc,
+  plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_field_specific_perc,
           name = "field-specific repository", type = 'bar',
           marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
@@ -88,11 +88,16 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in)
               name = 'multipurpose repository <br>or website',
               marker = list(color = color_palette[6],
                             line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~OD_supplement_perc, name = 'supplement',
-              marker = list(color = color_palette[7],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
+                                        width = 1.5)))
+  # if (show_supplements == TRUE) {
+  #   plot_output <- plot_output %>%
+  #     add_trace(y = ~OD_supplement_perc, name = 'supplement',
+  #               marker = list(color = color_palette[7],
+  #                             line = list(color = 'rgb(0,0,0)',
+  #                                         width = 1.5)))
+  # }
+
+  plot_output %>%
     layout(barmode = 'stack',
            legend = list(xanchor = "right"),
            yaxis = list(title = '<b>Publications</b>',
@@ -134,7 +139,7 @@ plot_OD_total <- function(plot_data, color_palette)
 
 
 # Open Code
-plot_OC_perc <- function(plot_data, color_palette, zoom_in)
+plot_OC_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
 {
   if(zoom_in) {
     yrange <- c(0, 5)
@@ -142,7 +147,7 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in)
     yrange <- c(0, 50)
   }
 
-  plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
+  plot_output <- plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
           name = "GitHub", type = 'bar',
           marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
@@ -151,11 +156,16 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in)
               name = 'other repository <br>or website',
               marker = list(color = color_palette[6],
                             line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~OC_supplement_perc, name = 'supplement',
-              marker = list(color = color_palette[7],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
+                                        width = 1.5)))
+  # if (show_supplements == TRUE) {
+  #   plot_output <- plot_output %>%
+  #     add_trace(y = ~OC_supplement_perc, name = 'supplement',
+  #               marker = list(color = color_palette[7],
+  #                             line = list(color = 'rgb(0,0,0)',
+  #                                         width = 1.5)))
+  # }
+
+  plot_output %>%
     layout(barmode = 'stack',
            legend = list(xanchor = "right"),
            yaxis = list(title = '<b>Publications</b>',
@@ -226,7 +236,7 @@ plot_orcid <- function(plot_data, color_palette)
           line = list(color = color_palette[3], width = 4),
           marker = list(color = color_palette[3], size = 1)) %>%
     layout(yaxis = list(title = '<b>Registered ORCIDs</b>',
-                        range = c(0, 1900)),
+                        range = c(0, 2000)),
            xaxis = list(title = '<b>Date</b>',
                         type = 'date'),
            paper_bgcolor = color_palette[9],

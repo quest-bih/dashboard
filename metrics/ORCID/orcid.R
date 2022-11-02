@@ -7,3 +7,4 @@ orcid_id_num <- orcid(query="current-institution-affiliation-name:
   attr("found")
 
 write(paste(Sys.Date(), orcid_id_num, sep = ","), file="results/orcid.csv", append = TRUE)
+

@@ -6,13 +6,14 @@ library(lubridate)
 #----------------------------------------------------------------------------------------------------------------------
 
 #the AACT dataset has to be downloaded first from https://aact.ctti-clinicaltrials.org/pipe_files
-AACT_folder <- "C:/Datenablage/AACT/AACT dataset 20210222/" #insert the AACT download folder here
+# AACT_folder <- "C:/Datenablage/AACT/AACT dataset 20210222/" #insert the AACT download folder here
+AACT_folder <- "C:/Datenablage/AACT/AACT_dataset_220920/" #insert the AACT download folder here
 
 #AACT filenames that we need to load
 AACT_dataset_names <- c("studies", "overall_officials", "sponsors", "responsible_parties",
                         "facilities", "interventions", "calculated_values")
 
-load_AACT_dataset <- function(AACT_folder, AACT_dataset_names) {
+load_AACT_dataset_from_txt <- function(AACT_folder, AACT_dataset_names) {
   AACT_dataset_files <- paste0(AACT_folder, AACT_dataset_names, ".txt")
   AACT_datasets <- AACT_dataset_files %>%
     map(read_delim, delim = "|", guess_max = 10000)
@@ -21,7 +22,17 @@ load_AACT_dataset <- function(AACT_folder, AACT_dataset_names) {
   return(AACT_datasets)
 }
 
-AACT_datasets <- load_AACT_dataset(AACT_folder, AACT_dataset_names)
+#
+# load_AACT_dataset_from_csv <- function(AACT_folder, AACT_dataset_names) {
+#   AACT_dataset_files <- paste0(AACT_folder, AACT_dataset_names, ".csv")
+#   AACT_datasets <- AACT_dataset_files %>%
+#     map(read_csv, guess_max = 10000)
+#   names(AACT_datasets) <- AACT_dataset_names
+#
+#   return(AACT_datasets)
+# }
+
+AACT_datasets <- load_AACT_dataset_from_txt(AACT_folder, AACT_dataset_names)
 
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -120,7 +131,7 @@ CTgov_sample_Charite[[1]] <- CTgov_sample_full %>%
 #results for the prospective registration metric
 summary_prosp_reg <- CTgov_sample_Charite %>%
   map(filter, start_date > "2006-01-01") %>%
-  map(filter, start_date < "2020-12-31") %>%
+  map(filter, start_date < "2021-12-31") %>%
   map(function(x) table(year(x[["start_date"]]), x[["has_prospective_registration"]])) %>%
   map(function(x) tibble(year = rownames(x), no_prosp_reg = x[,1],
                          has_prosp_reg = x[,2], perc_prosp_reg = round(x[,2]/rowSums(x), 3)))
@@ -133,7 +144,7 @@ write_csv(summary_table_prosp_reg, "results/prospective_registration.csv")
 #save table with individual trials to display them in the Shiny app
 prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] %>%
   filter(start_date >= "2006-01-01") %>%
-  filter(start_date <= "2020-12-31") %>%
+  filter(start_date <= "2021-12-31") %>%
   select(nct_id, start_date, study_first_submitted_date,
          days_reg_to_start, has_prospective_registration)
 

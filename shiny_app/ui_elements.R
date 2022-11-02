@@ -56,7 +56,7 @@ metric_box <- function(style_resp = "padding-top: 0px; padding-bottom: 0px; back
   wellPanel(style = style_resp, #"height: 500px; overflow: scroll; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5", #padding-bottom: 0px;
             fluidRow(
               column(8, align="left", h4(strong(title))),
-              column(4, align="right",h4(actionButton(inputId = info_id, label = "", icon = icon("info-circle"),
+              column(4, align="right",h4(actionButton(inputId = info_id, label = "", icon = icon("circle-info"),
                                      class = "btn-primary", style='padding:1px')),
                      bsPopover(info_id, info_title, info_text,
                                info_alignment, options = list(container = "body")),

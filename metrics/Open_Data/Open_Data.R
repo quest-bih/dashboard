@@ -2,12 +2,14 @@ library(tidyverse)
 library(assertthat)
 
 print("Open Data detection with oddpub...")
-
+# pdf_folder <-"S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs/2021/"
+# txt_folder <- "S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs_to_text/2021/"
 pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
 txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
-
 print("Convert pdfs to text...")
 conversion_success <- oddpub::pdf_convert(pdf_folder, txt_folder)
+
+res <- tibble(file = list.files(pdf_folder), converted = conversion_success)
 
 print("Load txt files...")
 
@@ -34,7 +36,6 @@ if(file.exists("./results/Open_Data.csv"))
 
 print("completed!")
 
-
 #add columns for manual check & write to csv -
 #this table is then used as a basis for the manual check of the results
 
@@ -52,9 +53,22 @@ oddpub_results_manual_check <- oddpub_results %>%
          open_data_category_manual, open_data_statements, is_open_code,
          open_code_manual_check, open_code_category_manual, open_code_statements)
 
+# old_results <- read_csv("S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Inzentivierung und Indikatoren/LoM/Open Data LOM Charité/b/open data 2023/Berechnung/oddpub_results/new_oddpub_2021.csv") %>%
+#   mutate(doi = article %>% str_remove(fixed(".txt")) %>%
+#            str_replace_all(fixed("+"), "/"))
+#
+# publications <- read_csv("./main/publication_table.csv")
+#
+# new_articles <- oddpub_results_manual_check %>%
+#   left_join(publications, by = "doi") %>%
+#   filter(year == 2021) %>%
+#   anti_join(old_results, by = "doi")
+#
+# new_articles %>% count(is_open_data)
+# write_csv(new_articles, paste0("./results/new_articles_2021.csv"))
 
 #this is the file with the manually checked results, already update the template file with them,
-#such that only the remaning cases need to be checked manually
+#such that only the remaining cases need to be checked manually
 manual_check_results <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
 oddpub_results_manual_check <- rows_update(oddpub_results_manual_check,
                                            manual_check_results, by = "doi")

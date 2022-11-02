@@ -11,7 +11,7 @@ import barzooka
 tmp_folder_run = './tmp/' 
  
 #might need to adjust PDF folder path according to PDF location
-pdf_folder = '/fast/users/riedeln_c/work/charite_dashboard/PDFs/' 
+pdf_folder = 'Datenablage/charite_dashboard/unified_dataset/PDFs/' 
 
 #---------------------------------------------------------------------------------
 # calculate charite PDF validation

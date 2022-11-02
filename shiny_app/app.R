@@ -1,7 +1,6 @@
 #----------------------------------------------------------------------------------------------------------------------
 # Load libraries
 #----------------------------------------------------------------------------------------------------------------------
-
 library(DT)
 library(ggbeeswarm)
 library(ggvis)
@@ -12,7 +11,9 @@ library(shiny)
 library(shinyBS)
 library(shinyjs)
 library(shinythemes)
+library(shinycssloaders)
 library(tidyverse)
+library(assertthat)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -30,28 +31,27 @@ source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
 source("datasets_panel.R")
 
+dashboard_metrics <- read_csv("./data/dashboard_metrics.csv")
 
-dashboard_metrics <- read_csv("data/dashboard_metrics.csv")
-
-dashboard_metrics_aggregate <- read_csv("data/dashboard_metrics_aggregate.csv") %>%
+dashboard_metrics_aggregate <- read_csv("./data/dashboard_metrics_aggregate.csv") %>%
   mutate(perc_prosp_reg = perc_prosp_reg * 100) %>%
   round(1)
 
-EU_trialstracker_dataset <- read_csv("data/EU_trialstracker_past_data.csv")
-intovalue_dataset <- read_csv("data/IntoValue_Results_years.csv")
+EU_trialstracker_dataset <- read_csv("./data/EU_trialstracker_past_data.csv")
+intovalue_dataset <- read_csv("./data/IntoValue_Results_years.csv")
 
 
 #datasets for the datatables
-prosp_reg_dataset_shiny <- read_csv("data/prosp_reg_dataset_shiny.csv") %>%
+prosp_reg_dataset_shiny <- read_csv("./data/prosp_reg_dataset_shiny.csv") %>%
   mutate_at(vars(nct_id, start_date, registration_date,
                  has_prospective_registration),
             as.character)
-preprints_dataset_shiny <- read_csv("data/preprints_dataset_shiny.csv")
+preprints_dataset_shiny <- read_csv("./data/preprints_dataset_shiny.csv")
 
-orcid_dataset <- read_csv("data/orcid_results.csv")
+orcid_dataset <- read_csv("./data/orcid_results.csv")
 
 # fair dataset
-fair_dataset <- read_csv("data/fair_assessment.csv")
+fair_dataset <- read_csv("./data/fair_assessment.csv")
 
 # fair dataset for datatables
 fair_dataset_datatable <- fair_dataset %>%
@@ -66,7 +66,7 @@ fair_dataset_datatable <- fair_dataset %>%
 # preprocessing, need to move somewhere else later
 #----------------------------------------------------------------------------------------------------------------------
 
-show_year <- "2020"
+show_year <- "2021"
 metrics_show_year <- dashboard_metrics_aggregate %>% filter(year == show_year)
 
 OA_data <- dashboard_metrics %>%
@@ -284,7 +284,7 @@ server <- function(input, output, session)
               h2(strong("Open Science"), align = "left"),
               fluidRow(
                 column(2, checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE)),
-                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE))
+                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE)),
                 ),
               fluidRow(
                 column(col_width, metric_box(title = "Open Access",
@@ -746,6 +746,7 @@ server <- function(input, output, session)
     make_oddpub_plot_data() %>%
     rename(`Open Data` = open_data_manual_perc) %>%
     rename(`Open Code` = open_code_manual_perc)
+
 
   output$plot_oddpub_data <- renderPlotly({
     if(input$checkbox_total_OS) {
