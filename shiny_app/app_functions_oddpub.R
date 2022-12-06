@@ -27,7 +27,7 @@ make_oddpub_plot_data <- function(data_table)
                 open_code_neg_count = sum(!is_open_code | !open_code_manual_check, na.rm = TRUE),
                 open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
 
-                OD_field_specific_count = sum(open_data_category_priority == "field-specific repository", na.rm = TRUE),
+                OD_disciplinary_count = sum(open_data_category_priority == "disciplinary repository", na.rm = TRUE),
                 OD_general_purpose_count = sum(open_data_category_priority == "general-purpose repository", na.rm = TRUE),
                 # OD_supplement_count = sum(open_data_category_priority == "supplement", na.rm = TRUE),
                 OC_github_count = sum(open_code_category_priority == "github", na.rm = TRUE),
@@ -37,7 +37,7 @@ make_oddpub_plot_data <- function(data_table)
 
       mutate(open_data_manual_perc = round(open_data_manual_count/total * 100, 1)) %>%
       mutate(open_code_manual_perc = round(open_code_manual_count/total * 100, 1)) %>%
-      mutate(OD_field_specific_perc = round(OD_field_specific_count/total * 100, 1)) %>%
+      mutate(OD_disciplinary_perc = round(OD_disciplinary_count/total * 100, 1)) %>%
       mutate(OD_general_purpose_perc = round(OD_general_purpose_count/total * 100, 1)) %>%
       # mutate(OD_supplement_perc = round(OD_supplement_count/total * 100, 1)) %>%
       mutate(OC_github_perc = round(OC_github_count/total * 100, 1)) %>%

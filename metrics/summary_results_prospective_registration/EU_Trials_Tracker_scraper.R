@@ -35,8 +35,8 @@ EU_data_charite <- tibble(retrieval_date = as.character(Sys.Date()),
                           inconsistent_trials = var_values[5],
                           total_trials = var_values[6])
 
-write_csv(EU_data_charite, "./results//EU_trialstracker.csv",
-          append = TRUE)
+# write_csv(EU_data_charite, "./results//EU_trialstracker.csv",
+#           append = TRUE)
 
 
 ### historic scraping via github https://github.com/ebmdatalab/euctr-tracker-data/
@@ -98,7 +98,7 @@ for (url in charite_trials$url) {
 scraped_trials <- scraped_trials %>%
   mutate(retrieval_date = dates) %>%
   filter(total_trials > 100,
-         retrieval_date > "2021-11-08") %>%
+         retrieval_date > "2022-09-23") %>%
   select(retrieval_date, everything())
 
 write_csv(scraped_trials, "./results//EU_trialstracker.csv",

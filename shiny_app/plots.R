@@ -79,13 +79,13 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
     yrange <- c(0, 50)
   }
 
-  plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_field_specific_perc,
-          name = "field-specific repository", type = 'bar',
+  plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_disciplinary_perc,
+          name = "disciplinary repository", type = 'bar',
           marker = list(color = color_palette[3],
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
     add_trace(y = ~OD_general_purpose_perc,
-              name = 'multipurpose repository <br>or website',
+              name = 'general-purpose repository <br>or website',
               marker = list(color = color_palette[6],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5)))

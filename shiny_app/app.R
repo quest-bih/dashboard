@@ -740,7 +740,6 @@ server <- function(input, output, session)
     }
   })
 
-
   # Open Data & Code
   oddpub_plot_data <- dashboard_metrics %>%
     make_oddpub_plot_data() %>%

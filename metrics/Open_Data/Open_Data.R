@@ -1,5 +1,8 @@
 library(tidyverse)
+library(vroom)
 library(assertthat)
+library(readxl)
+library(janitor)
 
 print("Open Data detection with oddpub...")
 # pdf_folder <-"S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs/2021/"
@@ -41,17 +44,44 @@ print("completed!")
 
 template_filename <- "./results/Open_Data_manual_check_template.csv"
 
-oddpub_results <- read_csv("./results/Open_Data.csv")
+oddpub_results <- vroom("./results/Open_Data.csv")
+
+
 oddpub_results_manual_check <- oddpub_results %>%
-  mutate(open_data_manual_check = NA,
-         open_data_category_manual = "",
-         open_code_manual_check = NA,
-         open_code_category_manual = "",
+  mutate(
+    # open_data_manual_check = NA,
+         # open_data_category_manual = "",
+         # open_code_category_manual = "",
+         # open_code_category_manual =
+#           case_when(
+#            str_detect(open_code_statements, "github") ~ "github",
+#            str_detect(open_code_statements, "upon request|on reasonable request|if requested|available from.*corresponding authors*") ~ "upon request",
+#            str_detect(open_code_statements, "git.|repository|osf|[Z,z]enodo|doi.|available.*\\[|figshare|bitbucket|modeldb|see.*urls|open.source|to reproduce") ~ "other repository or website",
+#            str_detect(open_code_statements, "[S,s]upplement(?!ed)|journal.* web page|supporting information|appendix|additional file") ~ "supplement",
+#            TRUE ~ NA_character_
+#          ),
+         # open_code_manual_check = NA,
+#         if_else(
+#            is.na(open_code_category_manual) | open_code_category_manual == "upon request",
+#            FALSE,
+#            is_open_code
+#          ),
          doi = article %>% str_remove(fixed(".txt")) %>%
-                           str_replace_all(fixed("+"), "/")) %>%
-  select(doi, is_open_data, open_data_category, open_data_manual_check,
-         open_data_category_manual, open_data_statements, is_open_code,
-         open_code_manual_check, open_code_category_manual, open_code_statements)
+                           str_replace_all(fixed("+"), "/")
+         # data_access = NA
+         ) %>%
+  select(doi, is_open_data, is_open_code)
+# %>%
+#   select(doi, is_open_data, open_data_category, open_data_manual_check,
+#          open_data_category_manual, open_data_statements, is_open_code,
+#          open_code_manual_check, open_code_category_manual, open_code_statements, data_access)
+
+
+
+# oddpub_results_manual_check %>%
+#   filter(is_open_code) %>%
+#   count(open_code_category_manual)
+
 
 # old_results <- read_csv("S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Inzentivierung und Indikatoren/LoM/Open Data LOM Charité/b/open data 2023/Berechnung/oddpub_results/new_oddpub_2021.csv") %>%
 #   mutate(doi = article %>% str_remove(fixed(".txt")) %>%
@@ -69,13 +99,102 @@ oddpub_results_manual_check <- oddpub_results %>%
 
 #this is the file with the manually checked results, already update the template file with them,
 #such that only the remaining cases need to be checked manually
-manual_check_results <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
+manual_check_results <- vroom("./results/Open_Code_manual_detections.csv")
+# manual_check_results <- vroom("./results/Open_Data_manual_check_template.csv") %>%
+#   mutate(doi = tolower(doi))
+#### add restricted to currently old version of manual_check from 2020
+
+od_2020_restricted <- read_xlsx("./results/OD-LOM_2020.xlsx") %>%
+  filter(data_access == "restricted",
+         assessment != "no_open_data") %>%
+  select(doi = article, data_access) %>%
+  mutate(doi = tolower(doi))
+
+manual_only_od <- vroom("./results/OD_manual_tidy.csv") %>%
+  select(doi, contains("data"), -contains("has"))
+
+
+# manual_only_od %>%
+#   count(has_restricted, has_only_restricted)
+
+manual_check_results <- manual_check_results %>%
+  mutate(data_access = case_when(
+    open_data_manual_check == FALSE ~ NA_character_,
+    doi %in% od_2020_restricted$doi ~ "restricted",
+    TRUE ~ data_access))
+
+
+#### still missing some articles??
+
+manual_check_results <- manual_check_results %>%
+  rows_update(manual_only_od, by = "doi")
+
+
+
+mcs <- manual_check_results %>%
+  filter(!is.na(open_data_manual_check))
+
+mcs %>%
+  count(is_open_data, open_data_manual_check)
+
+missing_articles <- manual_check_results %>%
+  filter(is_open_data, is.na(open_data_manual_check))
+
+manual_check_results <- manual_check_results %>%
+  filter(!doi %in% manual_only_od$doi) %>%
+  bind_rows(manual_only_od) %>%
+  # left_join(od_2020_restricted) %>%
+  # mutate(data_access = if_else(open_data_manual_check == FALSE, NA_character_, data_access))
+
+# oddpub_results_manual_check <-
+oddpub_results_manual_check <- oddpub_results_manual_check %>%
+  mutate(doi = tolower(doi)) %>%
+  left_join(manual_check_results)
+
+missing_manual <- oddpub_results_manual_check %>% filter(is_open_data,
+       is.na(open_data_manual_check))
+
+#
+# manual_check_results <- vroom("./results/OD_manual_2021.csv") %>%
+# select(doi, open_data_manual_check = open_data_assessment, own_or_reuse_data, data_access, repository) %>%
+# replace(. =="NULL", NA) %>%
+# mutate(open_data_category_manual = case_when(
+#   repository
+# ))
+#
+#
+# categories_old <- dashboard_metrics %>%
+#   select(doi, od_m = open_data_category_manual)
+#
+# test <- manual_check_results %>%
+#   left_join(categories_old) %>%
+#   select(od_m, open_data_category, everything()) %>%
+#   filter(open_data_category == "data availability statement")
+#
+#
+# test %>%
+#   count(open_data_assessment)
+#
+# test2 <- test %>%
+#   filter(open_data_assessment == "open_data")
+
+manual_check_results %>%
+  count(open_data_category_manual)
+
+# oddpub_results_manual_check <- oddpub_results_manual_check %>%
+#   select(-contains("has_"))
+
+##### update previous oddpub_results_manual_check with
+
+oddpub_results_manual_check %>%
+  get_dupes(doi)
+
 oddpub_results_manual_check <- rows_update(oddpub_results_manual_check,
                                            manual_check_results, by = "doi")
 
 #now the new Open Data cases in the saved template file have to be checked manually
-oddpub_results_manual_check %>% write_csv(template_filename)
-
+# oddpub_results_manual_check %>% write_excel_csv2(template_filename)
+manual_check_results %>% write_excel_csv2(template_filename)
 
 #assertions for validity check of the manual results
 OD_manual_num <- sum(manual_check_results$open_data_manual_check, na.rm = TRUE)

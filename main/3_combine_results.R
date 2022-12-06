@@ -1,5 +1,6 @@
 library(tidyverse)
 library(assertthat)
+library(vroom)
 
 #----------------------------------------------------------------------------------------
 # load results
@@ -15,9 +16,30 @@ results_files <- paste0(results_folder, results_files)
 
 #manually checked Open Data results + additional cases that were not detected by algorithm
 #but found in manual searches or submitted by researchers for the LOM
-open_data_results <- read_delim("./results/Open_Data_manual_check_results.csv", delim = ";")
-open_data_manual_detection <- read_csv("./results/Open_Data_manual_detections.csv")
-open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
+# open_data_results <- vroom("./results/Open_Data_manual_check_results.csv")
+# open_data_manual_detection <- vroom("./results/Open_Data_manual_detections.csv")
+# open_data_manual_detection <- vroom("./results/Open_Code_manual_detections.csv")
+
+# open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
+open_data_results <- vroom("./results/Open_Data_manual_check_results.csv") %>% # temporary until Anastasiia completes manual screening
+  mutate(open_code_category_manual = case_when(
+    str_detect(open_code_category_manual, "github") ~ "github",
+    str_detect(open_code_category_manual, "supplement") ~ "supplement",
+    open_code_manual_check == TRUE ~ "other repository/website"
+  ),
+  open_code_manual_check = case_when(
+    str_detect(open_code_category_manual, "supplement") ~ FALSE,
+    TRUE ~ open_code_manual_check),
+  open_data_category_manual = case_when(
+    str_detect(open_data_category_manual, "field") ~ "disciplinary repository",
+    str_detect(open_data_category_manual, "general") ~ "general-purpose repository",
+    TRUE ~ open_data_category_manual
+  )
+  )
+# open_data_results %>%
+#   count(is_open_code, open_code_manual_check)
+open_data_results %>%
+  count(open_data_manual_check, open_data_category_manual)
 
 #Barzooka results
 barzooka_results <- read_csv("./results/Barzooka.csv") %>%
@@ -40,6 +62,16 @@ dashboard_metrics <- publications %>%
   mutate(pdf_downloaded = !is.na(bar)) %>%
   rename(OA_color = oa_status)
 
+per_year <- dashboard_metrics %>%
+  count(year, open_data_category_manual) %>%
+  group_by(year) %>%
+  mutate(perc = n / sum(n) * 100)
+
+miss_year <- dashboard_metrics %>%
+  filter(is.na(year))
+# add keine dois to the right year?
+# dashboard_metrics %>%
+#   count(OA_color)
 
 #----------------------------------------------------------------------------------------
 # further preprocessing & validation steps
@@ -48,14 +80,15 @@ dashboard_metrics <- publications %>%
 #data plausibility/quality check for the updated PDF dataset -> are there any new
 #cases that we missed? For old PDF dataset, there were 0 cases, now again 0 cases
 check_tbl <- dashboard_metrics %>%
-  filter((is_open_data & is.na(open_data_manual_check)) |
+  filter(
+    (is_open_data & is.na(open_data_manual_check)) |
            (is_open_code & is.na(open_code_manual_check))) %>%
   select(doi, year, is_open_data, open_data_category, is_open_code,
          open_data_statements, open_code_statements,
          open_data_manual_check, open_data_category_manual,
          open_code_manual_check, open_code_category_manual)
 assert_that(dim(check_tbl)[1] == 0)
-#write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
+# write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
 
 
 #----------------------------------------------------------------------------------------
@@ -73,7 +106,6 @@ shiny_table <- dashboard_metrics %>%
          bar, pie, bardot, box, dot, hist, violin)
 
 write_csv(shiny_table, "shiny_app/data/dashboard_metrics.csv")
-
 
 #----------------------------------------------------------------------------------------
 # now for the metrics that are already aggregated by year
@@ -96,6 +128,8 @@ orcid_dataset_shiny <- read_csv("./results/orcid.csv") %>%
 write_csv(orcid_dataset_shiny, "./shiny_app/data/orcid_results.csv")
 
 EU_trialstracker_dataset_shiny <- read_csv("./results/EU_trialstracker.csv") %>%
+  group_by(retrieval_date) %>%
+  slice(1) %>%
   mutate(perc_reported = round(total_reported/total_due, 3)) %>%
   arrange(desc(retrieval_date))
 write_csv(EU_trialstracker_dataset_shiny, "./shiny_app/data/EU_trialstracker_past_data.csv")
