@@ -24,6 +24,15 @@ downloaded_files <- publications_download %>%
   filter(found == TRUE) %>%
   mutate(file_name = paste0(gsub("/", "+", doi), ".pdf"))
 
+missing_manual <- downloaded_files %>%
+  select(doi) %>%
+  left_join(manual_check_results %>% mutate(doi = tolower(doi))) %>%
+  filter(is_open_data,
+         is.na(open_data_manual_check))
+
+missing_manual %>% write_csv("./results/missing_manual.csv")
+
+
 dest_folder <- "C:/Datenablage/charite_dashboard/2021/PDFs"
 
 

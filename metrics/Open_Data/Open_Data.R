@@ -99,7 +99,8 @@ oddpub_results_manual_check <- oddpub_results %>%
 
 #this is the file with the manually checked results, already update the template file with them,
 #such that only the remaining cases need to be checked manually
-manual_check_results <- vroom("./results/Open_Code_manual_detections.csv")
+# manual_check_results <- vroom("./results/Open_Code_manual_detections.csv")
+manual_check_results <- vroom("./results/Open_Data_manual_check_results.csv")
 # manual_check_results <- vroom("./results/Open_Data_manual_check_template.csv") %>%
 #   mutate(doi = tolower(doi))
 #### add restricted to currently old version of manual_check from 2020
@@ -113,6 +114,31 @@ od_2020_restricted <- read_xlsx("./results/OD-LOM_2020.xlsx") %>%
 manual_only_od <- vroom("./results/OD_manual_tidy.csv") %>%
   select(doi, contains("data"), -contains("has"))
 
+categories <- manual_only_od %>%
+  select(doi, open_data_category_manual)
+
+manual_check_results <- manual_check_results %>%
+  left_join(categories, by = "doi") %>%
+  rowwise() %>%
+  mutate(open_data_category_manual.x =
+           paste(na.omit(open_data_category_manual.x, open_data_category_manual.y), collapse = "|")
+           ) %>%
+  # select(-open_data_category_manual.y) %>%
+  rename(open_data_category_manual = open_data_category_manual.x) %>%
+  mutate(open_data_category_manual = case_when(
+    str_detect(open_data_category_manual, "field|discip") &
+      str_detect(open_data_category_manual, "general") ~
+      "disciplinary and general-purpose repositories",
+    str_detect(open_data_category_manual, "field|discip") ~
+      "disciplinary repository",
+    str_detect(open_data_category_manual, "general") ~
+      "general-purpose repository",
+    TRUE ~ open_data_category_manual
+  )) %>%
+  select(-open_data_category_manual.y)
+#
+# manual_check_results %>%
+#   write_excel_csv2("./results/Open_Data_manual_check_results2.csv")
 
 # manual_only_od %>%
 #   count(has_restricted, has_only_restricted)
@@ -124,11 +150,8 @@ manual_check_results <- manual_check_results %>%
     TRUE ~ data_access))
 
 
-#### still missing some articles??
-
 manual_check_results <- manual_check_results %>%
   rows_update(manual_only_od, by = "doi")
-
 
 
 mcs <- manual_check_results %>%

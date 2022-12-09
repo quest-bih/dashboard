@@ -21,7 +21,7 @@ results_files <- paste0(results_folder, results_files)
 # open_data_manual_detection <- vroom("./results/Open_Code_manual_detections.csv")
 
 # open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
-open_data_results <- vroom("./results/Open_Data_manual_check_results.csv") %>% # temporary until Anastasiia completes manual screening
+open_data_results <- vroom("./results/Open_Data_manual_check_results2.csv") %>% # temporary until Anastasiia completes manual screening
   mutate(open_code_category_manual = case_when(
     str_detect(open_code_category_manual, "github") ~ "github",
     str_detect(open_code_category_manual, "supplement") ~ "supplement",
@@ -30,12 +30,20 @@ open_data_results <- vroom("./results/Open_Data_manual_check_results.csv") %>% #
   open_code_manual_check = case_when(
     str_detect(open_code_category_manual, "supplement") ~ FALSE,
     TRUE ~ open_code_manual_check),
-  open_data_category_manual = case_when(
-    str_detect(open_data_category_manual, "field") ~ "disciplinary repository",
-    str_detect(open_data_category_manual, "general") ~ "general-purpose repository",
-    TRUE ~ open_data_category_manual
+  open_data_manual_check = case_when(
+    str_detect(open_data_category_manual, "supplement") ~ FALSE,
+    TRUE ~ open_data_manual_check),
+  # open_data_category_manual = case_when(
+  #   str_detect(open_data_category_manual, "field") ~ "disciplinary repository",
+  #   str_detect(open_data_category_manual, "general") ~ "general-purpose repository",
+  #   TRUE ~ open_data_category_manual
+  # )
   )
-  )
+
+
+# open_data_results %>%
+#   filter(open_data_manual_check) %>%
+#   count(is_open_data, open_data_category_manual)
 # open_data_results %>%
 #   count(is_open_code, open_code_manual_check)
 open_data_results %>%
@@ -67,9 +75,8 @@ per_year <- dashboard_metrics %>%
   group_by(year) %>%
   mutate(perc = n / sum(n) * 100)
 
-miss_year <- dashboard_metrics %>%
-  filter(is.na(year))
-# add keine dois to the right year?
+# miss_year <- dashboard_metrics %>%
+#   filter(is.na(year))
 # dashboard_metrics %>%
 #   count(OA_color)
 
