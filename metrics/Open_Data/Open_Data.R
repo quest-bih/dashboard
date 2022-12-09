@@ -114,6 +114,7 @@ od_2020_restricted <- read_xlsx("./results/OD-LOM_2020.xlsx") %>%
 manual_only_od <- vroom("./results/OD_manual_tidy.csv") %>%
   select(doi, contains("data"), -contains("has"))
 
+
 categories <- manual_only_od %>%
   select(doi, open_data_category_manual)
 
@@ -126,6 +127,7 @@ manual_check_results <- manual_check_results %>%
   # select(-open_data_category_manual.y) %>%
   rename(open_data_category_manual = open_data_category_manual.x) %>%
   mutate(open_data_category_manual = case_when(
+    !is.na(open_data_category_manual.y) ~ open_data_category_manual.y,
     str_detect(open_data_category_manual, "field|discip") &
       str_detect(open_data_category_manual, "general") ~
       "disciplinary and general-purpose repositories",

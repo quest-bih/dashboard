@@ -88,6 +88,11 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
               name = 'general-purpose repository <br>or website',
               marker = list(color = color_palette[6],
                             line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OD_disciplinary_and_general_perc,
+              name = 'disciplinary and general-purpose repository <br>or website',
+              marker = list(color = color_palette[8],
+                            line = list(color = 'rgb(0,0,0)',
                                         width = 1.5)))
   # if (show_supplements == TRUE) {
   #   plot_output <- plot_output %>%

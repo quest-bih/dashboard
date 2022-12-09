@@ -29,19 +29,22 @@ make_oddpub_plot_data <- function(data_table)
 
                 OD_disciplinary_count = sum(open_data_category_priority == "disciplinary repository", na.rm = TRUE),
                 OD_general_purpose_count = sum(open_data_category_priority == "general-purpose repository", na.rm = TRUE),
+                OD_disciplinary_and_general_count = sum(open_data_category_priority == "disciplinary and general-purpose repositories", na.rm = TRUE),
                 # OD_supplement_count = sum(open_data_category_priority == "supplement", na.rm = TRUE),
                 OC_github_count = sum(open_code_category_priority == "github", na.rm = TRUE),
                 OC_other_count = sum(open_code_category_priority == "other repository/website", na.rm = TRUE),
                 # OC_supplement_count = sum(open_code_category_priority == "supplement", na.rm = TRUE),
                 total = sum(!is.na(is_open_data) | (open_data_manual_check == TRUE), na.rm = TRUE)) %>%
 
-      mutate(open_data_manual_perc = round(open_data_manual_count/total * 100, 1)) %>%
-      mutate(open_code_manual_perc = round(open_code_manual_count/total * 100, 1)) %>%
-      mutate(OD_disciplinary_perc = round(OD_disciplinary_count/total * 100, 1)) %>%
-      mutate(OD_general_purpose_perc = round(OD_general_purpose_count/total * 100, 1)) %>%
+      mutate(open_data_manual_perc = round(open_data_manual_count/total * 100, 1),
+             open_code_manual_perc = round(open_code_manual_count/total * 100, 1),
+             OD_disciplinary_perc = round(OD_disciplinary_count/total * 100, 1),
+             OD_general_purpose_perc = round(OD_general_purpose_count/total * 100, 1),
+             OD_disciplinary_and_general_perc = round(OD_disciplinary_and_general_count/total * 100, 1),
+
       # mutate(OD_supplement_perc = round(OD_supplement_count/total * 100, 1)) %>%
-      mutate(OC_github_perc = round(OC_github_count/total * 100, 1)) %>%
-      mutate(OC_other_perc = round(OC_other_count/total * 100, 1))
+             OC_github_perc = round(OC_github_count/total * 100, 1),
+             OC_other_perc = round(OC_other_count/total * 100, 1))
   # %>%
   #     mutate(OC_supplement_perc = round(OC_supplement_count/total * 100, 1))
 
