@@ -33,13 +33,13 @@ open_data_results <- vroom("./results/Open_Data_manual_check_results2.csv") %>% 
   open_data_manual_check = case_when(
     str_detect(open_data_category_manual, "supplement") ~ FALSE,
     TRUE ~ open_data_manual_check),
-  # open_data_category_manual = case_when(
-  #   str_detect(open_data_category_manual, "field") ~ "disciplinary repository",
-  #   str_detect(open_data_category_manual, "general") ~ "general-purpose repository",
-  #   TRUE ~ open_data_category_manual
-  # )
+  restrictions = case_when(
+    str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
+    str_detect(data_access, "restricted") ~ "full",
+    TRUE ~ "no restricted data"
   )
 
+  )
 
 # open_data_results %>%
 #   filter(open_data_manual_check) %>%
@@ -110,6 +110,7 @@ shiny_table <- dashboard_metrics %>%
          is_open_data, open_data_manual_check, open_data_category_manual,
          is_open_code, open_code_manual_check, open_code_category_manual,
          open_data_statements, open_code_statements,
+         restrictions,
          bar, pie, bardot, box, dot, hist, violin)
 
 write_csv(shiny_table, "shiny_app/data/dashboard_metrics.csv")

@@ -71,10 +71,10 @@ plot_OA_total <- function(plot_data, color_palette)
 
 
 # Open Data
-plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
+plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
 {
   if(zoom_in) {
-    yrange <- c(0, 20)
+    yrange <- c(0, 15)
   } else {
     yrange <- c(0, 50)
   }
@@ -85,26 +85,63 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
                         line = list(color = 'rgb(0,0,0)',
                                     width = 1.5))) %>%
     add_trace(y = ~OD_general_purpose_perc,
-              name = 'general-purpose repository <br>or website',
+              name = 'general-purpose repository',
               marker = list(color = color_palette[6],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     add_trace(y = ~OD_disciplinary_and_general_perc,
-              name = 'disciplinary and general-purpose repository <br>or website',
-              marker = list(color = color_palette[8],
+              name = 'disciplinary and general-purpose repository',
+              marker = list(color = color_palette[2],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5)))
-  # if (show_supplements == TRUE) {
-  #   plot_output <- plot_output %>%
-  #     add_trace(y = ~OD_supplement_perc, name = 'supplement',
-  #               marker = list(color = color_palette[7],
-  #                             line = list(color = 'rgb(0,0,0)',
-  #                                         width = 1.5)))
-  # }
+  if (show_restrictions == TRUE) {
+
+    plot_output <- plot_data %>%
+      filter(year > 2019) %>%
+      plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
+                           name = "disciplinary repository", type = 'bar',
+                           marker = list(color = color_palette[3],
+                                         line = list(color = 'rgb(0,0,0)',
+                                                     width = 1.5))) %>%
+      add_trace(y = ~OD_disc_restricted_perc,
+                name = 'disciplinary repository restricted',
+                marker = list(color = color_palette[3],
+                              pattern = list(shape = "x"),
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      add_trace(y = ~OD_gen_nonrestricted_perc,
+                name = 'general-purpose repository',
+                marker = list(color = color_palette[6],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      add_trace(y = ~OD_gen_restricted_perc,
+                name = 'general-purpose repository restricted',
+                marker = list(color = color_palette[6],
+                              pattern = list(shape = "x"),
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5)),
+                showlegend = FALSE) %>%
+      add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
+                name = 'disciplinary and general-purpose repository',
+                marker = list(color = color_palette[2],
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5))) %>%
+      add_trace(y = ~OD_disc_and_gen_restricted_perc,
+                name = 'disciplinary and general-purpose repository restricted',
+                marker = list(color = color_palette[2],
+                              pattern = list(shape = "x"),
+                              line = list(color = 'rgb(0,0,0)',
+                                          width = 1.5)))
+  }
 
   plot_output %>%
     layout(barmode = 'stack',
-           legend = list(xanchor = "right"),
+           legend = list(orientation = "h",
+                         xanchor = "center",
+                         legendwidth = 0.6,
+                         x = 0.5,
+                         y = 1,
+                         orientation = "h"),
            yaxis = list(title = '<b>Publications</b>',
                         range = yrange,
                         ticksuffix = "%"),

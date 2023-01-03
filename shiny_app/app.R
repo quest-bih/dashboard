@@ -301,7 +301,9 @@ server <- function(input, output, session)
                                      info_id = "infoOD",
                                      info_title = "Open Data",
                                      info_text = open_data_tooltip,
-                                     info_alignment = alignment)),
+                                     info_alignment = alignment),
+                       checkboxInput("checkbox_restrictions", strong("Show cases with restricted access"), value = FALSE)
+                ),
                 column(col_width, metric_box(title = "Any Open Code",
                                      value = round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_count"]], 0),
                                      value_text = paste0("publications mentioned sharing of code in ", show_year),
@@ -743,15 +745,16 @@ server <- function(input, output, session)
   # Open Data & Code
   oddpub_plot_data <- dashboard_metrics %>%
     make_oddpub_plot_data() %>%
-    rename(`Open Data` = open_data_manual_perc) %>%
-    rename(`Open Code` = open_code_manual_perc)
+    rename(`Open Data` = open_data_manual_perc,
+           `Open Code` = open_code_manual_perc)
 
 
   output$plot_oddpub_data <- renderPlotly({
     if(input$checkbox_total_OS) {
       return(plot_OD_total(oddpub_plot_data, color_palette))
     } else {
-      return(plot_OD_perc(oddpub_plot_data, color_palette, input$checkbox_zoom_OS))
+      return(plot_OD_perc(oddpub_plot_data, color_palette,
+                          input$checkbox_zoom_OS, input$checkbox_restrictions))
     }
   })
 
