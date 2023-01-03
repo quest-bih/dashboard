@@ -98,7 +98,7 @@ for (url in charite_trials$url) {
 scraped_trials <- scraped_trials %>%
   mutate(retrieval_date = dates) %>%
   filter(total_trials > 100,
-         retrieval_date > "2022-09-23") %>%
+         retrieval_date > "2022-11-07") %>%
   select(retrieval_date, everything())
 
 write_csv(scraped_trials, "./results//EU_trialstracker.csv",
