@@ -64,7 +64,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         delay, such that the OA percentage for a given year typically rises
                         retrospectively. Thus the point in time of data retrieval is
                         important for understanding the OA percentage. The current OA status
-                        data were retrieved on: 16.09.2021.'),
+                        data were retrieved in September 2022.'),
 
                                   "Unpaywall only stores information for publications that
                         have a DOI assigned by Crossref. Articles without a Crossref DOI
@@ -88,17 +88,16 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         here</a>. This definition is also used for the distribution of performance-oriented
                         funding for publications with Open Data at the Charité.
                         Here, we distinguish several subcategories for Open Data & Open Code.
-                        For Open Data we distinguish 1) field-specific repositories, that are typically
+                        For Open Data we distinguish 1) disciplinary repositories, that are typically
                         made for a specific type of dataset with a standardized format and which is used in
-                        a specific community, 2) general-purpose repositories or
-                        other websites, that can contain various types of datasets, and 3) supplemental data.
+                        a specific community, and 2) general-purpose repositories or
+                        other websites, that can contain various types of datasets.
                         For Open Code we distinguish code shared 1) via GitHub, which is the most common
-                        way of code sharing, 2) via other websites or repositories, or 3) via the supplement.
+                        way of code sharing, and 2) via other websites or repositories.
                         Note also that data sharing is not possible for all
                         studies, as there is either no dataset to share or as the data
                         cannot be shared, e.g. due to privacy concerns for patient data.
-                        Data sharing under restrictions is currently not considered,
-                        but we are planning to do so in the future.'),
+                        Data sharing under restrictions is only available from the year 2020 onwards.'),
 
                                   HTML('To identify publications that share research data or analysis code,
                         we use the text-mining algorithm ODDPub
@@ -117,23 +116,29 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         accessible to us using the unpaywall and crossref APIs.
                         Then we screened those full-texts with ODDPub and
                         summarized the results for each publication year.
-                        We calculated the percentages of Open Data & Code relative to the publications
-                        with available full texts, which could indeed be screened.'),
+                        Finally, we performed a manual check of the publications detected
+                        by ODDPub as potentially open data or open code, in order to exclude
+                        false positive detections. We calculated the percentages of
+                        Open Data & Code relative to the publications with available full texts,
+                        which could indeed be screened.'),
 
                                   "Several limitations apply:
                         Only full texts for open access publications or publications in journals
                         that are subscribed by the Charité could be retrieved
-                        (~85% of all detected publications). ODDPub only finds ~75% of all Open Data
-                        publications and finds false positive cases (no manual check of the results
-                        is done). ODDPub also does not verify that the indicated dataset
-                        is indeed available and if the dataset fulfills our definition
-                        of Open Data. Open Data is not relevant for all publications, so we would not
+                        (~85% of all detected publications).
+                        Open Data is not relevant for all publications, so we would not
                         expect 100% of the publications to contain Open Data, even not in an ideal case.
                         We considered all publications that had at least one author affiliated
                         with the Charité – in some cases where those were only middle authors
                         with minor contributions to the project, they might have little impact
                         on the decision if data were made available."),
 
+                    # ODDPub only finds ~75% of all Open Data
+                    # publications and finds false positive cases (no manual check of the results
+                    # is done).
+                    # ODDPub also does not verify that the indicated dataset
+                    # is indeed available and if the dataset fulfills our definition
+                    # of Open Data.
 
                     methods_panel("Preprints",
 
@@ -148,7 +153,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         We searched for articles of the type \'preprint\' and
                         with authors assigned to the Charité via its Grid ID. The number of preprints
                         found by this search are then summarized by year.
-                        The current preprint data were retrieved on: 14.09.2020.'),
+                        The current preprint data were retrieved on: 30.09.2022.'),
 
                                   "Not all relevant preprint servers are currently indexed by dimensions,
                         including some of the bigger preprint servers like OSF preprints or medRxiv.
@@ -159,7 +164,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                   "This metric measures how many researchers currently affiliated with the
                         Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
                         despite name variants or name changes and uniquely associates
-                        publications or other types of research output with him/her.
+                        publications or other types of research output with them.
                         Many publishers now request ORCIDs when manuscripts are submitted.",
 
                                   HTML('To identify Charité researchers with ORCIDs, we query the
