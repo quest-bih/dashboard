@@ -40,6 +40,7 @@ make_fair_license_plot_data <- function(data_table)
   return(fair_license_plot_data)
 }
 
+
 # Data for FAIR principle violin chart
 
 make_fair_principle_plot_data <- function(data_table)
@@ -72,8 +73,6 @@ make_fair_principle_plot_data <- function(data_table)
 
    return(fair_principle_plot_data)
 }
-
-# make_fair_principle_plot_data(plot_data)
 
 # Data for FAIR repository treemap chart
 
@@ -183,3 +182,6 @@ make_fair_sunburst_plot_data <- function(data_table)
 
   return(fair_sunburst_plot_data)
 }
+
+# For test, remove later
+#test <- make_fair_sunburst_plot_data(fair_dataset)

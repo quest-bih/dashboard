@@ -27,6 +27,7 @@ source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
 source("resources_descriptions.R", encoding = "UTF-8")
 source("fair_panel.R", encoding = "UTF-8")
+source("bss_panel.R", encoding = "UTF-8")
 source("about_page.R", encoding = "UTF-8")
 source("plots.R", encoding = "UTF-8")
 source("datasets_panel.R")
@@ -51,7 +52,11 @@ preprints_dataset_shiny <- read_csv("./data/preprints_dataset_shiny.csv")
 orcid_dataset <- read_csv("./data/orcid_results.csv")
 
 # fair dataset
-fair_dataset <- read_csv("./data/fair_assessment.csv")
+fair_dataset <- read_csv("./data/fair_assessment_2021.csv", show_col_types = FALSE)
+
+# For test, remove later
+#fair_dataset <- read_csv("./shiny_app/data/fair_assessment_2021.csv", show_col_types = FALSE)
+#fair_dataset <- read_csv("./shiny_app/data/fair_assessment.csv", show_col_types = FALSE)
 
 # fair dataset for datatables
 fair_dataset_datatable <- fair_dataset %>%
@@ -166,6 +171,8 @@ ui <-
 
   # FAIR data metrics are shown in separate dashboard tab
   fair_panel,
+  # BSS data are shown in separate dashboard tab
+  #bss_panel,
 
   # Methods and resources are displayed in a fold-out menu due to lack of space in the navbar.
   navbarMenu("Methods/Resources/Data",
@@ -236,9 +243,13 @@ ui <-
                           Shiny.onInputChange("width", width);
                         });
                         ')),
-  # Change color of selectize dropdown in FAIR panel
+  # Change color of all selectize dropdowns
+  tags$head(tags$style(HTML('.selectize-input.full{background: #DCE3E5; border: #DCE3E5;}'))),
+  # Change color of selected selectize dropdowns
  tags$head(tags$style(HTML('#select_repository+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}'))),
  tags$head(tags$style(HTML('#checkbox_FAIR+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}')))
+ #tags$head(tags$style(HTML('#prio-module_status + div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}'))),
+ #tags$head(tags$style(HTML('#prio-module_research + div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}')))
 
 )
 )
@@ -425,7 +436,7 @@ server <- function(input, output, session)
 
     # Create choices for selectInput
     choices <- list(
-      `Repository types`  = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) %>% setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
+      `Repository types` = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) %>% setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
       `General-purpose repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])) %>%
         setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])),
       `Field-specific repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"])) %>%
@@ -556,7 +567,7 @@ server <- function(input, output, session)
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "FAIR scores by principles",
                                              value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
-                                             value_text = "is the average FAIR score of datasets from 2020 in disciplinary repositories",
+                                             value_text = "is the average FAIR score of datasets from 2021 in disciplinary repositories",
                                              plot = plotlyOutput('plot_fair_principle', height = "300px"),
                                              info_id = "infoFAIRprinciples",
                                              info_title = "FAIR scores by principles",
@@ -575,7 +586,7 @@ server <- function(input, output, session)
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "FAIR scores by identifiers",
                                              value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
-                                             value_text = "of 2020 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
+                                             value_text = "of 2021 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
                                              plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
                                              info_id = "infoFAIRidentifiers",
                                              info_title = "Dataset identifiers",
@@ -584,7 +595,6 @@ server <- function(input, output, session)
               )
     )
   })
-
 
   #actionButton to switch tabs
   observeEvent(input$buttonMethods, {
@@ -932,6 +942,14 @@ server <- function(input, output, session)
 
     plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository, color_seq)
   })
+
+  #---------------------------------
+  # Berlin Science Survey (BSS) server modules
+  #---------------------------------
+
+  moduleServer_plot("prio")
+  moduleServer_plot("practices")
+  moduleServer_plot("environment")
 
 }
 

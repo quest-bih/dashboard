@@ -441,7 +441,7 @@ Since each metric can be tested in various means depending on data contexts and 
   paste(collapse = " ")
 
 fair_repositories_tooltip <- strwrap("This metric measures the average FAIR score (in percent) by data repositories
-                                for research data published in 2020.
+                                for research data published in 2021.
                                 Data repositories have a major impact on the FAIR score of research data because
                                 they provide the infrastructure that ensures Findability, Accessibility, Interoperability,
                                 and Reusability of digital assets.
@@ -452,7 +452,7 @@ fair_repositories_tooltip <- strwrap("This metric measures the average FAIR scor
 
 fair_principles_tooltip <- strwrap("This metric measures the average FAIR score (in percent)
                                 by the four main principles Findability, Accessibility, Interoperability,
-                                and Reusability for research data published in 2020.
+                                and Reusability for research data published in 2021.
                                 The FAIR score is based on practical tests executed by the automated FAIR data assessment tool
                                 F-UJI against specific metrics derived from the FAIR principles.
                                 - Click for more info.") %>%
@@ -460,10 +460,10 @@ fair_principles_tooltip <- strwrap("This metric measures the average FAIR score 
 
 fair_licenses_tooltip <-
   strwrap(
-    "This metric measures if a standard, machine readable license is specified under which research data published in 2020 can be reused. It is derived from the FAIR principle R1.1 — (Meta)data are released with a clear and accessible data usage license. - Click for more info."
+    "This metric measures if a standard, machine readable license is specified under which research data published in 2021 can be reused. It is derived from the FAIR principle R1.1 — (Meta)data are released with a clear and accessible data usage license. - Click for more info."
   ) %>%
   paste(collapse = " ")
 
-fair_identifiers_tooltip <- strwrap("This metric measures the average FAIR score of the 2020 datasets by the unique identifiers. It is derived from the FAIR principle F1 — (Meta)data are assigned a globally unique and persistent identifier.
+fair_identifiers_tooltip <- strwrap("This metric measures the average FAIR score of the 2021 datasets by the unique identifiers. It is derived from the FAIR principle F1 — (Meta)data are assigned a globally unique and persistent identifier.
                                 - Click for more info.") %>%
   paste(collapse = " ")
