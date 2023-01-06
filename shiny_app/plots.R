@@ -71,40 +71,42 @@ plot_OA_total <- function(plot_data, color_palette)
 
 
 # Open Data
-plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
-{
-  if(zoom_in) {
-    yrange <- c(0, 15)
-  } else {
+plot_OD_perc <- function(plot_data, color_palette)
+  {
+# plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
+# {
+#   if(zoom_in) {
+#     yrange <- c(0, 12)
+#   } else {
     yrange <- c(0, 50)
-  }
+#   }
 
-  plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_disciplinary_perc,
-          name = "disciplinary repository", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    add_trace(y = ~OD_general_purpose_perc,
-              name = 'general-purpose repository',
-              marker = list(color = color_palette[6],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~OD_disciplinary_and_general_perc,
-              name = 'disciplinary and general-purpose repository',
-              marker = list(color = color_palette[2],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5)))
-  if (show_restrictions == TRUE) {
+  # plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_disciplinary_perc,
+  #         name = "disciplinary repository", type = 'bar',
+  #         marker = list(color = color_palette[3],
+  #                       line = list(color = 'rgb(0,0,0)',
+  #                                   width = 1.5))) %>%
+  #   add_trace(y = ~OD_general_purpose_perc,
+  #             name = 'general-purpose repository',
+  #             marker = list(color = color_palette[6],
+  #                           line = list(color = 'rgb(0,0,0)',
+  #                                       width = 1.5))) %>%
+  #   add_trace(y = ~OD_disciplinary_and_general_perc,
+  #             name = 'disciplinary and general<br>repository',
+  #             marker = list(color = color_palette[2],
+  #                           line = list(color = 'rgb(0,0,0)',
+  #                                       width = 1.5)))
+  # if (zoom_in == TRUE) {
 
     plot_output <- plot_data %>%
-      filter(year > 2019) %>%
+      # filter(year > 2019) %>%
       plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
                            name = "disciplinary repository", type = 'bar',
                            marker = list(color = color_palette[3],
                                          line = list(color = 'rgb(0,0,0)',
                                                      width = 1.5))) %>%
       add_trace(y = ~OD_disc_restricted_perc,
-                name = 'disciplinary repository restricted',
+                name = 'disciplinary repository - restricted',
                 marker = list(color = color_palette[3],
                               pattern = list(shape = "x"),
                               line = list(color = 'rgb(0,0,0)',
@@ -115,34 +117,36 @@ plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
                               line = list(color = 'rgb(0,0,0)',
                                           width = 1.5))) %>%
       add_trace(y = ~OD_gen_restricted_perc,
-                name = 'general-purpose repository restricted',
+                name = 'general-purpose repository - restricted',
                 marker = list(color = color_palette[6],
                               pattern = list(shape = "x"),
                               line = list(color = 'rgb(0,0,0)',
                                           width = 1.5)),
                 showlegend = FALSE) %>%
       add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
-                name = 'disciplinary and general-purpose repository',
+                name = 'disciplinary and general<br>repository',
                 marker = list(color = color_palette[2],
                               line = list(color = 'rgb(0,0,0)',
                                           width = 1.5))) %>%
       add_trace(y = ~OD_disc_and_gen_restricted_perc,
-                name = 'disciplinary and general-purpose repository<br>restricted',
+                name = 'disciplinary and general<br>repository - restricted',
                 marker = list(color = color_palette[2],
                               pattern = list(shape = "x"),
                               line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5)))
-  }
+                                          width = 1.5)),
+                showlegend = FALSE)
+  # }
 
   plot_output %>%
     layout(barmode = 'stack',
-           legend = list(orientation = "h",
-                         xanchor = "center",
-                         legendwidth = 0.6,
-                         x = 0.5,
-                         y = 1.1,
-                         orientation = "h",
-                         traceorder = "reversed"),
+           legend = list(
+             orientation = "h",
+             xanchor = "left",
+             legendwidth = 1.3,
+             # font = list(size = 11),
+             bgcolor = 'rgba(0,0,0,0)',
+             x = 0.05,
+             y = 1.3),
            yaxis = list(title = '<b>Publications</b>',
                         range = yrange,
                         ticksuffix = "%"),
@@ -166,7 +170,7 @@ plot_OD_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     add_trace(y = ~open_data_NA_count,
-              name = 'Not accessible',
+              name = 'Article<br>not accessible',
               marker = list(color = color_palette[1],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
@@ -182,13 +186,14 @@ plot_OD_total <- function(plot_data, color_palette)
 
 
 # Open Code
-plot_OC_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
-{
-  if(zoom_in) {
-    yrange <- c(0, 5)
-  } else {
+# plot_OC_perc <- function(plot_data, color_palette, zoom_in, show_supplements) {
+plot_OC_perc <- function(plot_data, color_palette) {
+  # if(zoom_in) {
+  #   yrange <- c(0, 5)
+  # } else {
     yrange <- c(0, 50)
-  }
+  # }
+
 
   plot_output <- plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
           name = "GitHub", type = 'bar',
@@ -210,7 +215,11 @@ plot_OC_perc <- function(plot_data, color_palette, zoom_in, show_supplements)
 
   plot_output %>%
     layout(barmode = 'stack',
-           legend = list(xanchor = "right"),
+           legend = list(xanchor = "left",
+                         # font = list(size = 11),
+                         bgcolor = 'rgba(0,0,0,0)',
+                         x = 0.05,
+                         y = 1),
            yaxis = list(title = '<b>Publications</b>',
                         range = yrange,
                         ticksuffix = "%"),
@@ -234,7 +243,7 @@ plot_OC_total <- function(plot_data, color_palette)
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
     add_trace(y = ~open_code_NA_count,
-              name = 'Not accessible',
+              name = 'Article<br>not accessible',
               marker = list(color = color_palette[1],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) %>%
@@ -266,7 +275,11 @@ plot_preprints <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right")) %>%
+           legend = list(xanchor = "left",
+                         legendwidth = 1.3,
+                         bgcolor = 'rgba(0,0,0,0)',
+                         x = 0.05,
+                         y = 1)) %>%
     config(displayModeBar = FALSE)
 }
 
@@ -350,7 +363,8 @@ plot_intovalue_perc <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right")) %>%
+           legend = list(xanchor = "left",
+                         bgcolor = 'rgba(0,0,0,0)')) %>%
     config(displayModeBar = FALSE)
 }
 
@@ -379,7 +393,8 @@ plot_intovalue_total <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right")) %>%
+           legend = list(xanchor = "left",
+                         bgcolor = 'rgba(0,0,0,0)')) %>%
     config(displayModeBar = FALSE)
 }
 

@@ -284,7 +284,8 @@ server <- function(input, output, session)
               h2(strong("Open Science"), align = "left"),
               fluidRow(
                 column(2, checkboxInput("checkbox_total_OS", strong("Show absolute numbers"), value = FALSE)),
-                column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE)),
+                column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
+                # column(2, checkboxInput("checkbox_zoom_OS", strong("Zoom in"), value = FALSE)),
                 ),
               fluidRow(
                 column(col_width, metric_box(title = "Open Access",
@@ -302,7 +303,7 @@ server <- function(input, output, session)
                                      info_title = "Open Data",
                                      info_text = open_data_tooltip,
                                      info_alignment = alignment),
-                       checkboxInput("checkbox_restrictions", strong("Show cases with restricted access"), value = FALSE)
+                       # checkboxInput("checkbox_restrictions", strong("Show cases with restricted access"), value = FALSE)
                 ),
                 column(col_width, metric_box(title = "Any Open Code",
                                      value = round((oddpub_data %>%  filter(year == show_year))[["open_code_manual_count"]], 0),
@@ -318,15 +319,7 @@ server <- function(input, output, session)
                                      info_id = "infoPreprints",
                                      info_title = "Preprints",
                                      info_text = preprints_tooltip,
-                                     info_alignment = "left")),
-                column(col_width, metric_box(title = "ORCID",
-                                     value = orcid_dataset$orcid_count %>% last(),
-                                     value_text = paste0("Charité researchers with an ORCID (as of ",
-                                                                 orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
-                                     plot = plotlyOutput('plot_orcid', height = "300px"),
-                                     info_id = "infoOrcid",
-                                     info_title = "ORCID",
-                                     info_text = orcid_tooltip))
+                                     info_alignment = "left"))
                 )
     )
   })
@@ -343,11 +336,13 @@ server <- function(input, output, session)
       alignment <- "right"
     }
 
-    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+    fluidRow(
+      column(9,
+             wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
               h2(strong("Clinical trials"), align = "left"),
               checkboxInput("checkbox_total_CT", strong("Show absolute numbers"), value = FALSE),
               fluidRow(
-                column(col_width, metric_box(title = "Summary Results",
+                column(4, metric_box(title = "Summary Results",
                                      value = paste(round(EU_trialstracker_dataset$perc_reported[1] * 100, 0), "%"),
                                      value_text = paste0("of due trials registered on the EU Clinical Trials Register reported results (as of ",
                                                          EU_trialstracker_dataset$retrieval_date[1] %>% str_replace_all("-", "/"), ")"),
@@ -356,7 +351,7 @@ server <- function(input, output, session)
                                      info_title = "Summary Results reporting",
                                      info_text = summary_results_tooltip)),
 
-                column(col_width, metric_box(title = "Timely publication of results",
+                column(4, metric_box(title = "Timely publication of results",
                                              value = paste(round(intovalue_dataset$percentage_published_2_years %>% last() * 100, 0), "%"),
                                              value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
                                                                  intovalue_dataset$completion_year %>% last(),
@@ -368,14 +363,29 @@ server <- function(input, output, session)
                                              info_text = intovalue_tooltip,
                                              info_alignment = alignment)),
 
-                column(col_width, metric_box(title = "Prospective registration",
+                column(4, metric_box(title = "Prospective registration",
                                      value = paste(round(metrics_show_year$perc_prosp_reg, 0), "%"),
                                      value_text = paste0("of clinical trials started in ", show_year, " were prospectively registered on CT.gov"),
                                      plot = plotlyOutput('plot_prosp_reg', height = "300px"),
                                      info_id = "infoProspReg",
                                      info_title = "Prospective registration",
                                      info_text = prospective_registration_tooltip,
-                                     info_alignment = alignment)))
+                                     info_alignment = alignment))))),
+             column(3,
+              wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+                        h2(strong("Persistent identifiers"), align = "left"),
+                        fluidRow(
+                          br(),
+                          br(),
+                        column(12, metric_box(title = "ORCID",
+                                           value = orcid_dataset$orcid_count %>% last(),
+                                           value_text = paste0("Charité researchers with an ORCID (as of ",
+                                                               orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
+                                           plot = plotlyOutput('plot_orcid', height = "300px"),
+                                           info_id = "infoOrcid",
+                                           info_title = "ORCID",
+                                           info_text = orcid_tooltip,
+                                           info_alignment = "left")))))
     )
   })
 
@@ -636,7 +646,7 @@ server <- function(input, output, session)
   observeEvent(input$infoOrcid, {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
-    updateCollapse(session, "methodsPanels_OpenScience", open = "ORCID")
+    updateCollapse(session, "methodsPanels_persistent_ids", open = "ORCID")
   })
 
   observeEvent(input$infoSumRes, {
@@ -753,8 +763,10 @@ server <- function(input, output, session)
     if(input$checkbox_total_OS) {
       return(plot_OD_total(oddpub_plot_data, color_palette))
     } else {
-      return(plot_OD_perc(oddpub_plot_data, color_palette,
-                          input$checkbox_zoom_OS, input$checkbox_restrictions))
+      return(plot_OD_perc(oddpub_plot_data, color_palette
+                          # input$checkbox_zoom_OS,
+                          # input$checkbox_restrictions
+                          ))
     }
   })
 
@@ -762,7 +774,9 @@ server <- function(input, output, session)
     if(input$checkbox_total_OS) {
       return(plot_OC_total(oddpub_plot_data, color_palette))
     } else {
-      return(plot_OC_perc(oddpub_plot_data, color_palette, input$checkbox_zoom_OS))
+      return(plot_OC_perc(oddpub_plot_data, color_palette
+                          # input$checkbox_zoom_OS
+                          ))
     }
   })
 
