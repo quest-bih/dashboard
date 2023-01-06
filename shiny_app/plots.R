@@ -675,14 +675,14 @@ plot_fair_principle_perc <- function(plot_data, color_palette)
       na.rm = TRUE,
       color = "#000000"
     ) +
-    stat_summary(
-      fun = mean,
-      geom = "crossbar",
-      width = 0.3,
-      size = 0.25,
-      color = "#000000",
-      na.rm = TRUE
-    ) +
+    # stat_summary(
+    #   fun = median,
+    #   geom = "errorbar",
+    #   width = 0.3,
+    #   size = 0.25,
+    #   color = "#000000",
+    #   na.rm = TRUE
+    # ) +
     facet_wrap(~ repository_type) +
     theme_minimal() +
     theme(
@@ -701,6 +701,12 @@ plot_fair_principle_perc <- function(plot_data, color_palette)
            plot_bgcolor = color_palette[9]) %>%
       config(displayModeBar = FALSE)
 }
+
+# For test, remove later
+# plot_data <- test
+# plot_fair_principle_perc(test, c("grey", "yellow"))
+# ggplotly()
+
 
 # Function for treemap plot for FAIR score by repository
 
@@ -827,6 +833,7 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
         "fuji_percent_f4",
         "fuji_percent_a1",
         "fuji_percent_i1",
+        "fuji_percent_i2",
         "fuji_percent_i3",
         "fuji_percent_r1",
         "fuji_percent_r1_1",
@@ -834,18 +841,18 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
         "fuji_percent_r1_3",
         "FsF-F1-01D", "FsF-F1-02D", "FsF-F2-01M", "FsF-F3-01M", "FsF-F4-01M",
         "FsF-A1-01M", "FsF-A1-02M", "FsF-A1-03D",
-        "FsF-I1-01M", "FsF-I1-02M", "FsF-I3-01M",
+        "FsF-I1-01M", "FsF-I2-01M", "FsF-I3-01M",
         "FsF-R1-01MD", "FsF-R1.1-01M", "FsF-R1.2-01M", "FsF-R1.3-01M", "FsF-R1.3-02D"
       ),
       labels =
         c("FAIR", "F", "A", "I", "R",
           "F1", "F2", "F3", "F4",
           "A1",
-          "I1", "I3",
+          "I1", "I2", "I3",
           "R1", "R1.1", "R1.2", "R1.3",
           "FsF-F1-01D", "FsF-F1-02D", "FsF-F2-01M", "FsF-F3-01M", "FsF-F4-01M",
           "FsF-A1-01M", "FsF-A1-02M", "FsF-A1-03D",
-          "FsF-I1-01M", "FsF-I1-02M", "FsF-I3-01M",
+          "FsF-I1-01M", "FsF-I2-01M", "FsF-I3-01M",
           "FsF-R1-01MD", "FsF-R1.1-01M", "FsF-R1.2-01M", "FsF-R1.3-01M", "FsF-R1.3-02D")
     )) %>%
     arrange(name) %>%
@@ -857,7 +864,10 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
                               TRUE ~ parent)) %>%
     mutate(score = c(24,
                      7, 3, 4, 10,
-                     2, 2, 1, 2, 3, 3, 1, 4, 2, 2, 2,
+                     2, 2, 1, 2,
+                     3,
+                     2, 1, 1,
+                     4, 2, 2, 2,
                      1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 4, 2, 2, 1, 1)) %>%
     mutate(name = factor(name, levels = rev(levels(name)))) %>%
    # mutate(name = if(select_chart == "sunburst"){factor(name, levels = rev(levels(name)))}else{factor(name, levels = levels(name))}) %>%
@@ -887,7 +897,7 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
                                  name == "FsF-A1-02M" ~ "FsF-A1-02M — Metadata is accessible through a standardized communication protocol.",
                                  name == "FsF-A1-03D" ~ "FsF-A1-03D — Data is accessible through a standardized communication protocol.",
                                  name == "FsF-I1-01M" ~ "FsF-I1-01M — Metadata is represented using a formal knowledge representation language.",
-                                 name == "FsF-I1-02M" ~ "FsF-I1-02M — Metadata uses semantic resources",
+                                 name == "FsF-I2-01M" ~ "FsF-I2-01M — Metadata uses semantic resources",
                                  name == "FsF-I3-01M" ~ "FsF-I3-01M — Metadata includes links between the data and its related entities.",
                                  name == "FsF-R1-01MD" ~ "FsF-R1-01MD — Metadata specifies the content of the data.",
                                  name == "FsF-R1.1-01M" ~ "FsF-R1.1-01M — Metadata includes license information under which data can be reused.",

@@ -12,7 +12,7 @@ impressum_text <- HTML("<b>Berliner Institut für Gesundheitsforschung in der Ch
                                        Prof. Dr. Christopher H. Baum<br>
                                        <br>
                                        <b>Kontakt</b><br>
-                                       Dr. Jan Taubitz<br>
+                                       Dr. Vladislav Nachev<br>
                                        QUEST Center<br>
                                        Anna-Louisa-Karsch-Str. 2<br>
                                        10178 Berlin<br>
