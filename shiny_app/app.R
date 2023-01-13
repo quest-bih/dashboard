@@ -174,7 +174,7 @@ ui <-
   # FAIR data metrics are shown in separate dashboard tab
   fair_panel,
   # BSS data are shown in separate dashboard tab
-  #bss_panel,
+  bss_panel,
 
   # Methods and resources are displayed in a fold-out menu due to lack of space in the navbar.
   navbarMenu("Methods/Resources/Data",

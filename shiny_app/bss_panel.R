@@ -1426,11 +1426,7 @@ moduleServer_plot <- function(id) {
 
       output$module_text <- renderText({
         if (input$module_status == "all") {
-<<<<<<< Updated upstream
-          return("of all Charité scientists give high or highest priority to open science")
-=======
           return("of Charité scientists attribute high or highest importance to open science")
->>>>>>> Stashed changes
         } else if (input$module_status == "prof") {
           return("of Charité professors give high or highest priority to open science")
         } else if (input$module_status == "postdoc") {
