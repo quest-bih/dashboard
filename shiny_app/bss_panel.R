@@ -618,7 +618,7 @@ data |>
 #----------------------------------------------------------------------------------------------------------------------
 
 # Plot prios and goals as combined chart
-plot_prio <- function(data) {
+plot_prio <- function(data, x, y, status, research) {
 
 # data <- data_prep_prio(1:4, "v6_1")
   # Prepare standard data
@@ -716,14 +716,17 @@ plot_prio <- function(data) {
       y = 0,
       xref = "paper",
       yref = "paper",
-      text = ~ glue::glue("<a href='https://www.berlinsciencesurvey.de/en/index.html'>Berlin Science Survey 2022</a>, Charité Subsample, n={n},
-                          faded icons show entire Charité Subsample",
+      text = ~ if_else(status == "all" & research == "all", glue::glue("<a href='https://www.berlinsciencesurvey.de/en/index.html'>Berlin Science Survey 2022</a>, Charité Subsample, n={n}",
                           n = max(n)),
+                       glue::glue("<a href='https://www.berlinsciencesurvey.de/en/index.html'>Berlin Science Survey 2022</a>, Charité Subsample, n={n},
+                          faded icons show entire Charité Subsample",
+                          n = max(n))
+      ),
       showarrow = F,
       xanchor = "right",
       yanchor = "auto",
       xshift = 0,
-      yshift = -85,
+      yshift = if_else(status == "all" & research == "all", -75, -85),
       font = list(size = 12),
       bordercolor = "#63666A", #aa1c7d
       borderpad = 2,
@@ -741,7 +744,7 @@ plot_prio <- function(data) {
       yaxis = list(title = FALSE,
                    showgrid = FALSE),
       legend = list(orientation = "h", x = 0.5, y = 1.1, xanchor = "center"),
-      margin = list(t = 10, b = 95),
+      margin = list(t = 10, b = if_else(status == "all" & research == "all", 85, 95)),
       paper_bgcolor = "#DCE3E5",
       plot_bgcolor = "#DCE3E5") |>
     config(displayModeBar = FALSE)
@@ -1116,7 +1119,7 @@ moduleUI_status_research_prio <- function(id) {
   wellPanel(
     style = "padding-top: 10px; padding-bottom: 0px;",
     fluidRow(column(8,
-    h2(strong("Prioritizing scientific goals in the field of tension between external expectations and self-ascribed importance"), align = "left"),
+    h2(strong("Prioritizing scientific goals between external expectations and self-ascribed importance"), align = "left"),
     )),
     fluidRow(column(
       4,
@@ -1466,7 +1469,7 @@ moduleServer_plot <- function(id) {
 
           data <- data_prep_prio(x, y)
           # Draw chart
-          plot_prio(data)
+          plot_prio(data, status = input$module_status, research = input$module_research)
 
         } else {
 
