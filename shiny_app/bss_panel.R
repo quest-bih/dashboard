@@ -566,8 +566,11 @@ data |>
     xanchor = "right",
     yanchor = "auto",
     xshift = 0,
-    yshift = -55,
-    font = list(size = 11)
+    yshift = -65,
+    font = list(size = 12),
+    bordercolor = "#63666A",
+    borderpad = 2,
+    borderwidth = 2
   ) |>
   layout(
     barmode = "stack",
@@ -585,7 +588,7 @@ data |>
                  autorange = "reversed"),
     legend = list(traceorder = "normal"),
     #   legend = list(orientation = "h", x = 0.5, y = 1.1, xanchor = "center", traceorder = "normal"),
-    margin = list(b = 65),
+    margin = list(b = 75),
     uniformtext = list(minsize = 10, mode = "hide"),
     paper_bgcolor = "#DCE3E5",
     plot_bgcolor = "#DCE3E5",
@@ -993,8 +996,11 @@ plot_practices_likert <- function(data) {
       xanchor = "right",
       yanchor = "auto",
       xshift = 0,
-      yshift = -40,
-      font = list(size = 11)
+      yshift = -50,
+      font = list(size = 12),
+      bordercolor = "#63666A",
+      borderpad = 2,
+      borderwidth = 2
     ) |>
     layout(xaxis = list(title = FALSE,
                         tickformat = ".0%",
@@ -1002,7 +1008,7 @@ plot_practices_likert <- function(data) {
                         dtick = 0.25,
                         tick0 = 0,
                         range = c(-0.01,0.9)),
-           margin = list(b = 50))
+           margin = list(b = 60))
 
   subplot(plot_1, plot_2, shareY = TRUE) |>
     layout(yaxis = list(autorange = "reversed", title = FALSE),
@@ -1072,8 +1078,11 @@ plot_ly(x = ~ perc,
     xanchor = "right",
     yanchor = "auto",
     xshift = 0,
-    yshift = -55,
-    font = list(size = 11)
+    yshift = -65,
+    font = list(size = 12),
+    bordercolor = "#63666A",
+    borderpad = 2,
+    borderwidth = 2
   ) |>
     layout(barmode = "stack",
            xaxis = list(title = FALSE,
@@ -1087,7 +1096,7 @@ plot_ly(x = ~ perc,
            yaxis = list(title = FALSE,
                         autorange = "reversed"),
            legend = list(traceorder = "normal"), #orientation = "h", x = 0.5, y = 1.1, xanchor = "center",
-           margin = list(b = 65),
+           margin = list(b = 75),
            uniformtext = list(minsize = 10, mode = "hide"),
            paper_bgcolor = "#DCE3E5",
            plot_bgcolor = "#DCE3E5") |>
