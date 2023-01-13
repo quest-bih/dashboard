@@ -310,8 +310,21 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                                   developed by the <a href = 'https://www.fairsfair.eu'>FAIRsFAIR</a> project.
                                        The results were then aggregated and enriched with data from <a href = 'https://www.re3data.org'>re3data</a> to include further information about the data repositories in the analysis."),
 
-                                  "F-UJI does not provide suitable automatic tests for all FAIR principles. FAIR principles A1.1, A1.2 and I2 are not assessed. The quality of metadata and compliance with FAIR principles depends mainly
-                                  on the repository providers and can therefore only be influenced by the creators of the datasets to a limited extent.")),
+                                  "F-UJI does not provide suitable automatic tests for all FAIR principles. FAIR principles A1.1 and A1.2 are not assessed. The quality of metadata and compliance with FAIR principles depends mainly
+                                  on the repository providers and can therefore only be influenced by the creators of the datasets to a limited extent.
+                                  Furthermore, F-UJI analyzes only the metadata of a research data object. The reusability and quality of the research data itself is not assessed")),
+         hr(),
+         h2("Berlin Science Survey (BSS)"),
+         bsCollapse(id = "methodsPanels_BSS",
+                    bsCollapsePanel("Charité Subsample of Berlin Science Survey",
+                                    style = "default",
+                                    value = "methodsPanels_BSS",
+                                    HTML('<p><a href = "https://www.berlinsciencesurvey.de/en/documentation">Documentation of the survey questionnaires and a methodology report</a> has been published by the Berlin Science Survey.</p>
+                                         <p>From all survey responses of the Berlin Science Survey, a subsample was generated with responses of those survey participants who answered Charité to the question "At which Berlin research institution are you currently mainly employed?".</p>
+                                         <p>The data were imported in Stata file format (*.dta) and filtered and aggregated for each analysis.
+                                         For the combined chart in the first analysis "Prioritizing scientific goals in the field of tension between external expectations and self-ascribed importance" the mean values of the four-item scale responses were calculated. The values for the three questions were then plotted on one axis.
+                                         For the third and fourth analyses, "Research environment" and "Importance of the expansion of open science", the answer options "I cannot judge" and "don\'t know", respectively, were removed.</p>')
+                                    )),
          br(),
          br(),
          br(),
@@ -434,7 +447,7 @@ vis_inform_tooltip <- strwrap("Bar graphs for continuous data are common but are
                                 - Click for more info.") %>%
   paste(collapse = " ")
 
-fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 11 (out of 15) FAIR principles.
+fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 12 (out of 15) FAIR principles.
 As FAIR principles are abstract and generically defined F-UJI specifies one or more metrics for each assessed FAIR principle.
 Since each metric can be tested in various means depending on data contexts and current best practises F-UJI additionally uses one or more practical tests to evaluate datasets against a particular metric.
                              - Click for more info.") %>%

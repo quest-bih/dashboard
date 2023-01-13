@@ -14,6 +14,7 @@ load("data/bss_data.Rdata")
 #----------------------------------------------------------------------------------------------------------------------
 
 # Research characteristics
+
 traits <- bss_stata |>
   select(id, starts_with("v6")) |>
   mutate(across(starts_with("v6"), as.numeric)) |>
@@ -26,6 +27,194 @@ traits <- bss_stata |>
 
 # Change columns into factors
 bss_labeled <- as_factor(bss_stata, only_labelled = TRUE)
+
+# Data preparation for dataset publication ----
+bss_labeled_dataset <- bss_labeled |>
+  select(
+    status_group = a2,
+    starts_with("v6"),
+    matches("^(f1|f2|f3)"),
+    matches("^(o1a|o1c_[124]|o5_[1235])"),
+    matches("^(b1)"),
+    matches("^o2|a2$")
+  ) |>
+  mutate(
+    status_group = as.character(status_group),
+    status_group = case_when(
+      status_group == "Juniorprofessor:in" ~ "Professor:in",
+      TRUE ~ status_group
+    )
+  ) |>
+  mutate(status_group = factor(
+    status_group,
+    levels = c(
+      "Professor:in",
+      "Promovierte:r Wissenschaftler:in",
+      "Nicht-promovierte:r Wissenschaftler:in"
+    ),
+    labels = c("Professor",
+               "Scientist with a PhD",
+               "Scientist without a PhD")
+  )) |>
+  mutate(across(v6_1:v6_9, ~ factor(
+    .,
+    levels = c("überhaupt nicht",
+               "teilweise",
+               "überwiegend",
+               "voll und ganz"),
+    labels = c("not at all",
+               "partly",
+               "mostly",
+               "fully")
+  ))) |>
+  rename(
+    research_theoretical_conceptual = v6_1,
+    research_empirical = v6_2,
+    research_team = v6_3,
+    research_specialized = v6_4,
+    research_experimental = v6_5,
+    research_agenda = v6_6,
+    research_basic = v6_7,
+    research_competition = v6_8,
+    research_infrastructure = v6_9
+  ) |>
+  mutate(across(f1_1:f1_13, ~ factor(
+    .,
+    levels = c("sollte überhaupt kein Ziel sein",
+               "sollte ein untergeordnetes Ziel sein",
+               "sollte ein übergeordnetes Ziel sein",
+               "sollte höchstes Ziel sein"),
+    labels = c("should not be a goal at all",
+               "should be a subordinate goal",
+               "should be an overriding goal",
+               "should be a highest goal")
+  ))) |>
+  rename(
+    goal_originality = f1_1,
+    goal_accuracy = f1_2,
+    goal_impact= f1_4,
+    goal_publ_output = f1_5,
+    goal_teaching = f1_7,
+    goal_open_science = f1_11,
+    goal_cooperation = f1_13
+  ) |>
+  mutate(across(f2_1:f2_13, ~ factor(
+    .,
+    levels = c("gar kein Erwartungsdruck",
+               "geringer Erwartungsdruck",
+               "hoher Erwartungsdruck",
+               "sehr hoher Erwartungsdruck"),
+    labels = c("no pressure at all",
+               "low pressure",
+               "high pressure",
+               "very high pressure")
+  ))) |>
+  rename(
+    pressure_originality = f2_1,
+    pressure_accuracy = f2_2,
+    pressure_impact= f2_4,
+    pressure_publ_output = f2_5,
+    pressure_teaching = f2_7,
+    pressure_open_science = f2_11,
+    pressure_cooperation = f2_13
+  ) |>
+  mutate(across(f3_1:f3_13, ~ factor(
+    .,
+    levels = c("keine Priorität",
+               "geringe Priorität",
+               "hohe Priorität",
+               "höchste Priorität"),
+    labels = c("no priority",
+               "low priority",
+               "high priority",
+               "very high priority")
+  ))) |>
+  rename(
+    priority_originality = f3_1,
+    priority_accuracy = f3_2,
+    priority_impact= f3_4,
+    priority_publ_output = f3_5,
+    priority_teaching = f3_7,
+    priority_open_science = f3_11,
+    priority_cooperation = f3_13
+  ) |>
+  mutate(across(o1c_1:o1c_4, ~ factor(
+    .,
+    levels = c("nie",
+               "selten",
+               "gelegentlich",
+               "oft",
+               "sehr oft",
+               "immer",
+               "trifft auf meine Forschungspraxis nicht zu"),
+    labels = c("never",
+               "rarely",
+               "occasionally",
+               "often",
+               "very often",
+               "always",
+               "does not apply to my research practice")
+  ))) |>
+  rename(practice_oa = o1a,
+         practice_data_sharing = o1c_1,
+         practice_open_peer_review = o1c_2,
+         practice_code_sharing = o1c_4) |>
+  mutate(across(o5_1:o5_5, ~ factor(
+    .,
+    levels = c("überhaupt keine  Schwierigkeiten",
+               "geringe Schwierigkeiten",
+               "große Schwierigkeiten",
+               "sehr große Schwierigkeiten",
+               "kann ich nicht einschätzen"),
+    labels = c("no difficulties at all",
+               "minor difficulties",
+               "great difficulties",
+               "very great difficulties",
+               "I cannot estimate")
+  ))) |>
+  rename(difficulties_oa = o5_1,
+         difficulties_data_sharing = o5_2,
+         difficulties_open_peer_review = o5_3,
+         difficulties_code_sharing = o5_5) |>
+  mutate(across(b1_1:b1_11, ~ factor(
+    .,
+    levels = c("sehr schlecht",
+               "eher schlecht",
+               "eher gut",
+               "sehr gut",
+               "kann ich nicht beurteilen"),
+    labels = c("very bad",
+               "somewhat bad",
+               "somewhat good",
+               "very good",
+               "I cannot judge")
+  ))) |>
+  rename(environment_innovation = b1_1,
+         environment_cooperation = b1_2,
+         environment_quality = b1_3,
+         environment_open_science = b1_4,
+         environment_internationality = b1_5,
+         environment_autonomy = b1_6,
+         environment_young_talent = b1_7,
+         environment_knowledge_exchange = b1_8,
+         environment_diversity = b1_9,
+         environment_human_ressources = b1_10,
+         environment_inst_framework = b1_11) |>
+  mutate(o2 = factor(o2,
+                     levels = c("überhaupt nicht wichtig",
+                                "kaum wichtig",
+                                "etwas wichtig",
+                                "ziemlich wichtig",
+                                "sehr wichtig",
+                                "weiß nicht"),
+                     labels = c("not at all important",
+                                "not very important",
+                                "somewhat important",
+                                "fairly important",
+                                "very important",
+                                "don't know"))) |>
+  rename(expansion_open_science = o2)
+
 
 # Dataframe with attributes from column names
 label <- bss_labeled |> map_chr(~attributes(.)$label) |>
@@ -93,7 +282,7 @@ data_prep_prio <- function(x, y) {
 
 # Goals and prios for likert chart
 data_prep_prio_likert <- function(x, y) {
-  data <- bss_stata %>%
+  data <- bss_stata |>
     filter(a2 %in% x) |>
     filter(id %in% traits$id[traits$name %in% y]) |>
     select(matches("^(f1|f2|f3)")) |>
@@ -104,8 +293,8 @@ data_prep_prio_likert <- function(x, y) {
     drop_na() |>
     count(n, question_id, value, name = "nn") |>
     mutate(perc = nn/n) |>
-    left_join(label, by = "question_id") %>%
-    separate(label, into = c("label", "goals"), sep = "]") %>%
+    left_join(label, by = "question_id") |>
+    separate(label, into = c("label", "goals"), sep = "]") |>
     mutate(label = str_remove(label, "^\\[")) |>
     mutate(label = factor(
       label,
@@ -162,7 +351,7 @@ data_prep_practices <- function(x, y) {
 
 # Practices and difficulties for likert chart
 data_prep_practices_likert <- function(x, y) {
-  data_practices <- bss_stata %>%
+  data_practices <- bss_stata |>
     filter(a2 %in% x) |>
     filter(id %in% traits$id[traits$name %in% y]) |>
     select(matches("^(o1a|o1c_[124])")) |>
@@ -184,7 +373,7 @@ data_prep_practices_likert <- function(x, y) {
                                     ))) |>
     filter(value == "practiced")
 
-  data_difficulties <- bss_stata %>%
+  data_difficulties <- bss_stata |>
     filter(a2 %in% x) |>
     filter(id %in% traits$id[traits$name %in% y]) |>
     select(matches("^(o5_[1235])")) |>
@@ -209,7 +398,7 @@ data <- bind_rows(data_practices, data_difficulties)
 
 # Research environment
 data_prep_environment <- function(x, y) {
-  data <- bss_stata %>%
+  data <- bss_stata |>
     filter(a2 %in% x) |>
     filter(id %in% traits$id[traits$name %in% y]) |>
     select(matches("^(b1)")) |>
@@ -222,8 +411,8 @@ data_prep_environment <- function(x, y) {
     group_by(question_id) |>
     mutate(perc = nn/sum(nn)) |>
     ungroup() |>
-    left_join(label, by = "question_id") %>%
-    separate(label, into = c("label", "category"), sep = "]") %>%
+    left_join(label, by = "question_id") |>
+    separate(label, into = c("label", "category"), sep = "]") |>
     select(-category) |>
     mutate(label = str_remove(label, "^\\[")) |>
     mutate(value = factor(value, levels = c(4, 3, 2, 1),
@@ -267,10 +456,11 @@ data_prep_environment <- function(x, y) {
 # Importance of expansion of open science practices
 
 data_plot_importance <- function() {
-data <- bss_stata %>%
+data <- bss_stata |>
  # filter(a2 %in% x) |>
 #  filter(id %in% traits$id[traits$name %in% y]) |>
   select(matches("^o2|a2$")) |>
+  filter(o2 != 6) |>
   drop_na(o2) |>
   mutate(a2 = as.numeric(a2)) |>
   mutate(a2 = case_when(a2 == 2 ~ 1,
@@ -285,6 +475,7 @@ data <- bss_stata %>%
 
 data_all <- bss_stata |>
   select(matches("^o2$")) |>
+  filter(o2 != 6) |>
   drop_na(o2) |>
   mutate(n = n()) |>
   count(n, o2, name = "nn") |>
@@ -298,14 +489,13 @@ data <- data |>
   bind_rows(data_all) |>
   mutate(o2 = factor(
     o2,
-    levels = c(1:6),
+    levels = c(1:5),
     labels = c(
       "not at all important",
       "not very important",
       "somewhat important",
       "fairly important",
-      "very important",
-      "don't know"
+      "very important" #, "don't know"
     )
   )) |>
   group_by(a2) |>
@@ -336,47 +526,47 @@ data |>
     textfont = list(color = "white", size = 11)
   ) |>
   add_bars(
-    data = data |> filter(o2 == "not at all important"),
-    marker = list(color = "#852557"),
-    visible = "legendonly"
-  ) |>
-  add_bars(
-    data = data |> filter(o2 == "not very important"),
-    marker = list(color = "#B07E9F"),
-    visible = "legendonly"
-  ) |>
-  add_bars(
-    data = data |> filter(o2 == "somewhat important"),
-    marker = list(color = "#83829E"),
-    visible = "legendonly"
+    data = data |> filter(o2 == "very important"),
+    marker = list(color = "#21527B")
   ) |>
   add_bars(
     data = data |> filter(o2 == "fairly important"),
     marker = list(color = "#56869C")
   ) |>
   add_bars(
-    data = data |> filter(o2 == "very important"),
-    marker = list(color = "#21527B")
-  ) |>
+    data = data |> filter(o2 == "somewhat important"),
+    marker = list(color = "#83829E"),
+    visible = "legendonly") |>
   add_bars(
-    data = data |> filter(o2 == "don't know"),
-    marker = list(color = "#767676"),
+    data = data |> filter(o2 == "not very important"),
+    marker = list(color = "#B07E9F"),
     visible = "legendonly"
   ) |>
+  add_bars(
+    data = data |> filter(o2 == "not at all important"),
+    marker = list(color = "#852557"),
+    visible = "legendonly"
+  ) |>
+  # add_bars(
+  #   data = data |> filter(o2 == "don't know"),
+  #   marker = list(color = "#767676"),
+  #   visible = "legendonly"
+  # ) |>
   add_annotations(
     x = 1,
     y = 0,
     xref = "paper",
     yref = "paper",
     text = ~ glue::glue(
-      "<a href='https://www.berlinsciencesurvey.de/en/index.html'>Berlin Science Survey 2022</a>, Charité Subsample, n={n}",
+      '<a href="https://www.berlinsciencesurvey.de/en/index.html">Berlin Science Survey 2022</a>, Charité Subsample, n={n}
+      Answer option "don\'t know" was removed',
       n = max(n)
     ),
     showarrow = FALSE,
     xanchor = "right",
     yanchor = "auto",
     xshift = 0,
-    yshift = -40,
+    yshift = -55,
     font = list(size = 11)
   ) |>
   layout(
@@ -389,13 +579,13 @@ data |>
       tick0 = 0,
       tickmode = "linear",
       gridcolor = "#A0A0A0",
-      range = c(-0.01, 1.05)
+      range = c(-0.01, 1.15)
     ),
     yaxis = list(title = FALSE,
                  autorange = "reversed"),
     legend = list(traceorder = "normal"),
     #   legend = list(orientation = "h", x = 0.5, y = 1.1, xanchor = "center", traceorder = "normal"),
-    margin = list(b = 50),
+    margin = list(b = 65),
     uniformtext = list(minsize = 10, mode = "hide"),
     paper_bgcolor = "#DCE3E5",
     plot_bgcolor = "#DCE3E5",
@@ -484,10 +674,15 @@ plot_prio <- function(data) {
       y = ~ label,
       symbol = ~ as.factor(goals),
       color = ~ as.factor(goals),
-     # colors = "grey",
-      marker = list(size = 17, opacity = 0.2,
-                    symbols = c("circle", "triangle-up", "star")),
-      showlegend = FALSE)
+      # colors = "grey",
+      marker = list(
+        size = 17,
+        opacity = 0.2,
+        symbols = c("circle", "triangle-up", "star")
+      ),
+      showlegend = FALSE,
+      hoverinfo = "skip"
+    )
 
   fig <- fig |>
   # plot_ly(colors = c("#440154FF", "#21908CFF", "#440154FF"), symbols = c("circle", "triangle-up", "star")) |>
@@ -509,21 +704,27 @@ plot_prio <- function(data) {
       symbol = ~ as.factor(goals),
       color = ~ as.factor(goals),
       marker = list(size = 15, opacity = 0.8,
-                    symbols = c("circle", "triangle-up", "star"))) |>
+                    symbols = c("circle", "triangle-up", "star")),
+      hoverinfo = "text",
+      hovertext = ~ str_glue(c("{goals} of {label}
+                             {round(value, 1)} (mean value of the four-item scale)"))) |>
     add_annotations(
       x = 1,
       y = 0,
       xref = "paper",
       yref = "paper",
       text = ~ glue::glue("<a href='https://www.berlinsciencesurvey.de/en/index.html'>Berlin Science Survey 2022</a>, Charité Subsample, n={n},
-                          faded icons show default selection",
+                          faded icons show entire Charité Subsample",
                           n = max(n)),
       showarrow = F,
       xanchor = "right",
       yanchor = "auto",
       xshift = 0,
-      yshift = -75,
-      font = list(size = 11)
+      yshift = -85,
+      font = list(size = 12),
+      bordercolor = "#63666A", #aa1c7d
+      borderpad = 2,
+      borderwidth = 2
     ) |>
     layout(
       xaxis = list(
@@ -537,7 +738,7 @@ plot_prio <- function(data) {
       yaxis = list(title = FALSE,
                    showgrid = FALSE),
       legend = list(orientation = "h", x = 0.5, y = 1.1, xanchor = "center"),
-      margin = list(t = 0, b = 85),
+      margin = list(t = 10, b = 95),
       paper_bgcolor = "#DCE3E5",
       plot_bgcolor = "#DCE3E5") |>
     config(displayModeBar = FALSE)
@@ -575,8 +776,11 @@ plot_prio_likert <- function(data) {
       xanchor = "right",
       yanchor = "auto",
       xshift = 0,
-      yshift = -40,
-      font = list(size = 11)
+      yshift = -50,
+      font = list(size = 12),
+      bordercolor = "#63666A",
+      borderpad = 2,
+      borderwidth = 2
     ) |>
     layout(barmode = "stack",
            xaxis = list(title = FALSE,
@@ -640,14 +844,14 @@ plot_prio_likert <- function(data) {
                         gridcolor = "#A0A0A0",
                         range = c(-0.01, 1.05)))
 
-  subplot(plot_2, plot_3, plot_1, shareY = TRUE, shareX = TRUE) %>%
+  subplot(plot_2, plot_3, plot_1, shareY = TRUE, shareX = TRUE) |>
     layout(yaxis = list(title = FALSE),
            legend = list(orientation = "h", x = 0.5, y = 1.2, xanchor = "center"),
            annotations = list(
              list(x = 0.1 , y = 1.07, text = "Pressure", showarrow = F, xref='paper', yref='paper'),
              list(x = 0.5 , y = 1.07, text = "Prioritization", showarrow = F, xref='paper', yref='paper'),
              list(x = 0.87 , y = 1.07, text = "Importance", showarrow = F, xref='paper', yref='paper')),
-           margin = list(t = 20, b = 50),
+           margin = list(t = 30, b = 60),
            uniformtext = list(minsize = 10, mode = "hide"),
            autosize = TRUE,
            paper_bgcolor = "#DCE3E5",
@@ -800,13 +1004,17 @@ plot_practices_likert <- function(data) {
                         range = c(-0.01,0.9)),
            margin = list(b = 50))
 
-  subplot(plot_1, plot_2, shareY = TRUE) %>%
+  subplot(plot_1, plot_2, shareY = TRUE) |>
     layout(yaxis = list(autorange = "reversed", title = FALSE),
          #  legend = list(orientation = "h", x = 0.5, xanchor = "center"),
            annotations = list(
-             list(x = 0 , y = 1.07, text = "often, very often or always practiced", showarrow = F, xref='paper', yref='paper', xanchor = "left"),
-             list(x = 0.52 , y = 1.07, text = "great or very great implementation difficulties", showarrow = F, xref='paper', yref='paper', xanchor = "left")),
-           margin = list(t = 20),
+             list(x = 0 , y = 1.07, text = "often, very often or always practiced", showarrow = F, xref='paper', yref='paper', xanchor = "left",
+                  font = list(size = 13
+                  )),
+             list(x = 0.52 , y = 1.07, text = "great or very great implementation difficulties", showarrow = F, xref='paper', yref='paper', xanchor = "left",
+                  font = list(size = 13
+                  ))),
+           margin = list(t = 30),
            uniformtext = list(minsize = 10, mode = "hide"),
            autosize = TRUE,
            paper_bgcolor = "#DCE3E5",
@@ -878,7 +1086,7 @@ plot_ly(x = ~ perc,
                         range = c(-0.01, 1.05)),
            yaxis = list(title = FALSE,
                         autorange = "reversed"),
-           legend = list(orientation = "h", x = 0.5, y = 1.1, xanchor = "center", traceorder = "normal"),
+           legend = list(traceorder = "normal"), #orientation = "h", x = 0.5, y = 1.1, xanchor = "center",
            margin = list(b = 65),
            uniformtext = list(minsize = 10, mode = "hide"),
            paper_bgcolor = "#DCE3E5",
@@ -948,8 +1156,13 @@ moduleUI_status_research_prio <- function(id) {
       8,
       wellPanel(
         style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
-        # fluidRow(column(8, align = "left", h4(strong(
-        #   "Importance of goals, pressure of expectations, prioritization of goals in own work"
+        fluidRow(column(12, align = "left", h4(strong("How important do you think the following goals should be in the science system? – Regarding these goals, how much do you feel a pressure of expectations in your scientific work? – How do you prioritize these goals in your own work?"
+        )))),
+        # fluidRow(column(12, align = "left", h4(strong(
+        #   "Regarding these goals, how much do you feel a pressure of expectations in your scientific work?"
+        # )))),
+        # fluidRow(column(12, align = "left", h4(strong(
+        #   "How do you prioritize these goals in your own work?"
         # )))),
         h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", textOutput(ns("module_number_prio"))),
         h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", textOutput(ns("module_text"))),
@@ -1023,10 +1236,12 @@ moduleUI_status_research_practices <- function(id) {
       8,
       wellPanel(
         style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
-        fluidRow(column(8, align = "left", h4(strong(
-          "Open science practices and implementation difficulties"
-        )))),
-        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", "123"),
+        fluidRow(
+          column(12, align = "left", h4(strong(
+          "How often have you applied the following open science practices in your research? – Do you see difficulties implementing the following open science practices in your current research practice?"
+        )))
+        ),
+        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", textOutput(ns("module_number_practices"))),
         h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", textOutput(ns("module_text_practices"))),
         plotlyOutput(ns("module_plot_practices"), height = "400px")
       )
@@ -1034,11 +1249,11 @@ moduleUI_status_research_practices <- function(id) {
     column(
       4, includeMarkdown("texts/text_BSS_practices.md")
     )),
-    fluidRow(
-      (column(6,
-              checkboxInput(ns("checkbox"), label = "Show combined chart", value = FALSE)
-      ))
-    )
+    # fluidRow(
+    #   (column(6,
+    #           checkboxInput(ns("checkbox"), label = "Show combined chart", value = FALSE)
+    #   ))
+    # )
 
   )
 }
@@ -1098,7 +1313,7 @@ moduleUI_status_research_environment <- function(id) {
       8,
       wellPanel(
         style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
-        fluidRow(column(8, align = "left", h4(strong(
+        fluidRow(column(12, align = "left", h4(strong(
           "How would you rate the Berlin research environment with regard to the following aspects?"
         )))),
         h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", textOutput(ns("module_number_environment"))),
@@ -1123,10 +1338,10 @@ moduleUI_status_research_importance <- function(id) {
       8,
       wellPanel(
         style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
-        fluidRow(column(8, align = "left", h4(strong(
+        fluidRow(column(12, align = "left", h4(strong(
           "How important is the expansion of open science practices for science as a whole?"
         )))),
-        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", "84%"),
+        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", "86%"),
         h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", "of Charité scientists consider the expansion of open science practices fairly important or very important"),
         data_plot_importance()
       )
@@ -1211,7 +1426,11 @@ moduleServer_plot <- function(id) {
 
       output$module_text <- renderText({
         if (input$module_status == "all") {
+<<<<<<< Updated upstream
           return("of all Charité scientists give high or highest priority to open science")
+=======
+          return("of Charité scientists attribute high or highest importance to open science")
+>>>>>>> Stashed changes
         } else if (input$module_status == "prof") {
           return("of Charité professors give high or highest priority to open science")
         } else if (input$module_status == "postdoc") {
@@ -1254,15 +1473,28 @@ moduleServer_plot <- function(id) {
 
       })
 
+      output$module_number_practices <- renderText({
+        if (input$module_status == "all") {
+          return("25 %")
+        } else if (input$module_status == "prof") {
+          return("25 %")
+        } else if (input$module_status == "postdoc") {
+          return("27 %")
+        } else {
+          return("21 %")
+        }
+
+      })
+
       output$module_text_practices <- renderText({
         if (input$module_status == "all") {
-          return("Open science practices and implementation difficulties of Charité scientists")
+          return("of Charité scientists routinely share their data")
         } else if (input$module_status == "prof") {
-          return("Open science practices and implementation difficulties of Charité professors")
+          return("of Charité professors routinely share their data")
         } else if (input$module_status == "postdoc") {
-          return("Open science practices and implementation difficulties of Charité scientists with a PhD")
+          return("of Charité scientists with a PhD routinely share their data")
         } else {
-          return("Open science practices and implementation difficulties of Charité scientists without a PhD")
+          return("of Charité scientists without a PhD routinely share their data")
         }
 
       })
@@ -1271,29 +1503,30 @@ moduleServer_plot <- function(id) {
 
         status_research()
 
-        if (input$checkbox == FALSE) {
+        data <- data_prep_practices_likert(x, y)
+        plot_practices_likert(data)
 
-          data <- data_prep_practices_likert(x, y)
-
-          plot_practices_likert(data)
-
-        } else {
-
-          data <- data_prep_practices(x, y)
-          # Draw chart
-          plot_practices(data)
-
-        }
-
-
-
+        # Combined chart is removed because it is too confusing
+        # if (input$checkbox == FALSE) {
+        #
+        #   data <- data_prep_practices_likert(x, y)
+        #
+        #   plot_practices_likert(data)
+        #
+        # } else {
+        #
+        #   data <- data_prep_practices(x, y)
+        #   # Draw chart
+        #   plot_practices(data)
+        #
+        # }
 
       })
 
 
       output$module_text_environment <- renderText({
         if (input$module_status == "all") {
-          return("of all Charité scientists rate the implementation of open science as somewhat good or very good")
+          return("of Charité scientists rate the implementation of open science as somewhat good or very good")
         } else if (input$module_status == "prof") {
           return("of Charité professors rate the implementation of open science as somewhat good or very good")
         } else if (input$module_status == "postdoc") {
@@ -1354,10 +1587,10 @@ bss_panel <-
                       hr(),
                       br(),
                       br(),
-                      actionButton(inputId = 'buttonMethodsFAIR',
+                      actionButton(inputId = 'buttonMethodsBSS',
                                    label = 'See methods',
                                    style = "color: white; background-color: #aa1c7d;"),
-                      actionButton(inputId = 'buttonDatasetFAIR',
+                      actionButton(inputId = 'buttonDatasetBSS',
                                    label = 'See dataset',
                                    style = "color: white; background-color: #aa1c7d;")
                ),

@@ -52,15 +52,17 @@ preprints_dataset_shiny <- read_csv("./data/preprints_dataset_shiny.csv")
 orcid_dataset <- read_csv("./data/orcid_results.csv")
 
 # fair dataset
-fair_dataset <- read_csv("./data/fair_assessment_2021.csv", show_col_types = FALSE)
-
-# For test, remove later
-#fair_dataset <- read_csv("./shiny_app/data/fair_assessment_2021.csv", show_col_types = FALSE)
-#fair_dataset <- read_csv("./shiny_app/data/fair_assessment.csv", show_col_types = FALSE)
+fair_dataset <- read_csv("./data/fair_assessment_2021.csv", show_col_types = FALSE) |>
+  arrange(repository_re3data, article)
 
 # fair dataset for datatables
-fair_dataset_datatable <- fair_dataset %>%
-  select(-repository) %>%
+fair_dataset_datatable <- fair_dataset |>
+  select(-repository) |>
+  mutate(repository_type = factor(repository_type,
+                                  levels = c("field-specific repository",
+                                             "general-purpose repository"),
+                                  labels = c("disciplinary repository",
+                                             "general-purpose repository"))) |>
   rename(article_doi = article,
          dataset_id = best_identifier,
          repository_name = repository_re3data,
@@ -213,7 +215,11 @@ ui <-
                       bsCollapsePanel(title = "Data reusability (FAIR data) dataset",
                                       DT::dataTableOutput("data_table_FAIR"),
                                       style = "default")),
-
+           br(),
+           bsCollapse(id = "datasetPanels_PublicationDatasetBSS",
+                      bsCollapsePanel(title = "Berlin Science Survey (BSS) dataset",
+                                      DT::dataTableOutput("data_table_BSS"),
+                                      style = "default")),
            br(),
            br(),
            br(),
@@ -444,6 +450,7 @@ server <- function(input, output, session)
     )
 
     title <- "FAIR assessment by F-UJI"
+    # title <- NULL
     value <- textOutput("select_perc")
     value_text <- textOutput("select_text")
     plot <- plotlyOutput('plot_fair_principle_sunburst', height = "400px")
@@ -493,6 +500,7 @@ server <- function(input, output, session)
   output$DataReusability_1_metrics <- renderUI({
 
     title <- "FAIR scores by repositories"
+    # title <- NULL
     value <- textOutput("var")
     value_text <- textOutput("text")
     plot <- plotlyOutput('plot_fair_treemap', height = "400px")
@@ -627,6 +635,21 @@ server <- function(input, output, session)
                    open = "Data reusability (FAIR data) dataset")
   })
 
+  #actionButton on BSS tab to switch to tabs
+  observeEvent(input$buttonMethodsBSS, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_BSS",
+                   open = "methodsPanels_BSS")
+  })
+
+  observeEvent(input$buttonDatasetBSS, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabDatasets")
+    updateCollapse(session, "datasetPanels_PublicationDatasetBSS",
+                   open = "Berlin Science Survey (BSS) dataset")
+  })
+
 
   #tooltip buttons -> methods section
   observeEvent(input$infoOA, {
@@ -717,6 +740,7 @@ server <- function(input, output, session)
     updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
   })
 
+
   #data table to show the underlying datasets
   output$data_table_publ <- DT::renderDataTable({
     make_datatable(dashboard_metrics)
@@ -732,6 +756,10 @@ server <- function(input, output, session)
 
   output$data_table_FAIR <- DT::renderDataTable({
     make_datatable(fair_dataset_datatable)
+  })
+
+  output$data_table_BSS <- DT::renderDataTable({
+    make_datatable_BSS(bss_labeled_dataset)
   })
 
   color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
