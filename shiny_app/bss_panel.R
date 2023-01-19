@@ -5,16 +5,13 @@
 #----------------------------------------------------------------------------------------------------------------------
 # Import BSS data
 #----------------------------------------------------------------------------------------------------------------------
-
-load("data/bss_data.Rdata")
-# load("shiny_app/data/bss_data.Rdata") # For testing purposes
+bss_stata <- read_dta("data/bss-pilot22-char.dta")
 
 #----------------------------------------------------------------------------------------------------------------------
 # Data preparation for functions
 #----------------------------------------------------------------------------------------------------------------------
 
-# Research characteristics
-
+# Create variable of research characteristics
 traits <- bss_stata |>
   select(id, starts_with("v6")) |>
   mutate(across(starts_with("v6"), as.numeric)) |>
@@ -457,8 +454,6 @@ data_prep_environment <- function(x, y) {
 
 data_plot_importance <- function() {
 data <- bss_stata |>
- # filter(a2 %in% x) |>
-#  filter(id %in% traits$id[traits$name %in% y]) |>
   select(matches("^o2|a2$")) |>
   filter(o2 != 6) |>
   drop_na(o2) |>
@@ -512,8 +507,6 @@ data <- data |>
     ))
   ))
 
- # col_lik_7 <- c("#852557", "#B07E9F", "#83829E", "#56869C", "#21527B", "#767676")
-
 data |>
   plot_ly(
     x = ~ perc,
@@ -547,6 +540,7 @@ data |>
     marker = list(color = "#852557"),
     visible = "legendonly"
   ) |>
+  # # Don't know answer is removed from chart
   # add_bars(
   #   data = data |> filter(o2 == "don't know"),
   #   marker = list(color = "#767676"),
@@ -605,7 +599,6 @@ data |>
   config(displayModeBar = FALSE)
 
 }
-
 
 
 
@@ -1170,12 +1163,6 @@ moduleUI_status_research_prio <- function(id) {
         style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
         fluidRow(column(12, align = "left", h4(strong("How important do you think the following goals should be in the science system? – Regarding these goals, how much do you feel a pressure of expectations in your scientific work? – How do you prioritize these goals in your own work?"
         )))),
-        # fluidRow(column(12, align = "left", h4(strong(
-        #   "Regarding these goals, how much do you feel a pressure of expectations in your scientific work?"
-        # )))),
-        # fluidRow(column(12, align = "left", h4(strong(
-        #   "How do you prioritize these goals in your own work?"
-        # )))),
         h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", textOutput(ns("module_number_prio"))),
         h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", textOutput(ns("module_text"))),
         plotlyOutput(ns("module_plot"), height = "400px")
@@ -1363,25 +1350,6 @@ moduleUI_status_research_importance <- function(id) {
     ))
   )
 }
-# Test plot
-# moduleServer_plot <- function(id) {
-#   moduleServer(
-#     id,
-#     function(input, output, session) {
-#       output$module_plot <- renderPlotly({
-#
-#         x = c("A", "B")
-#         y = c(1, 2)
-#
-#         plot_ly(
-#           x = ~ x,
-#           y = ~ y
-#         )
-#
-#       })
-#     }
-#   )
-# }
 
 # Server module
 moduleServer_plot <- function(id) {
@@ -1625,4 +1593,3 @@ bss_panel <-
 #----------------------------------------------------------------------------------------------------------------------
 # End ----
 #----------------------------------------------------------------------------------------------------------------------
-
