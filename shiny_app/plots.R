@@ -141,7 +141,7 @@ plot_OD_perc <- function(plot_data, color_palette)
     layout(barmode = 'stack',
            legend = list(
              orientation = "h",
-             xanchor = "left",
+             xanchor = "right",
              legendwidth = 1.3,
              # font = list(size = 11),
              bgcolor = 'rgba(0,0,0,0)',
@@ -363,7 +363,7 @@ plot_intovalue_perc <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "left",
+           legend = list(xanchor = "right",
                          bgcolor = 'rgba(0,0,0,0)')) %>%
     config(displayModeBar = FALSE)
 }
@@ -393,7 +393,7 @@ plot_intovalue_total <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "left",
+           legend = list(xanchor = "right",
                          bgcolor = 'rgba(0,0,0,0)')) %>%
     config(displayModeBar = FALSE)
 }
