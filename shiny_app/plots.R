@@ -72,14 +72,14 @@ plot_OA_total <- function(plot_data, color_palette)
 
 # Open Data
 plot_OD_perc <- function(plot_data, color_palette)
-  {
-# plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
-# {
-#   if(zoom_in) {
-#     yrange <- c(0, 12)
-#   } else {
-    yrange <- c(0, 50)
-#   }
+{
+  # plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
+  # {
+  #   if(zoom_in) {
+  #     yrange <- c(0, 12)
+  #   } else {
+  yrange <- c(0, 50)
+  #   }
 
   # plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_disciplinary_perc,
   #         name = "disciplinary repository", type = 'bar',
@@ -98,43 +98,43 @@ plot_OD_perc <- function(plot_data, color_palette)
   #                                       width = 1.5)))
   # if (zoom_in == TRUE) {
 
-    plot_output <- plot_data %>%
-      # filter(year > 2019) %>%
-      plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
-                           name = "disciplinary", type = 'bar',
-                           marker = list(color = color_palette[3],
-                                         line = list(color = 'rgb(0,0,0)',
-                                                     width = 1.5))) %>%
-      add_trace(y = ~OD_disc_restricted_perc,
-                name = 'disciplinary - restricted',
-                marker = list(color = color_palette[3],
-                              pattern = list(shape = "x"),
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OD_gen_nonrestricted_perc,
-                name = 'general-purpose',
-                marker = list(color = color_palette[6],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OD_gen_restricted_perc,
-                name = 'general-purpose - restricted',
-                marker = list(color = color_palette[6],
-                              pattern = list(shape = "x"),
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5)),
-                showlegend = FALSE) %>%
-      add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
-                name = 'disciplinary and general<br>',
-                marker = list(color = color_palette[2],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OD_disc_and_gen_restricted_perc,
-                name = 'disciplinary and general<br> - restricted',
-                marker = list(color = color_palette[2],
-                              pattern = list(shape = "x"),
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5)),
-                showlegend = FALSE)
+  plot_output <- plot_data %>%
+    # filter(year > 2019) %>%
+    plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
+            name = "disciplinary", type = 'bar',
+            marker = list(color = color_palette[3],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+    add_trace(y = ~OD_disc_restricted_perc,
+              name = 'disciplinary - restricted',
+              marker = list(color = color_palette[3],
+                            pattern = list(shape = "x"),
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OD_gen_nonrestricted_perc,
+              name = 'general-purpose',
+              marker = list(color = color_palette[6],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OD_gen_restricted_perc,
+              name = 'general-purpose - restricted',
+              marker = list(color = color_palette[6],
+                            pattern = list(shape = "x"),
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5)),
+              showlegend = FALSE) %>%
+    add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
+              name = 'disciplinary and general<br>',
+              marker = list(color = color_palette[2],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OD_disc_and_gen_restricted_perc,
+              name = 'disciplinary and general<br> - restricted',
+              marker = list(color = color_palette[2],
+                            pattern = list(shape = "x"),
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5)),
+              showlegend = FALSE)
   # }
 
   plot_output %>%
@@ -192,15 +192,15 @@ plot_OC_perc <- function(plot_data, color_palette) {
   # if(zoom_in) {
   #   yrange <- c(0, 5)
   # } else {
-    yrange <- c(0, 50)
+  yrange <- c(0, 50)
   # }
 
 
   plot_output <- plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
-          name = "GitHub", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
+                         name = "GitHub", type = 'bar',
+                         marker = list(color = color_palette[3],
+                                       line = list(color = 'rgb(0,0,0)',
+                                                   width = 1.5))) %>%
     add_trace(y = ~OC_other_perc,
               name = 'other repository <br>or website',
               marker = list(color = color_palette[6],
@@ -404,8 +404,8 @@ plot_intovalue_total <- function(plot_data, color_palette)
                          font = list(size = 11),
                          x = 0.01,
                          y = 1.6
-                         )
-           ) %>%
+           )
+    ) %>%
     config(displayModeBar = FALSE)
 }
 
@@ -726,12 +726,12 @@ plot_fair_principle_perc <- function(plot_data, color_palette)
     scale_y_continuous(labels = scales::percent) +
     scale_fill_manual(values = c(color_palette[2], color_palette[3]))
 
-    ggplotly(tooltip = "text") %>% #list("AB" = "name", "XY" = "value")
+  ggplotly(tooltip = "text") %>% #list("AB" = "name", "XY" = "value")
     layout(yaxis = list(
-             title = list(text = "FAIR score", font = list(size = 12))),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-      config(displayModeBar = FALSE)
+      title = list(text = "FAIR score", font = list(size = 12))),
+      paper_bgcolor = color_palette[9],
+      plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 # For test, remove later
@@ -816,8 +816,8 @@ plot_fair_sunburst <- function(plot_data, color_palette, color_seq)
       cmax = 1,
       colors = ~ fair_score / 100,
       showscale = TRUE,
-     # line = list(color = color_palette[9], width = 2),
-     # pad = list(b = 5, l = 5,r = 5,t = 25),
+      # line = list(color = color_palette[9], width = 2),
+      # pad = list(b = 5, l = 5,r = 5,t = 25),
       colorbar = list(title = "FAIR<br>Score",
                       tickformat = ".0%",
                       tickfont = list(size = 10),
@@ -902,7 +902,7 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
                      4, 2, 2, 2,
                      1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 4, 2, 2, 1, 1)) %>%
     mutate(name = factor(name, levels = rev(levels(name)))) %>%
-   # mutate(name = if(select_chart == "sunburst"){factor(name, levels = rev(levels(name)))}else{factor(name, levels = levels(name))}) %>%
+    # mutate(name = if(select_chart == "sunburst"){factor(name, levels = rev(levels(name)))}else{factor(name, levels = levels(name))}) %>%
     arrange(name) %>%
     mutate(principle = case_when(name == "FAIR" ~ "FAIR",
                                  name == "F" ~ "Findability",
@@ -973,8 +973,8 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
       cmax = 1,
       colors = ~ value / 100,
       showscale = TRUE,
-     # line = list(width = 1.5),
-     # pad = list(b = 5, l = 5,r = 5,t = 25),
+      # line = list(width = 1.5),
+      # pad = list(b = 5, l = 5,r = 5,t = 25),
       colorbar = list(title = "FAIR<br>Score",
                       tickformat = ".0%",
                       tickfont = list(size = 10),

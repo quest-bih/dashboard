@@ -1,5 +1,6 @@
-library(tidyverse)
 library(assertthat)
+library(haven)
+library(tidyverse)
 library(vroom)
 
 #----------------------------------------------------------------------------------------
@@ -159,6 +160,13 @@ write_csv(shiny_table_aggregate_metrics, "shiny_app/data/dashboard_metrics_aggre
 # fair assessment
 #----------------------------------------------------------------------------------------
 
-fair_table <- read_csv("./results/fair_assessment.csv")
-write_csv(fair_table, "./shiny_app/data/fair_assessment.csv")
+fair_table <- read_csv("./results/fair_assessment_2021.csv", show_col_types = FALSE)
+write_csv(fair_table, "./shiny_app/data/fair_assessment_2021.csv")
+
+#----------------------------------------------------------------------------------------
+# berlin science survey
+#----------------------------------------------------------------------------------------
+
+bss_stata <- read_dta("./results/bss-pilot22-char.dta")
+write_dta(bss_stata, "./shiny_app/data/bss-pilot22-char.dta")
 

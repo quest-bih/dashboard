@@ -6,8 +6,8 @@ resources_panel <- tabPanel("Educational resources", value = "tabRessources",
          h2("Open Science"),
          h4("Use the QUEST Toolbox to find tools for making your science more open and reproducible,
               at any phase of the research process (planning a project, executing a project, publishing your research):"),
-         h4(HTML('<a href="https://quest-toolbox.bihealth.org/">
-                  https://quest-toolbox.bihealth.org/ </a>'))
+         h4(HTML('<a href="https://www.bihealth.org/de/translation/innovationstreiber/quest-center/services/service/die-quest-toolbox-fuer-die-eigene-forschung/">
+                  https://www.bihealth.org/de/translation/innovationstreiber/quest-center/services/service/die-quest-toolbox-fuer-die-eigene-forschung/ </a>'))
       ),
       wellPanel(
          h2("Visualizations"),

@@ -31,6 +31,11 @@ about_page <- tabPanel("About", value = "tabAbout",
                        helpText(HTML('Jan Taubitz (Conceptualization, Methodology, Technical Implementation);
                                 Evgeny Bobrov (Conceptualization, Methodology, Validation), Anastasiia Iarkaeva (Validation)')),
                        br(),
+                       h4("Berlin Science Survey (BSS)"),
+                       helpText(HTML('The <a href="https://www.berlinsciencesurvey.de/en/index.html">Berlin Science Survey (BSS)</a> was conducted and the data of the Charité subsample were provided by the <a href="https://www.rmz.hu-berlin.de/en">Robert K. Merton Center for Science Studies</a>.
+                                     The analysis and visualization of the Charité subsample was carried out by Jan Taubitz (Conceptualization, Methodology, Technical Implementation) and
+                                     Evgeny Bobrov (Conceptualization, Methodology).')),
+                       br(),
                        h4("Shiny app"),
                        helpText(HTML('Nico Riedel (Conceptualization, Technical Implementation); Tracey Weissgerber (Conceptualization);
                                 Ulrich Dirnagl (Conceptualization); Evgeny Bobrov (Conceptualization); Daniel Strech (Conceptualization);
