@@ -101,35 +101,35 @@ plot_OD_perc <- function(plot_data, color_palette)
     plot_output <- plot_data %>%
       # filter(year > 2019) %>%
       plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
-                           name = "disciplinary repository", type = 'bar',
+                           name = "disciplinary", type = 'bar',
                            marker = list(color = color_palette[3],
                                          line = list(color = 'rgb(0,0,0)',
                                                      width = 1.5))) %>%
       add_trace(y = ~OD_disc_restricted_perc,
-                name = 'disciplinary repository - restricted',
+                name = 'disciplinary - restricted',
                 marker = list(color = color_palette[3],
                               pattern = list(shape = "x"),
                               line = list(color = 'rgb(0,0,0)',
                                           width = 1.5))) %>%
       add_trace(y = ~OD_gen_nonrestricted_perc,
-                name = 'general-purpose repository',
+                name = 'general-purpose',
                 marker = list(color = color_palette[6],
                               line = list(color = 'rgb(0,0,0)',
                                           width = 1.5))) %>%
       add_trace(y = ~OD_gen_restricted_perc,
-                name = 'general-purpose repository - restricted',
+                name = 'general-purpose - restricted',
                 marker = list(color = color_palette[6],
                               pattern = list(shape = "x"),
                               line = list(color = 'rgb(0,0,0)',
                                           width = 1.5)),
                 showlegend = FALSE) %>%
       add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
-                name = 'disciplinary and general<br>repository',
+                name = 'disciplinary and general<br>',
                 marker = list(color = color_palette[2],
                               line = list(color = 'rgb(0,0,0)',
                                           width = 1.5))) %>%
       add_trace(y = ~OD_disc_and_gen_restricted_perc,
-                name = 'disciplinary and general<br>repository - restricted',
+                name = 'disciplinary and general<br> - restricted',
                 marker = list(color = color_palette[2],
                               pattern = list(shape = "x"),
                               line = list(color = 'rgb(0,0,0)',
@@ -140,13 +140,14 @@ plot_OD_perc <- function(plot_data, color_palette)
   plot_output %>%
     layout(barmode = 'stack',
            legend = list(
-             orientation = "h",
-             xanchor = "left",
+             title=list(text='<b>Repository</b>'),
+             # orientation = "h",
+             # xanchor = "left",
              legendwidth = 1.3,
              # font = list(size = 11),
              bgcolor = 'rgba(0,0,0,0)',
-             x = 0.05,
-             y = 1.3),
+             x = 0.1,
+             y = 1.7),
            yaxis = list(title = '<b>Publications</b>',
                         range = yrange,
                         ticksuffix = "%"),
@@ -363,8 +364,13 @@ plot_intovalue_perc <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "left",
-                         bgcolor = 'rgba(0,0,0,0)')) %>%
+           legend = list(orientation = "h",
+                         xanchor = "left",
+                         bgcolor = "rgba(0,0,0,0)",
+                         font = list(size = 11),
+                         x = 0.01,
+                         y = 1.6
+           )) %>%
     config(displayModeBar = FALSE)
 }
 
@@ -384,20 +390,24 @@ plot_intovalue_total <- function(plot_data, color_palette)
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
     add_trace(y = ~total_trials_5_years,
-              name = 'total trials 5 years', mode = 'lines+markers',
+              name = "total trials 5 years", mode = "lines+markers",
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) %>%
-    layout(yaxis = list(title = '<b>Number of trials</b>',
+    layout(yaxis = list(title = "<b>Number of trials</b>",
                         range = c(0, 100)),
-           xaxis = list(title = '<b>Trial completion year</b>',
-                        dtick = 1),
+           xaxis = list(title = "<b>Trial completion year</b>"),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "left",
-                         bgcolor = 'rgba(0,0,0,0)')) %>%
+           legend = list(orientation = "h",
+                         xanchor = "left",
+                         bgcolor = "rgba(0,0,0,0)",
+                         font = list(size = 11),
+                         x = 0.01,
+                         y = 1.6
+                         )
+           ) %>%
     config(displayModeBar = FALSE)
 }
-
 
 # Prospective registration
 plot_prosp_reg_perc <- function(plot_data, color_palette)
@@ -433,7 +443,14 @@ plot_prosp_reg_total <- function(plot_data, color_palette)
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
+           plot_bgcolor = color_palette[9],
+           legend = list(orientation = "h",
+                         font = list(size = 11),
+                         xanchor = "left",
+                         bgcolor = "rgba(0,0,0,0)",
+                         x = -0.01,
+                         y = 1.6
+           )) %>%
     config(displayModeBar = FALSE)
 }
 
