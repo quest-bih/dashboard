@@ -72,14 +72,14 @@ plot_OA_total <- function(plot_data, color_palette)
 
 # Open Data
 plot_OD_perc <- function(plot_data, color_palette)
-  {
-# plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
-# {
-#   if(zoom_in) {
-#     yrange <- c(0, 12)
-#   } else {
-    yrange <- c(0, 50)
-#   }
+{
+  # plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
+  # {
+  #   if(zoom_in) {
+  #     yrange <- c(0, 12)
+  #   } else {
+  yrange <- c(0, 50)
+  #   }
 
   # plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_disciplinary_perc,
   #         name = "disciplinary repository", type = 'bar',
@@ -98,55 +98,56 @@ plot_OD_perc <- function(plot_data, color_palette)
   #                                       width = 1.5)))
   # if (zoom_in == TRUE) {
 
-    plot_output <- plot_data %>%
-      # filter(year > 2019) %>%
-      plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
-                           name = "disciplinary repository", type = 'bar',
-                           marker = list(color = color_palette[3],
-                                         line = list(color = 'rgb(0,0,0)',
-                                                     width = 1.5))) %>%
-      add_trace(y = ~OD_disc_restricted_perc,
-                name = 'disciplinary repository - restricted',
-                marker = list(color = color_palette[3],
-                              pattern = list(shape = "x"),
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OD_gen_nonrestricted_perc,
-                name = 'general-purpose repository',
-                marker = list(color = color_palette[6],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OD_gen_restricted_perc,
-                name = 'general-purpose repository - restricted',
-                marker = list(color = color_palette[6],
-                              pattern = list(shape = "x"),
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5)),
-                showlegend = FALSE) %>%
-      add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
-                name = 'disciplinary and general<br>repository',
-                marker = list(color = color_palette[2],
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5))) %>%
-      add_trace(y = ~OD_disc_and_gen_restricted_perc,
-                name = 'disciplinary and general<br>repository - restricted',
-                marker = list(color = color_palette[2],
-                              pattern = list(shape = "x"),
-                              line = list(color = 'rgb(0,0,0)',
-                                          width = 1.5)),
-                showlegend = FALSE)
+  plot_output <- plot_data %>%
+    # filter(year > 2019) %>%
+    plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
+            name = "disciplinary", type = 'bar',
+            marker = list(color = color_palette[3],
+                          line = list(color = 'rgb(0,0,0)',
+                                      width = 1.5))) %>%
+    add_trace(y = ~OD_disc_restricted_perc,
+              name = 'disciplinary - restricted',
+              marker = list(color = color_palette[3],
+                            pattern = list(shape = "x"),
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OD_gen_nonrestricted_perc,
+              name = 'general-purpose',
+              marker = list(color = color_palette[6],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OD_gen_restricted_perc,
+              name = 'general-purpose - restricted',
+              marker = list(color = color_palette[6],
+                            pattern = list(shape = "x"),
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5)),
+              showlegend = FALSE) %>%
+    add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
+              name = 'disciplinary and general<br>',
+              marker = list(color = color_palette[2],
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5))) %>%
+    add_trace(y = ~OD_disc_and_gen_restricted_perc,
+              name = 'disciplinary and general<br> - restricted',
+              marker = list(color = color_palette[2],
+                            pattern = list(shape = "x"),
+                            line = list(color = 'rgb(0,0,0)',
+                                        width = 1.5)),
+              showlegend = FALSE)
   # }
 
   plot_output %>%
     layout(barmode = 'stack',
            legend = list(
-             orientation = "h",
-             xanchor = "right",
+             title=list(text='<b>Repository</b>'),
+             # orientation = "h",
+             # xanchor = "left",
              legendwidth = 1.3,
              # font = list(size = 11),
              bgcolor = 'rgba(0,0,0,0)',
-             x = 0.05,
-             y = 1.3),
+             x = 0.1,
+             y = 1.7),
            yaxis = list(title = '<b>Publications</b>',
                         range = yrange,
                         ticksuffix = "%"),
@@ -191,15 +192,15 @@ plot_OC_perc <- function(plot_data, color_palette) {
   # if(zoom_in) {
   #   yrange <- c(0, 5)
   # } else {
-    yrange <- c(0, 50)
+  yrange <- c(0, 50)
   # }
 
 
   plot_output <- plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
-          name = "GitHub", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
+                         name = "GitHub", type = 'bar',
+                         marker = list(color = color_palette[3],
+                                       line = list(color = 'rgb(0,0,0)',
+                                                   width = 1.5))) %>%
     add_trace(y = ~OC_other_perc,
               name = 'other repository <br>or website',
               marker = list(color = color_palette[6],
@@ -363,8 +364,13 @@ plot_intovalue_perc <- function(plot_data, color_palette)
                         dtick = 1),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right",
-                         bgcolor = 'rgba(0,0,0,0)')) %>%
+           legend = list(orientation = "h",
+                         xanchor = "left",
+                         bgcolor = "rgba(0,0,0,0)",
+                         font = list(size = 11),
+                         x = 0.01,
+                         y = 1.6
+           )) %>%
     config(displayModeBar = FALSE)
 }
 
@@ -384,20 +390,24 @@ plot_intovalue_total <- function(plot_data, color_palette)
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) %>%
     add_trace(y = ~total_trials_5_years,
-              name = 'total trials 5 years', mode = 'lines+markers',
+              name = "total trials 5 years", mode = "lines+markers",
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) %>%
-    layout(yaxis = list(title = '<b>Number of trials</b>',
+    layout(yaxis = list(title = "<b>Number of trials</b>",
                         range = c(0, 100)),
-           xaxis = list(title = '<b>Trial completion year</b>',
-                        dtick = 1),
+           xaxis = list(title = "<b>Trial completion year</b>"),
            paper_bgcolor = color_palette[9],
            plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right",
-                         bgcolor = 'rgba(0,0,0,0)')) %>%
+           legend = list(orientation = "h",
+                         xanchor = "left",
+                         bgcolor = "rgba(0,0,0,0)",
+                         font = list(size = 11),
+                         x = 0.01,
+                         y = 1.6
+           )
+    ) %>%
     config(displayModeBar = FALSE)
 }
-
 
 # Prospective registration
 plot_prosp_reg_perc <- function(plot_data, color_palette)
@@ -433,7 +443,14 @@ plot_prosp_reg_total <- function(plot_data, color_palette)
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),
            paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
+           plot_bgcolor = color_palette[9],
+           legend = list(orientation = "h",
+                         font = list(size = 11),
+                         xanchor = "left",
+                         bgcolor = "rgba(0,0,0,0)",
+                         x = -0.01,
+                         y = 1.6
+           )) %>%
     config(displayModeBar = FALSE)
 }
 
@@ -709,12 +726,12 @@ plot_fair_principle_perc <- function(plot_data, color_palette)
     scale_y_continuous(labels = scales::percent) +
     scale_fill_manual(values = c(color_palette[2], color_palette[3]))
 
-    ggplotly(tooltip = "text") %>% #list("AB" = "name", "XY" = "value")
+  ggplotly(tooltip = "text") %>% #list("AB" = "name", "XY" = "value")
     layout(yaxis = list(
-             title = list(text = "FAIR score", font = list(size = 12))),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-      config(displayModeBar = FALSE)
+      title = list(text = "FAIR score", font = list(size = 12))),
+      paper_bgcolor = color_palette[9],
+      plot_bgcolor = color_palette[9]) %>%
+    config(displayModeBar = FALSE)
 }
 
 # For test, remove later
@@ -799,8 +816,8 @@ plot_fair_sunburst <- function(plot_data, color_palette, color_seq)
       cmax = 1,
       colors = ~ fair_score / 100,
       showscale = TRUE,
-     # line = list(color = color_palette[9], width = 2),
-     # pad = list(b = 5, l = 5,r = 5,t = 25),
+      # line = list(color = color_palette[9], width = 2),
+      # pad = list(b = 5, l = 5,r = 5,t = 25),
       colorbar = list(title = "FAIR<br>Score",
                       tickformat = ".0%",
                       tickfont = list(size = 10),
@@ -885,7 +902,7 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
                      4, 2, 2, 2,
                      1, 1, 2, 1, 2, 1, 1, 1, 2, 1, 1, 4, 2, 2, 1, 1)) %>%
     mutate(name = factor(name, levels = rev(levels(name)))) %>%
-   # mutate(name = if(select_chart == "sunburst"){factor(name, levels = rev(levels(name)))}else{factor(name, levels = levels(name))}) %>%
+    # mutate(name = if(select_chart == "sunburst"){factor(name, levels = rev(levels(name)))}else{factor(name, levels = levels(name))}) %>%
     arrange(name) %>%
     mutate(principle = case_when(name == "FAIR" ~ "FAIR",
                                  name == "F" ~ "Findability",
@@ -898,28 +915,27 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
                                  name == "F4" ~ "F4 — (Meta)data are registered or indexed in a searchable resource",
                                  name == "A1" ~ "A1 — (Meta)data are retrievable by their identifier using a standardised communications protocol",
                                  name == "I1" ~ "I1 — (Meta)data use a formal, accessible, shared, and broadly applicable language for knowledge representation",
-                                 name == "I2" ~ "I2 — (Meta)data use vocabularies that follow the FAIR principles",
                                  name == "I3" ~ "I3 — (Meta)data include qualified references to other (meta)data",
                                  name == "R1" ~ "R1 — Meta(data) are richly described with a plurality of accurate and relevant attributes",
                                  name == "R1.1" ~ "R1.1 — (Meta)data are released with a clear and accessible data usage license",
                                  name == "R1.2" ~ "R1.2 — (Meta)data are associated with detailed provenance",
                                  name == "R1.3" ~ "R1.3 — (Meta)data meet domain-relevant community standards",
-                                 name == "FsF-F1-01D" ~ "FsF-F1-01D — Data are assigned a globally unique identifier.",
-                                 name == "FsF-F1-02D" ~ "FsF-F1-02D — Data are assigned a persistent identifier.",
-                                 name == "FsF-F2-01M" ~ "FsF-F2-01M — Metadata include descriptive core elements (creator, title, data identifier, publisher, publication date, summary and keywords) to support data findability.",
-                                 name == "FsF-F3-01M" ~ "FsF-F3-01M — Metadata include the identifier of the data it describes.",
-                                 name == "FsF-F4-01M" ~ "FsF-F4-01M — Metadata are offered in such a way that it can be retrieved programmatically.",
-                                 name == "FsF-A1-01M" ~ "FsF-A1-01M — Metadata contain access level and access conditions of the data.",
-                                 name == "FsF-A1-02M" ~ "FsF-A1-02M — Metadata are accessible through a standardized communication protocol.",
-                                 name == "FsF-A1-03D" ~ "FsF-A1-03D — Data are accessible through a standardized communication protocol.",
-                                 name == "FsF-I1-01M" ~ "FsF-I1-01M — Metadata are represented using a formal knowledge representation language.",
-                                 name == "FsF-I2-01M" ~ "FsF-I2-01M — Metadata use semantic resources",
-                                 name == "FsF-I3-01M" ~ "FsF-I3-01M — Metadata include links between the data and its related entities.",
-                                 name == "FsF-R1-01MD" ~ "FsF-R1-01MD — Metadata specify the content of the data.",
-                                 name == "FsF-R1.1-01M" ~ "FsF-R1.1-01M — Metadata include license information under which data can be reused.",
-                                 name == "FsF-R1.2-01M" ~ "FsF-R1.2-01M — Metadata include provenance information about data creation or generation.",
-                                 name == "FsF-R1.3-01M" ~ "FsF-R1.3-01M — Metadata follow a standard recommended by the target research community of the data.",
-                                 name == "FsF-R1.3-02D" ~ "FsF-R1.3-02D — Data are available in a file format recommended by the target research community."
+                                 name == "FsF-F1-01D" ~ "FsF-F1-01D — Data is assigned a globally unique identifier.",
+                                 name == "FsF-F1-02D" ~ "FsF-F1-02D — Data is assigned a persistent identifier.",
+                                 name == "FsF-F2-01M" ~ "FsF-F2-01M — Metadata includes descriptive core elements (creator, title, data identifier, publisher, publication date, summary and keywords) to support data findability.",
+                                 name == "FsF-F3-01M" ~ "FsF-F3-01M — Metadata includes the identifier of the data it describes.",
+                                 name == "FsF-F4-01M" ~ "FsF-F4-01M — Metadata is offered in such a way that it can be retrieved programmatically.",
+                                 name == "FsF-A1-01M" ~ "FsF-A1-01M — Metadata contains access level and access conditions of the data.",
+                                 name == "FsF-A1-02M" ~ "FsF-A1-02M — Metadata is accessible through a standardized communication protocol.",
+                                 name == "FsF-A1-03D" ~ "FsF-A1-03D — Data is accessible through a standardized communication protocol.",
+                                 name == "FsF-I1-01M" ~ "FsF-I1-01M — Metadata is represented using a formal knowledge representation language.",
+                                 name == "FsF-I2-01M" ~ "FsF-I2-01M — Metadata uses semantic resources",
+                                 name == "FsF-I3-01M" ~ "FsF-I3-01M — Metadata includes links between the data and its related entities.",
+                                 name == "FsF-R1-01MD" ~ "FsF-R1-01MD — Metadata specifies the content of the data.",
+                                 name == "FsF-R1.1-01M" ~ "FsF-R1.1-01M — Metadata includes license information under which data can be reused.",
+                                 name == "FsF-R1.2-01M" ~ "FsF-R1.2-01M — Metadata includes provenance information about data creation or generation.",
+                                 name == "FsF-R1.3-01M" ~ "FsF-R1.3-01M — Metadata follows a standard recommended by the target research community of the data.",
+                                 name == "FsF-R1.3-02D" ~ "FsF-R1.3-02D — Data is available in a file format recommended by the target research community."
     )) %>%
     mutate(principle = str_wrap(principle, width = 50))
 
@@ -957,8 +973,8 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
       cmax = 1,
       colors = ~ value / 100,
       showscale = TRUE,
-     # line = list(width = 1.5),
-     # pad = list(b = 5, l = 5,r = 5,t = 25),
+      # line = list(width = 1.5),
+      # pad = list(b = 5, l = 5,r = 5,t = 25),
       colorbar = list(title = "FAIR<br>Score",
                       tickformat = ".0%",
                       tickfont = list(size = 10),
