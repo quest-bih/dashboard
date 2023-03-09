@@ -22,7 +22,7 @@ results_files <- paste0(results_folder, results_files)
 # open_data_manual_detection <- vroom("./results/Open_Code_manual_detections.csv")
 
 # open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
-open_data_results <- vroom("./results/Open_Data_manual_check_results2.csv") %>% # temporary until Anastasiia completes manual screening
+open_data_results <- vroom("./results/Open_Data_manual_check_results2.csv") |>  # temporary until Anastasiia completes manual screening
   mutate(open_code_category_manual = case_when(
     str_detect(open_code_category_manual, "github") ~ "github",
     str_detect(open_code_category_manual, "supplement") ~ "supplement",
@@ -41,6 +41,39 @@ open_data_results <- vroom("./results/Open_Data_manual_check_results2.csv") %>% 
   )
 
   )
+
+#### supplements analysis
+
+open_data_supplements <- vroom("./results/Open_Data_manual_check_results2.csv") |>
+  filter(open_data_category_manual == "supplement") |>
+  mutate(restrictions = case_when(
+    str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
+    str_detect(data_access, "restricted") ~ "full",
+    TRUE ~ "no restricted data")
+    )
+
+supplements_by_year <- open_data_supplements |>
+  left_join(publications, by = "doi") |>
+  mutate(year = replace_na(year, 2021))
+
+supplements_by_year |>
+  count(year)
+
+supplements_2020 <- open_data_supplements |>
+  left_join(publications, by = "doi") |>
+  filter(year == 2020)
+
+supplements_by_year |>
+  write_excel_csv2("T:/Dokumente/supplements_by_year.csv")
+
+anas_list <- vroom("T:/Dokumente/joint_data_cleaned_updated.csv") |>
+  mutate(doi = tolower(doi))
+
+supplements_by_year |>
+  semi_join(anas_list, by = "doi")
+
+
+####
 
 # open_data_results %>%
 #   filter(open_data_manual_check) %>%

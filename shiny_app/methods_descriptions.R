@@ -82,7 +82,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         Only a part of the raw data underlying a study have to be freely available
                         and no further quality criteria, like the FAIR criteria, are checked -
                         for further details on the Open Data definition used see
-                        <a href="https://www.bihealth.org/en/research/quest-center/mission-approaches/incentives/including-open-data/open-data-criteria/">
+                        <a href="https://osf.io/preprints/metaarxiv/ajhs4/">
                         here</a>. This definition is also used for the distribution of performance-oriented
                         funding for publications with Open Data at the Charité.
                         Here, we distinguish several subcategories for Open Data & Open Code.

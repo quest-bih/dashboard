@@ -114,7 +114,6 @@ od_2020_restricted <- read_xlsx("./results/OD-LOM_2020.xlsx") %>%
 manual_only_od <- vroom("./results/OD_manual_tidy.csv") %>%
   select(doi, contains("data"), -contains("has"))
 
-
 categories <- manual_only_od %>%
   select(doi, open_data_category_manual)
 
@@ -142,6 +141,9 @@ manual_check_results <- manual_check_results %>%
 # manual_check_results %>%
 #   write_excel_csv2("./results/Open_Data_manual_check_results2.csv")
 
+manual_check_results |>
+  count(is_open_data)
+
 # manual_only_od %>%
 #   count(has_restricted, has_only_restricted)
 
@@ -149,7 +151,7 @@ manual_check_results <- manual_check_results %>%
   mutate(data_access = case_when(
     open_data_manual_check == FALSE ~ NA_character_,
     doi %in% od_2020_restricted$doi ~ "restricted",
-    TRUE ~ data_access))
+    .default = data_access))
 
 
 manual_check_results <- manual_check_results %>%
@@ -167,7 +169,8 @@ missing_articles <- manual_check_results %>%
 
 manual_check_results <- manual_check_results %>%
   filter(!doi %in% manual_only_od$doi) %>%
-  bind_rows(manual_only_od) %>%
+  bind_rows(manual_only_od)
+# %>%
   # left_join(od_2020_restricted) %>%
   # mutate(data_access = if_else(open_data_manual_check == FALSE, NA_character_, data_access))
 
