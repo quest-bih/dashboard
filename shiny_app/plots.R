@@ -293,7 +293,7 @@ plot_orcid <- function(plot_data, color_palette)
           line = list(color = color_palette[3], width = 4),
           marker = list(color = color_palette[3], size = 1)) %>%
     layout(yaxis = list(title = '<b>Registered ORCIDs</b>',
-                        range = c(0, 2000)),
+                        range = c(0, 2200)),
            xaxis = list(title = '<b>Date</b>',
                         type = 'date'),
            paper_bgcolor = color_palette[9],

@@ -3,12 +3,18 @@ library(vroom)
 library(assertthat)
 library(readxl)
 library(janitor)
+library(furrr)
+
+future::plan(multisession)
 
 print("Open Data detection with oddpub...")
 # pdf_folder <-"S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs/2021/"
 # txt_folder <- "S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs_to_text/2021/"
-pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
-txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
+# pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
+# txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
+pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
+txt_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_to_text/"
+
 print("Convert pdfs to text...")
 conversion_success <- oddpub::pdf_convert(pdf_folder, txt_folder)
 
@@ -17,15 +23,15 @@ res <- tibble(file = list.files(pdf_folder), converted = conversion_success)
 print("Load txt files...")
 
 #only screen new PDFs
-if(file.exists("./results/Open_Data.csv"))
+if (file.exists("./results/Open_Data.csv"))
 {
   already_screened_PDFs <- read_csv("./results/Open_Data.csv")
 
   pdf_text_corpus <- oddpub::pdf_load(txt_folder)
   pdf_text_corpus <- pdf_text_corpus[!(names(pdf_text_corpus) %in% already_screened_PDFs$article)]
 
-  if(length(pdf_text_corpus) > 0) {
-    oddpub_results <- oddpub::open_data_search_parallel(pdf_text_corpus)
+  if (length(pdf_text_corpus) > 0) {
+    oddpub_results <- oddpub::open_data_search(pdf_text_corpus)
     write_csv(oddpub_results, paste0("./results/Open_Data.csv"), append = TRUE)
   }
 
@@ -33,7 +39,7 @@ if(file.exists("./results/Open_Data.csv"))
   pdf_text_corpus <- oddpub::pdf_load(txt_folder)
 
   print("Run oddpub...")
-  oddpub_results <- oddpub::open_data_search_parallel(pdf_text_corpus)
+  oddpub_results <- oddpub::open_data_search(pdf_text_corpus)
   write_csv(oddpub_results, paste0("./results/Open_Data.csv"))
 }
 
@@ -47,7 +53,7 @@ template_filename <- "./results/Open_Data_manual_check_template.csv"
 oddpub_results <- vroom("./results/Open_Data.csv")
 
 
-oddpub_results_manual_check <- oddpub_results %>%
+oddpub_results_manual_check <- oddpub_results |>
   mutate(
     # open_data_manual_check = NA,
          # open_data_category_manual = "",
@@ -66,7 +72,7 @@ oddpub_results_manual_check <- oddpub_results %>%
 #            FALSE,
 #            is_open_code
 #          ),
-         doi = article %>% str_remove(fixed(".txt")) %>%
+         doi = article %>% str_remove(fixed(".txt")) |>
                            str_replace_all(fixed("+"), "/")
          # data_access = NA
          ) %>%
@@ -75,6 +81,14 @@ oddpub_results_manual_check <- oddpub_results %>%
 #   select(doi, is_open_data, open_data_category, open_data_manual_check,
 #          open_data_category_manual, open_data_statements, is_open_code,
 #          open_code_manual_check, open_code_category_manual, open_code_statements, data_access)
+
+oddpub_results |>
+  write_excel_csv2("C:/my_programs/screening_2022.csv")
+
+
+scr_22 <- read_csv2("C:/my_programs/screening_2022.csv")
+scr_22 |>
+  count(is_open_data)
 
 
 

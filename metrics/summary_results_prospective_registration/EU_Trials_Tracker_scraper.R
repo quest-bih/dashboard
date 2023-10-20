@@ -4,11 +4,12 @@ library(rvest)
 library(lubridate)
 library(httr)
 library(curl)
+library(here)
 
 extract_var <- function(var_name, text)
 {
-  var_value <- text %>%
-    str_extract(paste0(var_name, " = [:digit:]{1,3}")) %>%
+  var_value <- text |>
+    str_extract(paste0(var_name, " = [:digit:]{1,3}")) |>
     # str_extract(paste0(var_name, " = [:digit:]{2,3}")) %>% # some of latest numbers single digits!
     str_remove(paste0(var_name, " = "))
 
@@ -17,14 +18,14 @@ extract_var <- function(var_name, text)
 
 charite_url <-  "https://eu.trialstracker.net/sponsor/charite-universitatsmedizin-berlin"
 
-webpage <- read_lines(charite_url) %>% paste(collapse = " ")
+webpage <- read_lines(charite_url) |>  paste(collapse = " ")
 
-webpage <- read_html(charite_url) %>% rvest::html_text()
+webpage <- read_html(charite_url) |>  rvest::html_text()
 var_names <- c("total_unreported", "total_reported", "total_due",
   "not_yet_due_trials", "inconsistent_trials", "total_trials")
 
-var_values <- var_names %>%
-  map_chr(extract_var, text = webpage) %>%
+var_values <- var_names |>
+  map_chr(extract_var, text = webpage) |>
   as.integer()
 
 EU_data_charite <- tibble(retrieval_date = as.character(Sys.Date()),
@@ -56,20 +57,20 @@ gtoken <- config(token = github_token)
 url <- "https://github.com/ebmdatalab/euctr-tracker-data/commits/master/all_sponsors.json"
 
 history <- read_html(url)
-dates <- history %>%
-  html_elements("h2") %>%
-  html_text() %>%
+dates <- history |>
+  html_elements("h2") |>
+  html_text()  |>
   str_remove_all("Commits on ")
 
-dates <- lubridate::mdy(dates) %>%
+dates <- lubridate::mdy(dates) |>
   na.omit()
 
-SHAs <- history %>%
-  html_elements("clipboard-copy") %>%
-  html_attr("value") %>%
+SHAs <- history |>
+  html_elements("clipboard-copy") |>
+  html_attr("value") |>
   na.omit()
 
-charite_trials <- tibble(retrieval_date = dates, SHAs) %>%
+charite_trials <- tibble(retrieval_date = dates, SHAs) |>
   mutate(url = paste0("https://github.com/ebmdatalab/euctr-tracker-data/raw/",
                       SHAs,
                       "/all_sponsors.json"))
@@ -81,12 +82,12 @@ for (url in charite_trials$url) {
   stop_for_status(req)
 
   # Extract content from a request
-  json1 <- content(req) %>% str_replace_all("NaN", "0")
+  json1 <- content(req) |>  str_replace_all("NaN", "0")
 
 
   # Convert to a data.frame
-  gitDF <- jsonlite::fromJSON(json1, flatten = TRUE) %>%
-    filter(slug == "charite-universitatsmedizin-berlin") %>%
+  gitDF <- jsonlite::fromJSON(json1, flatten = TRUE) |>
+    filter(slug == "charite-universitatsmedizin-berlin") |>
     select(all_of(var_names))
   scraped_trials <- bind_rows(scraped_trials, gitDF)
   Sys.sleep(2) #pause to let connection work
@@ -95,10 +96,10 @@ for (url in charite_trials$url) {
 
 }
 
-scraped_trials <- scraped_trials %>%
-  mutate(retrieval_date = dates) %>%
+scraped_trials <- scraped_trials |>
+  mutate(retrieval_date = dates) |>
   filter(total_trials > 100,
-         retrieval_date > "2022-11-07") %>%
+         retrieval_date > "2023-05-18") |>
   select(retrieval_date, everything())
 
 write_csv(scraped_trials, "./results//EU_trialstracker.csv",

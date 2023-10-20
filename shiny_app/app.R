@@ -74,7 +74,7 @@ fair_dataset_datatable <- fair_dataset |>
 # preprocessing, need to move somewhere else later
 #----------------------------------------------------------------------------------------------------------------------
 
-show_year <- "2021"
+show_year <- "2022"
 metrics_show_year <- dashboard_metrics_aggregate %>% filter(year == show_year)
 
 OA_data <- dashboard_metrics %>%
