@@ -354,7 +354,7 @@ open_access_tooltip <- strwrap("The open access metric shows the percentage of C
                              freely available on the journal page, but without a clear open license.
                              Closed articles are not freely available. For some articles no open access
                              information was available.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
 open_data_tooltip <- strwrap("The Open Data metric measures the the percentage of screened publications
@@ -363,21 +363,21 @@ open_data_tooltip <- strwrap("The Open Data metric measures the the percentage o
                              as research findings can be reproduced. Additionally, shared datasets
                              can be reused and combined by other scientists to answer new research
                              questions.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
 open_code_tooltip <- strwrap("The Open Code metric measures the the percentage of screened publications
                              that state that they shared their analysis code.
                              Like openly shared data, Open Code makes research more transparent,
                              as research findings can be reproduced.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
 preprints_tooltip <- strwrap("This metric measures how many preprints with authors from the Charité
                              have been published on a range of preprint servers. Preprints allow
                              rapid and transparent communication of preliminary research results
                              before publication in a peer-reviewed journal.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
 orcid_tooltip <- strwrap("This metric measures how many researchers currently affiliated with the
@@ -385,7 +385,7 @@ orcid_tooltip <- strwrap("This metric measures how many researchers currently af
                           despite name variants or name changes and uniquely associates
                           publications or other types of research output with him/her.
                           Many publishers now request ORCIDs when manuscripts are submitted.
-                          - Click for methods details.") %>%
+                          - Click for methods details.") |>
   paste(collapse = " ")
 
 
@@ -398,7 +398,7 @@ summary_results_tooltip <- strwrap("This metric measures how many clinical trial
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.
-                                       - Click for methods details.") %>%
+                                       - Click for methods details.") |>
   paste(collapse = " ")
 
 intovalue_tooltip <- strwrap("This metric measures how many clinical trials registered on CT.gov or
@@ -413,7 +413,7 @@ intovalue_tooltip <- strwrap("This metric measures how many clinical trials regi
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.
-                                       - Click for methods details.") %>%
+                                       - Click for methods details.") |>
   paste(collapse = " ")
 
 prospective_registration_tooltip <- strwrap("This metric measures if the clinical trials are registered before the
@@ -421,7 +421,7 @@ prospective_registration_tooltip <- strwrap("This metric measures if the clinica
                         The idea of prospective registration of studies is to make the trail specifications,
                         including primary and secondary outcomes, publicly available before study start.
                         Prospective registration adds transparency, helps protect against outcome switching.
-                                       - Click for methods details.") %>%
+                                       - Click for methods details.") |>
   paste(collapse = " ")
 
 
@@ -434,7 +434,7 @@ vis_problem_tooltip <- strwrap("Bar graphs for continuous data are common but ar
                                 such as dot plots, box plots, violin plots or histograms. Pie charts are suboptimal,
                                 as humans have difficulty assessing proportions based on differences in area and angle.
                                 This is especially difficult when a pie chart includes many slices, or groups with similar proportions.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 
@@ -444,13 +444,13 @@ vis_inform_tooltip <- strwrap("Bar graphs for continuous data are common but are
                                 Bar graphs of continuous data should be replaced with more informative graphs
                                 that provide information about the data distribution and sample size,
                                 such as dot plots, box plots, violin plots or histograms.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 12 (out of 15) FAIR principles.
 As FAIR principles are abstract and generically defined F-UJI specifies one or more metrics for each assessed FAIR principle.
 Since each metric can be tested in various means depending on data contexts and current best practises F-UJI additionally uses one or more practical tests to evaluate datasets against a particular metric.
-                             - Click for more info.") %>%
+                             - Click for more info.") |>
   paste(collapse = " ")
 
 fair_repositories_tooltip <- strwrap("This metric measures the average FAIR score (in percent) by data repositories
@@ -460,7 +460,7 @@ fair_repositories_tooltip <- strwrap("This metric measures the average FAIR scor
                                 and Reusability of digital assets.
                                 The FAIR score is based on practical tests executed by an automated FAIR data assessment tool
                                 against specific metrics derived from the FAIR principles.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 fair_principles_tooltip <- strwrap("This metric measures the average FAIR score (in percent)
@@ -468,15 +468,15 @@ fair_principles_tooltip <- strwrap("This metric measures the average FAIR score 
                                 and Reusability for research data published in 2021.
                                 The FAIR score is based on practical tests executed by the automated FAIR data assessment tool
                                 F-UJI against specific metrics derived from the FAIR principles.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 fair_licenses_tooltip <-
   strwrap(
     "This metric measures if a standard, machine readable license is specified under which research data published in 2021 can be reused. It is derived from the FAIR principle R1.1 — (Meta)data are released with a clear and accessible data usage license. - Click for more info."
-  ) %>%
+  ) |>
   paste(collapse = " ")
 
 fair_identifiers_tooltip <- strwrap("This metric measures the average FAIR score of the 2021 datasets by the unique identifiers. It is derived from the FAIR principle F1 — (Meta)data are assigned a globally unique and persistent identifier.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")

@@ -1,350 +1,4 @@
 
-#------------------------------------------------------------------------
-# Open Science plots
-#------------------------------------------------------------------------
-
-# Open Access
-plot_OA_perc <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~gold, name = "Gold", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    add_trace(y = ~green, name = 'Green',
-              marker = list(color = color_palette[6],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~hybrid, name = 'Hybrid',
-              marker = list(color = color_palette[7],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~bronze, name = 'Bronze',
-              marker = list(color = color_palette[4],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    layout(barmode = 'stack',
-           yaxis = list(title = '<b>Open Access</b>',
-                        range = c(0, 100),
-                        ticksuffix = "%"),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-plot_OA_total <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~gold, name = "Gold", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    add_trace(y = ~green, name = 'Green',
-              marker = list(color = color_palette[6],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~hybrid, name = 'Hybrid',
-              marker = list(color = color_palette[7],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~bronze, name = 'Bronze',
-              marker = list(color = color_palette[4],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~closed, name = 'Closed',
-              marker = list(color = color_palette[5],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~`NA`, name = 'No data <br>available',
-              marker = list(color = color_palette[1],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    layout(barmode = 'stack',
-           yaxis = list(title = '<b>Publications</b>',
-                        range = c(0, 6300)),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-
-# Open Data
-plot_OD_perc <- function(plot_data, color_palette)
-{
-  # plot_OD_perc <- function(plot_data, color_palette, zoom_in, show_restrictions)
-  # {
-  #   if(zoom_in) {
-  #     yrange <- c(0, 12)
-  #   } else {
-  yrange <- c(0, 50)
-  #   }
-
-  # plot_output <- plot_ly(plot_data, x = ~year, y = ~OD_disciplinary_perc,
-  #         name = "disciplinary repository", type = 'bar',
-  #         marker = list(color = color_palette[3],
-  #                       line = list(color = 'rgb(0,0,0)',
-  #                                   width = 1.5))) %>%
-  #   add_trace(y = ~OD_general_purpose_perc,
-  #             name = 'general-purpose repository',
-  #             marker = list(color = color_palette[6],
-  #                           line = list(color = 'rgb(0,0,0)',
-  #                                       width = 1.5))) %>%
-  #   add_trace(y = ~OD_disciplinary_and_general_perc,
-  #             name = 'disciplinary and general<br>repository',
-  #             marker = list(color = color_palette[2],
-  #                           line = list(color = 'rgb(0,0,0)',
-  #                                       width = 1.5)))
-  # if (zoom_in == TRUE) {
-
-  plot_output <- plot_data %>%
-    # filter(year > 2019) %>%
-    plot_ly(x = ~year, y = ~OD_disc_nonrestricted_perc,
-            name = "disciplinary", type = 'bar',
-            marker = list(color = color_palette[3],
-                          line = list(color = 'rgb(0,0,0)',
-                                      width = 1.5))) %>%
-    add_trace(y = ~OD_disc_restricted_perc,
-              name = 'disciplinary - restricted',
-              marker = list(color = color_palette[3],
-                            pattern = list(shape = "x"),
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~OD_gen_nonrestricted_perc,
-              name = 'general-purpose',
-              marker = list(color = color_palette[6],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~OD_gen_restricted_perc,
-              name = 'general-purpose - restricted',
-              marker = list(color = color_palette[6],
-                            pattern = list(shape = "x"),
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5)),
-              showlegend = FALSE) %>%
-    add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
-              name = 'disciplinary and general<br>',
-              marker = list(color = color_palette[2],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~OD_disc_and_gen_restricted_perc,
-              name = 'disciplinary and general<br> - restricted',
-              marker = list(color = color_palette[2],
-                            pattern = list(shape = "x"),
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5)),
-              showlegend = FALSE)
-  # }
-
-  plot_output %>%
-    layout(barmode = 'stack',
-           legend = list(
-             title=list(text='<b>Repository</b>'),
-             # orientation = "h",
-             # xanchor = "left",
-             legendwidth = 1.3,
-             # font = list(size = 11),
-             bgcolor = 'rgba(0,0,0,0)',
-             x = 0.1,
-             y = 1.7),
-           yaxis = list(title = '<b>Publications</b>',
-                        range = yrange,
-                        ticksuffix = "%"),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-plot_OD_total <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~open_data_manual_count,
-          name = "Open Data", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    add_trace(y = ~open_data_neg_count,
-              name = 'No Open Data',
-              marker = list(color = color_palette[5],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~open_data_NA_count,
-              name = 'Article<br>not accessible',
-              marker = list(color = color_palette[1],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    layout(barmode = 'stack',
-           yaxis = list(title = '<b>Number of publications</b>',
-                        range = c(0, 6300)),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-
-# Open Code
-# plot_OC_perc <- function(plot_data, color_palette, zoom_in, show_supplements) {
-plot_OC_perc <- function(plot_data, color_palette) {
-  # if(zoom_in) {
-  #   yrange <- c(0, 5)
-  # } else {
-  yrange <- c(0, 50)
-  # }
-
-
-  plot_output <- plot_ly(plot_data, x = ~year, y = ~OC_github_perc,
-                         name = "GitHub", type = 'bar',
-                         marker = list(color = color_palette[3],
-                                       line = list(color = 'rgb(0,0,0)',
-                                                   width = 1.5))) %>%
-    add_trace(y = ~OC_other_perc,
-              name = 'other repository <br>or website',
-              marker = list(color = color_palette[6],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5)))
-  # if (show_supplements == TRUE) {
-  #   plot_output <- plot_output %>%
-  #     add_trace(y = ~OC_supplement_perc, name = 'supplement',
-  #               marker = list(color = color_palette[7],
-  #                             line = list(color = 'rgb(0,0,0)',
-  #                                         width = 1.5)))
-  # }
-
-  plot_output %>%
-    layout(barmode = 'stack',
-           legend = list(xanchor = "left",
-                         # font = list(size = 11),
-                         bgcolor = 'rgba(0,0,0,0)',
-                         x = 0.05,
-                         y = 1),
-           yaxis = list(title = '<b>Publications</b>',
-                        range = yrange,
-                        ticksuffix = "%"),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-plot_OC_total <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~open_code_manual_count,
-          name = "Open Code", type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    add_trace(y = ~open_code_neg_count,
-              name = 'No Open Code',
-              marker = list(color = color_palette[5],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    add_trace(y = ~open_code_NA_count,
-              name = 'Article<br>not accessible',
-              marker = list(color = color_palette[1],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5))) %>%
-    layout(barmode = 'stack',
-           yaxis = list(title = '<b>Number of publications</b>',
-                        range = c(0, 6300)),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-
-# Preprints
-plot_preprints <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data %>% filter(year > 2015), x = ~year, y = ~preprints,
-          name = 'Preprints',
-          type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[3], width = 3),
-          marker = list(color = color_palette[3], size = 8)) %>%
-    add_trace(y = ~count, name = 'Journal articles', mode = 'lines+markers',
-              line = list(color = color_palette[2]),
-              marker = list(color = color_palette[2])) %>%
-    layout(yaxis = list(title = '<b>Total number</b>',
-                        range = c(0, 8000)),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "left",
-                         legendwidth = 1.3,
-                         bgcolor = 'rgba(0,0,0,0)',
-                         x = 0.05,
-                         y = 1)) %>%
-    config(displayModeBar = FALSE)
-}
-
-# Orcid
-plot_orcid <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~as.Date(date, format= "%Y-%m-%d"), y = ~orcid_count,
-          name = 'Registered ORCIDs',
-          type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[3], width = 4),
-          marker = list(color = color_palette[3], size = 1)) %>%
-    layout(yaxis = list(title = '<b>Registered ORCIDs</b>',
-                        range = c(0, 2200)),
-           xaxis = list(title = '<b>Date</b>',
-                        type = 'date'),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-
-
-#------------------------------------------------------------------------
-# Clinical trials plots
-#------------------------------------------------------------------------
-
-# Summary results
-plot_summary_results_perc <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~as.Date(retrieval_date, format= "%Y-%m-%d"), y = ~round(perc_reported * 100, 1),
-          name = 'Reported trials',
-          type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[3], width = 3),
-          marker = list(color = color_palette[3], size = 8)) %>%
-    layout(yaxis = list(title = '<b>Trials</b>',
-                        range = c(0, 100),
-                        ticksuffix = "%"),
-           xaxis = list(title = '<b>Date</b>',
-                        type = 'date'),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9],
-           legend = list(xanchor = "right")) %>%
-    config(displayModeBar = FALSE)
-}
-
-plot_summary_results_total <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~as.Date(retrieval_date, format= "%Y-%m-%d"), y = ~total_reported,
-          name = 'Reported trials',
-          type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[3], width = 3),
-          marker = list(color = color_palette[3], size = 8)) %>%
-    add_trace(y = ~total_due, name = 'Due trials', mode = 'lines+markers',
-              line = list(color = color_palette[2]),
-              marker = list(color = color_palette[2])) %>%
-    layout(yaxis = list(title = '<b>Number of trials</b>'),
-           xaxis = list(title = '<b>Date</b>',
-                        type = 'date'),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-
 # Trial publication
 plot_intovalue_perc <- function(plot_data, color_palette)
 {
@@ -370,8 +24,8 @@ plot_intovalue_perc <- function(plot_data, color_palette)
                          font = list(size = 11),
                          x = 0.01,
                          y = 1.6
-           )) %>%
-    config(displayModeBar = FALSE)
+           )) |>
+    plotly::config(displayModeBar = FALSE)
 }
 
 plot_intovalue_total <- function(plot_data, color_palette)
@@ -405,163 +59,8 @@ plot_intovalue_total <- function(plot_data, color_palette)
                          x = 0.01,
                          y = 1.6
            )
-    ) %>%
-    config(displayModeBar = FALSE)
-}
-
-# Prospective registration
-plot_prosp_reg_perc <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~perc_prosp_reg, type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 1.5))) %>%
-    layout(yaxis = list(title = '<b>Trials</b>',
-                        range = c(0, 100),
-                        ticksuffix = "%"),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-plot_prosp_reg_total <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~has_prosp_reg,
-          name = 'prospective registration', type = 'bar',
-          marker = list(color = color_palette[3],
-                        line = list(color = 'rgb(0,0,0)',
-                                    width = 2))) %>%
-    add_trace(y = ~no_prosp_reg,
-              name = 'no prospective registration',
-              marker = list(color = color_palette[5],
-                            line = list(color = 'rgb(0,0,0)',
-                                        width = 2))) %>%
-    layout(barmode = 'stack',
-           yaxis = list(title = '<b>Number of trials</b>'),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9],
-           legend = list(orientation = "h",
-                         font = list(size = 11),
-                         xanchor = "left",
-                         bgcolor = "rgba(0,0,0,0)",
-                         x = -0.01,
-                         y = 1.6
-           )) %>%
-    config(displayModeBar = FALSE)
-}
-
-
-#------------------------------------------------------------------------
-# Visualizations plots
-#------------------------------------------------------------------------
-
-# problematic graphs
-plot_barzooka_problem_perc <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~round(has_bar/total*100, 1),
-          name = "bar graph", type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[2], width = 3),
-          marker = list(color = color_palette[2], size = 8)) %>%
-    add_trace(y = ~round(has_pie/total*100, 1), name = 'pie chart', mode = 'lines+markers',
-              line = list(color = color_palette[3]),
-              marker = list(color = color_palette[3])) %>%
-    layout(yaxis = list(title = '<b>Publications</b>',
-                        range = c(0, 28),
-                        ticksuffix = "%"),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-plot_barzooka_problem_total<- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~has_bar,
-          name = "bar graph", type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[2], width = 3),
-          marker = list(color = color_palette[2], size = 8)) %>%
-    add_trace(y = ~has_pie, name = 'pie chart', mode = 'lines+markers',
-              line = list(color = color_palette[3]),
-              marker = list(color = color_palette[3])) %>%
-    add_trace(y = ~total, name = 'accessible publications', mode = 'lines+markers',
-              line = list(color = color_palette[5]),
-              marker = list(color = color_palette[5])) %>%
-    layout(yaxis = list(title = '<b>Publications with graph type</b>'),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-
-# more informative graphs
-plot_barzooka_inform_perc <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~round(has_informative/total*100, 1),
-          name = "any informative", type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[1], width = 3),
-          marker = list(color = color_palette[1], size = 8)) %>%
-    add_trace(y = ~round(has_bardot/total*100, 1), name = 'bar graph with dots', mode = 'lines+markers',
-              line = list(color = color_palette[2]),
-              marker = list(color = color_palette[2])) %>%
-    add_trace(y = ~round(has_box/total*100, 1), name = 'box plot', mode = 'lines+markers',
-              line = list(color = color_palette[3]),
-              marker = list(color = color_palette[3])) %>%
-    add_trace(y = ~round(has_dot/total*100, 1), name = 'dot plot', mode = 'lines+markers',
-              line = list(color = color_palette[4]),
-              marker = list(color = color_palette[4])) %>%
-    add_trace(y = ~round(has_hist/total*100, 1), name = 'histogram', mode = 'lines+markers',
-              line = list(color = color_palette[6]),
-              marker = list(color = color_palette[6])) %>%
-    add_trace(y = ~round(has_violin/total*100, 1), name = 'violin plot', mode = 'lines+markers',
-              line = list(color = color_palette[7]),
-              marker = list(color = color_palette[7])) %>%
-    layout(yaxis = list(title = '<b>Publications</b>',
-                        range = c(0, 28),
-                        ticksuffix = "%"),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
-}
-
-plot_barzooka_inform_total <- function(plot_data, color_palette)
-{
-  plot_ly(plot_data, x = ~year, y = ~has_informative,
-          name = "any informative", type = 'scatter', mode = 'lines+markers',
-          line = list(color = color_palette[1], width = 3),
-          marker = list(color = color_palette[1], size = 8)) %>%
-    add_trace(y = ~has_bardot, name = 'bar graph with dots', mode = 'lines+markers',
-              line = list(color = color_palette[2]),
-              marker = list(color = color_palette[2])) %>%
-    add_trace(y = ~has_box, name = 'box plot', mode = 'lines+markers',
-              line = list(color = color_palette[3]),
-              marker = list(color = color_palette[3])) %>%
-    add_trace(y = ~has_dot, name = 'dot plot', mode = 'lines+markers',
-              line = list(color = color_palette[4]),
-              marker = list(color = color_palette[4])) %>%
-    add_trace(y = ~has_hist, name = 'histogram', mode = 'lines+markers',
-              line = list(color = color_palette[6]),
-              marker = list(color = color_palette[6])) %>%
-    add_trace(y = ~has_violin, name = 'violin plot', mode = 'lines+markers',
-              line = list(color = color_palette[7]),
-              marker = list(color = color_palette[7])) %>%
-    add_trace(y = ~total, name = 'accessible publications', mode = 'lines+markers',
-              line = list(color = color_palette[5]),
-              marker = list(color = color_palette[5])) %>%
-    layout(yaxis = list(title = '<b>Publications with graph type</b>'),
-           xaxis = list(title = '<b>Year</b>',
-                        dtick = 1),
-           paper_bgcolor = color_palette[9],
-           plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
+    ) |>
+    plotly::config(displayModeBar = FALSE)
 }
 
 #------------------------------------------------------------------------
@@ -618,7 +117,7 @@ plot_fair_license_perc <- function(plot_data, color_palette)
       paper_bgcolor = color_palette[9],
       plot_bgcolor = color_palette[9]
     ) %>%
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 }
 
 plot_fair_license_total <- function(plot_data, color_palette)
@@ -670,7 +169,7 @@ plot_fair_license_total <- function(plot_data, color_palette)
       paper_bgcolor = color_palette[9],
       plot_bgcolor = color_palette[9]
     ) %>%
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 }
 
 
@@ -731,7 +230,7 @@ plot_fair_principle_perc <- function(plot_data, color_palette)
       title = list(text = "FAIR score", font = list(size = 12))),
       paper_bgcolor = color_palette[9],
       plot_bgcolor = color_palette[9]) %>%
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 }
 
 # For test, remove later
@@ -785,7 +284,7 @@ plot_fair_treemap <- function(plot_data, color_palette, fair_perc, color_seq)
   ) %>%
     layout(paper_bgcolor = color_palette[9],
            margin=list(l=0, r=0, b=10, t=0)) %>%
-    config(displayModeBar = FALSE) #  plot_bgcolor = pal_bg
+    plotly::config(displayModeBar = FALSE) #  plot_bgcolor = pal_bg
 }
 
 # Function for sunburst plot for FAIR score by guid
@@ -824,7 +323,7 @@ plot_fair_sunburst <- function(plot_data, color_palette, color_seq)
                       outlinecolor = color_palette[9]))) %>%
     layout(paper_bgcolor = color_palette[9],
            margin=list(l=0, r=0, b=5, t=0)) %>%
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 
 }
 
@@ -989,5 +488,5 @@ plot_fair_principle_sunburst <- function(plot_data, color_palette, select_reposi
                   showarrow = F, xref='paper', yref='paper',
                   xanchor='auto', yanchor='auto', xshift=0, yshift=0,
                   font=list(size=11))) %>%
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 }

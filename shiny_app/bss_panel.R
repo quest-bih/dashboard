@@ -596,7 +596,7 @@ data |>
       line = list(color = "black", dash = "dot")
     )
   ) |>
-  config(displayModeBar = FALSE)
+  plotly::config(displayModeBar = FALSE)
 
 }
 
@@ -740,7 +740,7 @@ plot_prio <- function(data, x, y, status, research) {
       margin = list(t = 10, b = if_else(status == "all" & research == "all", 85, 95)),
       paper_bgcolor = "#DCE3E5",
       plot_bgcolor = "#DCE3E5") |>
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
   fig
 }
 
@@ -855,7 +855,7 @@ plot_prio_likert <- function(data) {
            autosize = TRUE,
            paper_bgcolor = "#DCE3E5",
            plot_bgcolor = "#DCE3E5") |>
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 }
 
 #----------------------------------------------------------------------------------------------------------------------
@@ -935,7 +935,7 @@ plot_practices <- function(data) {
       paper_bgcolor = "#DCE3E5",
       plot_bgcolor = "#DCE3E5"
     ) |>
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 
 }
 
@@ -1021,7 +1021,7 @@ plot_practices_likert <- function(data) {
            autosize = TRUE,
            paper_bgcolor = "#DCE3E5",
            plot_bgcolor = "#DCE3E5") |>
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 
 }
 
@@ -1096,7 +1096,7 @@ plot_ly(x = ~ perc,
            uniformtext = list(minsize = 10, mode = "hide"),
            paper_bgcolor = "#DCE3E5",
            plot_bgcolor = "#DCE3E5") |>
-    config(displayModeBar = FALSE)
+    plotly::config(displayModeBar = FALSE)
 
 }
 

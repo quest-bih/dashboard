@@ -1,7 +1,7 @@
 library(tidyverse)
 library(pdfRetrieve)
 
-email <- "vladislav.nachev@charite.de"
+email <- Sys.getenv("EMAIL")
 
 publications <- read_csv("./main/publication_table.csv")
 
@@ -9,37 +9,37 @@ publications <- read_csv("./main/publication_table.csv")
 pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
 
 #need doi for download
-publications_download <- publications %>%
-  filter(doi != "") %>%
+publications_download <- publications |>
+  filter(doi != "") |>
   filter(!is.na(doi),
-         year == 2021) %>%
-  filter(!(doi %>% str_detect("^k"))) %>%
-  filter(doi != "0") %>%
+         year == 2021) |>
+  filter(!(doi |> str_detect("^k"))) |>
+  filter(doi != "0") |>
   mutate(found = tolower(paste0(gsub("/", "+", doi), ".pdf")) %in%
            tolower(list.files(pdf_folder)),
-         doi = tolower(doi)) %>%
+         doi = tolower(doi)) |>
   select(found, everything())
 
-downloaded_files <- publications_download %>%
-  filter(found == TRUE) %>%
+downloaded_files <- publications_download |>
+  filter(found == TRUE) |>
   mutate(file_name = paste0(gsub("/", "+", doi), ".pdf"))
 
-missing_manual <- downloaded_files %>%
-  select(doi) %>%
-  left_join(manual_check_results %>% mutate(doi = tolower(doi))) %>%
+missing_manual <- downloaded_files |>
+  select(doi) |>
+  left_join(manual_check_results |> mutate(doi = tolower(doi))) |>
   filter(is_open_data,
          is.na(open_data_manual_check))
 
-missing_manual %>% write_csv("./results/missing_manual.csv")
+missing_manual |> write_csv("./results/missing_manual.csv")
 
 
-dest_folder <- "C:/Datenablage/charite_dashboard/2021/PDFs"
+dest_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs"
 
 
 # copy_PDFs_from_doi(downloaded_files$doi, pdf_folder, dest_folder)
 
-dois_sub <- publications_download %>%
-  filter(found == FALSE) %>%
+dois_sub <- publications_download |>
+  filter(found == FALSE) |>
   # filter out Elsevier
   filter(!str_detect(doi, "10.1016"))
 
@@ -84,31 +84,31 @@ delete_invalid_PDF <- function(PDF_file) {
 
 pdf_files <- paste0(pdf_folder,
                     list.files(pdf_folder))
-pdf_removed <- pdf_files %>% map_chr(delete_invalid_PDF)
+pdf_removed <- pdf_files |> map_chr(delete_invalid_PDF)
 
 
-#also remove Elsevier PDFs with just one page
-#as only the first page gets returned by the API for articles
-#without access rights
-
-elsevier_pdfs <- paste0(pdf_folder,
-                        list.files(pdf_folder))
-elsevier_pdfs <- elsevier_pdfs[elsevier_pdfs %>% str_detect("10.1016")]
-
-delete_one_page_PDFs <- function(PDF_file) {
-  page_num <- pdftools::pdf_info(PDF_file)$pages
-  if(page_num == 1) {
-    file.copy(PDF_file, "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_removed/")
-    file.remove(PDF_file)
-    remove_msg <- "PDF removed"
-  } else {
-    remove_msg <- "PDF valid"
-  }
-  print(paste0(PDF_file, ": ", remove_msg))
-
-  return(page_num == 1)
-}
-elsevier_pdf_removed <- elsevier_pdfs %>% map_chr(delete_one_page_PDFs)
+# #also remove Elsevier PDFs with just one page
+# #as only the first page gets returned by the API for articles
+# #without access rights
+#
+# elsevier_pdfs <- paste0(pdf_folder,
+#                         list.files(pdf_folder))
+# elsevier_pdfs <- elsevier_pdfs[elsevier_pdfs |> str_detect("10.1016")]
+#
+# delete_one_page_PDFs <- function(PDF_file) {
+#   page_num <- pdftools::pdf_info(PDF_file)$pages
+#   if(page_num == 1) {
+#     file.copy(PDF_file, "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_removed/")
+#     file.remove(PDF_file)
+#     remove_msg <- "PDF removed"
+#   } else {
+#     remove_msg <- "PDF valid"
+#   }
+#   print(paste0(PDF_file, ": ", remove_msg))
+#
+#   return(page_num == 1)
+# }
+# elsevier_pdf_removed <- elsevier_pdfs |> map_chr(delete_one_page_PDFs)
 
 ############### help function for copying files
 

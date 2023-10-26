@@ -2,6 +2,7 @@ library(assertthat)
 library(haven)
 library(tidyverse)
 library(vroom)
+library(here)
 
 #----------------------------------------------------------------------------------------
 # load results
@@ -165,7 +166,7 @@ write_csv(prosp_reg_dataset_shiny, here("shiny_app", "data", "prosp_reg_dataset_
 orcid_dataset_shiny <- vroom(here("results", "orcid.csv")) |>
   distinct(date, .keep_all = TRUE) |> # next part only if false parsing in file with spliced rows
   mutate(orcid_count = if_else(str_length(orcid_count) > 5, str_sub(orcid_count, 1, 4),
-                               orcid_count),
+                               as.character(orcid_count)),
          orcid_count = as.numeric(orcid_count))
 write_csv(orcid_dataset_shiny, here("shiny_app", "data", "orcid_results.csv"))
 
@@ -178,12 +179,13 @@ write_csv(EU_trialstracker_dataset_shiny, here("shiny_app", "data", "EU_trialstr
 
 preprints <- vroom(here("results", "preprints_oa.csv")) |>
   group_by(year) |>
-  summarize(preprints = n())
+  summarize(n_preprints = n())
 
 prospective_registration <- vroom(here("results", "prospective_registration.csv"))
 
+max_year <- max(prospective_registration$year)
 
-shiny_table_aggregate_metrics <- tibble(year = 2006:2022) |>
+shiny_table_aggregate_metrics <- tibble(year = 2006:max_year) |>
   left_join(prospective_registration) |>
   left_join(preprints)
 
