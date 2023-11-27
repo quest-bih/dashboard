@@ -30,7 +30,7 @@ source("euctr_metrics.R")
 source("ctgov_metrics.R")
 source("vis_metrics.R")
 source("orcid_metrics.R")
-source("credit_metrics.R")
+source("contribot_metrics.R")
 source("app_functions_fair.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
@@ -84,25 +84,25 @@ fair_dataset_datatable <- fair_dataset |>
 # preprocessing, need to move somewhere else later
 #----------------------------------------------------------------------------------------------------------------------
 
-show_year <- "2022"
-metrics_show_year <- dashboard_metrics_aggregate |>  filter(year == show_year)
+# show_year <- "2022"
+# metrics_show_year <- dashboard_metrics_aggregate |>  filter(year == show_year)
 
 # oddpub_data <- dashboard_metrics |>
 #   make_oddpub_plot_data()
 
-barzooka_data <- dashboard_metrics |>
-  filter(pdf_downloaded) |>
-  group_by(year) |>
-  summarize(total = n(),
-            has_bar = sum(bar > 0, na.rm = TRUE),
-            has_pie = sum(pie > 0, na.rm = TRUE),
-            has_bardot = sum(bardot > 0, na.rm = TRUE),
-            has_box = sum(box > 0, na.rm = TRUE),
-            has_dot = sum(dot > 0, na.rm = TRUE),
-            has_hist = sum(hist > 0, na.rm = TRUE),
-            has_violin = sum(violin > 0, na.rm = TRUE),
-            has_informative = sum(bardot > 0 | box > 0 | dot > 0 | hist > 0 | violin > 0,
-                                  na.rm = TRUE))
+# barzooka_data <- dashboard_metrics |>
+#   filter(pdf_downloaded) |>
+#   group_by(year) |>
+#   summarize(total = n(),
+#             has_bar = sum(bar > 0, na.rm = TRUE),
+#             has_pie = sum(pie > 0, na.rm = TRUE),
+#             has_bardot = sum(bardot > 0, na.rm = TRUE),
+#             has_box = sum(box > 0, na.rm = TRUE),
+#             has_dot = sum(dot > 0, na.rm = TRUE),
+#             has_hist = sum(hist > 0, na.rm = TRUE),
+#             has_violin = sum(violin > 0, na.rm = TRUE),
+#             has_informative = sum(bardot > 0 | box > 0 | dot > 0 | hist > 0 | violin > 0,
+#                                   na.rm = TRUE))
 
 
 show_dashboard <- function(...) {
@@ -295,12 +295,18 @@ show_dashboard <- function(...) {
       }
     }, priority = 0)
 
-    RVs <- reactiveValues(total_os = FALSE, total_ct = FALSE, total_vis = FALSE)
+    RVs <- reactiveValues(total_os = FALSE, total_ct = FALSE,
+                          total_bt = FALSE, total_vis = FALSE)
 
     observe({
       RVs$total_os <- input$checkbox_total_OS
     }) |>
       bindEvent(input$checkbox_total_OS)
+
+    observe({
+      RVs$total_bt <- input$checkbox_total_BT
+    }) |>
+      bindEvent(input$checkbox_total_BT)
 
     observe({
       RVs$total_ct <- input$checkbox_total_CT
@@ -316,12 +322,14 @@ show_dashboard <- function(...) {
     OAServer("plot_OA", dashboard_metrics, reactive(RVs$total_os), color_palette)
     ODServer("plot_OD", dashboard_metrics, "data", reactive(RVs$total_os), color_palette)
     ODServer("plot_OC", dashboard_metrics, "code", reactive(RVs$total_os), color_palette)
+    ODServer("plot_DAS", dashboard_metrics, "das", reactive(RVs$total_os), color_palette)
     sumresServer("plot_sumres", sumres_data, reactive(RVs$total_ct), color_palette)
     ctgovServer("plot_prosp_reg", dashboard_metrics_aggregate, reactive(RVs$total_ct), color_palette)
     visServer("plot_barzooka_problem", dashboard_metrics, "problem", reactive(RVs$total_vis), color_palette)
     visServer("plot_barzooka_inform", dashboard_metrics, "inform", reactive(RVs$total_vis), color_palette)
-    orcidServer("plot_orcid", orcid_dataset, color_palette)
-
+    orcidServer("plot_orcid", orcid_dataset, "total", reactive(RVs$total_bt), color_palette)
+    orcidServer("plot_orcid_pubs", dashboard_metrics, "pubs", reactive(RVs$total_bt), color_palette)
+    contribotServer("plot_contrib", dashboard_metrics, "credit", reactive(RVs$total_bt), color_palette)
 
     output$OA <-
       renderUI({
@@ -370,6 +378,23 @@ show_dashboard <- function(...) {
                         info_id = "infoOC",
                         info_title = "Open Code",
                         info_text = open_code_tooltip,
+                        info_alignment = alignment)
+      })  |>
+      bindEvent(reactive(RVs$total_os))
+
+    output$DAS <-
+      renderUI({
+        box_value <- get_current_DAS(dashboard_metrics)
+        box_text <- paste0("of screened publications included a Data or Code Availability Statement in ",
+                           dashboard_metrics$year |>  max())
+        alignment <- "left"
+        metricBoxOutput(title = "Any Data or Code Availability Statement",
+                        value = box_value,
+                        value_text = box_text,
+                        plot = ODOutput("plot_DAS", height = "300px"),
+                        info_id = "infoDAS",
+                        info_title = "Data or Code Availability Statements",
+                        info_text = das_tooltip,
                         info_alignment = alignment)
       })  |>
       bindEvent(reactive(RVs$total_os))
@@ -425,7 +450,8 @@ show_dashboard <- function(...) {
     output$vis_problem <-
       renderUI({
         box_value <- get_current_vis(dashboard_metrics, perc_bar)
-        box_text <- paste0("of publications from ", dashboard_metrics$year |> max(), " used bar graphs for continuous data")
+        box_text <- paste0("of publications from ", dashboard_metrics$year |> max(),
+                           " used bar graphs for continuous data")
 
         metricBoxOutput(title = "Problematic graph types",
                         value = box_value,
@@ -454,9 +480,9 @@ show_dashboard <- function(...) {
       })
 
     output$orcid <- renderUI({
-      box_value <- orcid_dataset$orcid_count %>% last()
+      box_value <- orcid_dataset$orcid_count |> last()
       box_text <- paste0("Charité researchers with an ORCID (as of ",
-                         orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")")
+                         orcid_dataset$date |> last() |> str_replace_all("-", "/"), ")")
 
       metricBoxOutput(title = "ORCID",
                       value = box_value,
@@ -465,17 +491,38 @@ show_dashboard <- function(...) {
                       info_id = "infoOrcid",
                       info_title = "ORCID",
                       info_text = orcid_tooltip,
-                      info_alignment = "left")
+                      info_alignment = "right")
     })
-    # metric_box(title = "ORCID",
-    #            value = orcid_dataset$orcid_count %>% last(),
-    #            value_text = paste0("Charité researchers with an ORCID (as of ",
-    #                                orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
-    #            plot = plotlyOutput('plot_orcid', height = "300px"),
-    #            info_id = "infoOrcid",
-    #            info_title = "ORCID",
-    #            info_text = orcid_tooltip,
-    #            info_alignment = "left")
+
+    output$orcid_pubs <- renderUI({
+      box_value <- get_current_orcids_from_pubs(dashboard_metrics)
+      box_text <- paste0("of publications from the Charité", " included ORCIDs in ",
+                         dashboard_metrics$year |> max())
+
+      metricBoxOutput(title = "ORCIDs in Publications",
+                      value = box_value,
+                      value_text = box_text,
+                      plot = orcidOutput('plot_orcid_pubs', height = "300px"),
+                      info_id = "infoOrcidPubs",
+                      info_title = "ORCIDpubs",
+                      info_text = orcid_pubs_tooltip,
+                      info_alignment = "right")
+    })
+
+    output$authorship <- renderUI({
+      box_value <- get_current_contribot(dashboard_metrics, perc_has_contrib)
+      box_text <- paste0("of screened publications had authorship statements in ",
+                         dashboard_metrics$year |> max())
+      metricBoxOutput(title = "Authorship Statements",
+                      value = box_value,
+                      value_text = box_text,
+                      plot = contribotOutput("plot_contrib", height = "300px"),
+                      info_id = "infoAuthorship",
+                      info_title = "Authorship",
+                      info_text = authorship_tooltip,
+                      info_alignment = "left")
+    }) |>
+      bindEvent(reactive(RVs$total_bt))
 
     # dynamically determine column width of Open Science metrics at program start
     # four columns if resolution large enough, otherwise two columns
@@ -501,6 +548,8 @@ show_dashboard <- function(...) {
                   column(col_width, uiOutput("OD") |>
                            shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("OC") |>
+                           shinycssloaders::withSpinner(color = "#007265")),
+                  column(col_width, uiOutput("DAS") |>
                            shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("preprints") |>
                            shinycssloaders::withSpinner(color = "#007265"))
@@ -531,7 +580,7 @@ show_dashboard <- function(...) {
                          fluidRow(
                            column(4, uiOutput("sumres") |>
                                     shinycssloaders::withSpinner(color = "#007265")),
-                           column(4, metric_box(title = "Timely publication of results",
+                           column(4, metricBoxOutput(title = "Timely publication of results",
                                                 value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
                                                 value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
                                                                     intovalue_dataset$completion_year |> last(),
@@ -559,7 +608,11 @@ show_dashboard <- function(...) {
       wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
                 h2(strong("Broader Transparency"), align = "left"),
                 fluidRow(
-                  # column(4, metric_box(title = "ORCID",
+                  column(2, checkboxInput("checkbox_total_BT", strong("Show absolute numbers"), value = FALSE)),
+                  column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
+                ),
+                fluidRow(
+                  # column(4, metricBoxOutput(title = "ORCID",
                   #                       value = orcid_dataset$orcid_count %>% last(),
                   #                       value_text = paste0("Charité researchers with an ORCID (as of ",
                   #                                           orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
@@ -571,7 +624,15 @@ show_dashboard <- function(...) {
                   column(
                     col_width, uiOutput("orcid") |>
                       shinycssloaders::withSpinner(color = "#007265")
-                    )
+                    ),
+                  column(
+                    col_width, uiOutput("orcid_pubs") |>
+                      shinycssloaders::withSpinner(color = "#007265")
+                  ),
+                  column(
+                    col_width, uiOutput("authorship") |>
+                      shinycssloaders::withSpinner(color = "#007265")
+                  )
                   )
                 )
       })
@@ -731,7 +792,7 @@ show_dashboard <- function(...) {
                 checkboxInput("checkbox_total_FAIR", strong("Show absolute numbers"), value = FALSE),
                 fluidRow(
 
-                  column(col_width, metric_box(style_resp = style_resp,
+                  column(col_width, metricBoxOutput(style_resp = style_resp,
                                                title = "FAIR scores by principles",
                                                value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
                                                value_text = "is the average FAIR score of datasets from 2021 in disciplinary repositories",
@@ -741,7 +802,7 @@ show_dashboard <- function(...) {
                                                info_text = fair_principles_tooltip,
                                                info_alignment = "bottom")),
 
-                  column(col_width, metric_box(style_resp = style_resp,
+                  column(col_width, metricBoxOutput(style_resp = style_resp,
                                                title = "Dataset licenses",
                                                value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository" & fair_dataset$license_fuji != "no license", ])/nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository", ])*100, 0)),
                                                value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
@@ -750,7 +811,7 @@ show_dashboard <- function(...) {
                                                info_title = "Dataset licenses",
                                                info_text = fair_licenses_tooltip,
                                                info_alignment = "bottom")),
-                  column(col_width, metric_box(style_resp = style_resp,
+                  column(col_width, metricBoxOutput(style_resp = style_resp,
                                                title = "FAIR scores by identifiers",
                                                value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
                                                value_text = "of 2021 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
@@ -829,6 +890,12 @@ show_dashboard <- function(...) {
       updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
     })
 
+    observeEvent(input$infoDAS, {
+      updateTabsetPanel(session, "navbarTabs",
+                        selected = "tabMethods")
+      updateCollapse(session, "methodsPanels_OpenScience", open = "Data or Code Availability Statements")
+    })
+
     observeEvent(input$infoPreprints, {
       updateTabsetPanel(session, "navbarTabs",
                         selected = "tabMethods")
@@ -838,7 +905,19 @@ show_dashboard <- function(...) {
     observeEvent(input$infoOrcid, {
       updateTabsetPanel(session, "navbarTabs",
                         selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_persistent_ids", open = "ORCID")
+      updateCollapse(session, "methodsPanels_broader_transparency", open = "ORCID")
+    })
+
+    observeEvent(input$infoOrcidPubs, {
+      updateTabsetPanel(session, "navbarTabs",
+                        selected = "tabMethods")
+      updateCollapse(session, "methodsPanels_broader_transparency", open = "ORCIDs in publications")
+    })
+
+    observeEvent(input$infoAuthorship, {
+      updateTabsetPanel(session, "navbarTabs",
+                        selected = "tabMethods")
+      updateCollapse(session, "methodsPanels_broader_transparency", open = "Authorship")
     })
 
     observeEvent(input$infoSumRes, {
@@ -927,9 +1006,9 @@ show_dashboard <- function(...) {
 
 
     # Orcid
-    output$plot_orcid <- renderPlotly({
-      plot_orcid(orcid_dataset, color_palette)
-    })
+    # output$plot_orcid <- renderPlotly({
+    #   plot_orcid(orcid_dataset, color_palette)
+    # })
 
 
     #---------------------------------

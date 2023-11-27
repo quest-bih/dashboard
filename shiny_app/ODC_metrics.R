@@ -5,14 +5,19 @@ ODOutput <- function(id, ...) {
   )
 }
 
+# screened_data <- shiny_table
 ODServer <- function(id, screened_data, type, total, color_palette) {
   moduleServer(id, function(input, output, session) {
 
 
     output$plot <- renderPlotly({
-
-      OD_plot_data_plotly <- screened_data |>
-        make_oddpub_plot_data(year)
+      if (str_detect(type, "^?as")) {
+        OD_plot_data_plotly <- screened_data |>
+          make_das_cas_plot_data(year)
+      } else {
+        OD_plot_data_plotly <- screened_data |>
+          make_oddpub_plot_data(year)
+      }
 
       if (type == "data") { # if the data output is to be visualized
 
@@ -25,7 +30,7 @@ ODServer <- function(id, screened_data, type, total, color_palette) {
             ODplot <- plot_OD_total(OD_plot_data_plotly, color_palette = color_palette)
             }
 
-      } else { # if the code output is to be visualized instead
+      } else if (type == "code") { # if the code output is to be visualized instead
 
         if (total() == FALSE) { # relative numbers
 
@@ -35,6 +40,24 @@ ODServer <- function(id, screened_data, type, total, color_palette) {
 
             ODplot <- plot_OC_total(OD_plot_data_plotly, color_palette = color_palette)
           }
+      } else if (type == "das") {
+        if (total() == FALSE) { # relative numbers
+
+          ODplot <- plot_DAS_perc(OD_plot_data_plotly, color_palette = color_palette)
+
+        } else { # absolute numbers
+
+          ODplot <- plot_DAS_total(OD_plot_data_plotly, color_palette = color_palette)
+        }
+      # } else if (type == "cas") {
+      #   if (total() == FALSE) { # relative numbers
+      #
+      #     ODplot <- plot_CAS_perc(OD_plot_data_plotly, color_palette = color_palette)
+      #
+      #   } else { # absolute numbers
+      #
+      #     ODplot <- plot_CAS_total(OD_plot_data_plotly, color_palette = color_palette)
+      #   }
       }
       ODplot
       })
@@ -71,30 +94,38 @@ get_current_OC <- function(data_table) {
 
 }
 
-get_total_OD <- function(data_table) {
-
+get_current_DAS <- function(data_table) {
   data_table |>
-  # screened_articles |>
-    make_oddpub_plot_data(year) |>
-    summarise(OD_perc = sum(open_data_count) / sum(total) * 100) |>
-    pull(OD_perc) |>
-    round() |>
+    make_das_cas_plot_data(year) |>
+    filter(year == max(year)) |>
+    pull(perc_das_or_cas) |>
     map_chr(\(x) paste(x, "%"))
-
 }
 
-
-get_total_OC <- function(data_table) {
-
-  data_table |>
-    # screened_articles |>
-    make_oddpub_plot_data(year) |>
-    summarise(OC_perc = sum(open_code_count) / sum(total) * 100) |>
-    pull(OC_perc) |>
-    round() |>
-    map_chr(\(x) paste(x, "%"))
-
-}
+# get_total_OD <- function(data_table) {
+#
+#   data_table |>
+#   # screened_articles |>
+#     make_oddpub_plot_data(year) |>
+#     summarise(OD_perc = sum(open_data_count) / sum(total) * 100) |>
+#     pull(OD_perc) |>
+#     round() |>
+#     map_chr(\(x) paste(x, "%"))
+#
+# }
+#
+#
+# get_total_OC <- function(data_table) {
+#
+#   data_table |>
+#     # screened_articles |>
+#     make_oddpub_plot_data(year) |>
+#     summarise(OC_perc = sum(open_code_count) / sum(total) * 100) |>
+#     pull(OC_perc) |>
+#     round() |>
+#     map_chr(\(x) paste(x, "%"))
+#
+# }
 
 # Open Data
 plot_OD_perc <- function(plot_data, color_palette)
@@ -162,7 +193,7 @@ plot_OD_total <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~open_data_count,
           name = "Open Data", type = "bar",
-          marker = list(color = color_palette[6],
+          marker = list(color = color_palette[3],
                         line = list(color = "rgb(0,0,0)",
                                     width = 1.5))) |>
     add_trace(y = ~open_data_neg_count,
@@ -244,6 +275,68 @@ plot_OC_total <- function(plot_data, color_palette)
            plot_bgcolor = color_palette[9]) |>
     plotly::config(displayModeBar = FALSE)
 }
+# plot_data <- dashboard_metrics |> make_das_cas_plot_data(year)
+plot_DAS_perc <- function(plot_data, color_palette) {
+  yrange <- c(0, 100)
+
+  plot_ly(plot_data, x = ~year, y = ~perc_das_or_cas,
+                         name = "Data Availability Statements", type = "bar",
+                         marker = list(color = color_palette[3],
+                                       line = list(color = "rgb(0,0,0)",
+                                                   width = 1.5))) |>
+    layout(barmode = "stack",
+           legend = list(xanchor = "left",
+                         # font = list(size = 11),
+                         bgcolor = "rgba(0,0,0,0)",
+                         x = 0.05,
+                         y = 1),
+           yaxis = list(title = "<b>Publications</b>",
+                        range = yrange,
+                        ticksuffix = "%"),
+           xaxis = list(title = "<b>Year</b>",
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9]) |>
+    plotly::config(displayModeBar = FALSE)
+}
+
+plot_DAS_total <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~has_das_or_cas,
+          name = "Data or Code Availability Statement", type = "bar",
+          marker = list(color = color_palette[3],
+                        line = list(color = "rgb(0,0,0)",
+                                    width = 1.5))) |>
+    add_trace(y = ~no_das_nor_cas,
+              name = "No Data or Code Availability Ststement",
+              marker = list(color = color_palette[5],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
+    add_trace(y = ~not_screened,
+              name = "Article<br>not screened",
+              marker = list(color = color_palette[1],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
+    layout(barmode = "stack",
+           yaxis = list(title = "<b>Number of publications</b>"
+                        # range = c(0, 25000)
+           ),
+           xaxis = list(title = "<b>Year</b>",
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9]) |>
+    plotly::config(displayModeBar = FALSE)
+}
+
+# das_cas <- dashboard_metrics |>
+#   select(doi, das, cas) |>
+#   filter(!is.na(das)|
+#          !is.na(cas))
+#   filter(is.na(das),
+#          !is.na(cas))
+# has DAS and CAS, DAS only, CAS_only, no DAS nor CAS, not_screened
+
+
 
 make_oddpub_plot_data <- function(data_table, gr) {
 
@@ -252,7 +345,6 @@ make_oddpub_plot_data <- function(data_table, gr) {
     summarize(open_data_count = sum(is_open_data, na.rm = TRUE),
               open_data_neg_count = sum(!is_open_data, na.rm = TRUE),
               open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
-
               open_code_count = sum(is_open_code, na.rm = TRUE),
               open_code_neg_count = sum(!is_open_code, na.rm = TRUE),
               open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
@@ -350,3 +442,23 @@ make_oddpub_plot_data <- function(data_table, gr) {
 
   return(oddpub_plot_data)
 }
+
+make_das_cas_plot_data <- function(data_table, gr) {
+
+  data_table |>
+    group_by({{ gr }}) |>
+    summarize(has_das = sum(das != "", na.rm = TRUE),
+              has_cas = sum(cas != "", na.rm = TRUE),
+              has_das_or_cas = sum(cas != "" | das != "", na.rm = TRUE),
+              total_screened = sum(!is.na(is_open_data), na.rm = TRUE),
+              not_screened = sum(is.na(is_open_data), na.rm = TRUE),
+              no_das = total_screened - has_das,
+              no_cas = total_screened - has_cas,
+              no_das_nor_cas = total_screened - has_das_or_cas,
+              perc_das = round(has_das / total_screened * 100),
+              perc_cas = round(has_cas / total_screened * 100),
+              perc_das_or_cas = round(has_das_or_cas / total_screened * 100),
+              total = n())
+}
+
+# make_das_cas_plot_data(dashboard_metrics, year)

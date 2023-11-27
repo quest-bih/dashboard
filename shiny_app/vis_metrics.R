@@ -126,7 +126,7 @@ plot_barzooka_inform_perc <- function(plot_data, color_palette)
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) |>
     layout(yaxis = list(title = "<b>Publications</b>",
-                        range = c(0, 28),
+                        range = c(0, 40),
                         ticksuffix = "%"),
            xaxis = list(title = "<b>Year</b>",
                         dtick = 1),

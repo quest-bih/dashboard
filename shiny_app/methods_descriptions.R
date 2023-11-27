@@ -137,6 +137,12 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                     # ODDPub also does not verify that the indicated dataset
                     # is indeed available and if the dataset fulfills our definition
                     # of Open Data.
+                    methods_panel("Data or Code Availability Statements",
+
+                                  "What is measured",
+                                  "how calculations were made",
+                                  "what are the known limitations in the methods"
+                                  ),
 
                     methods_panel("Preprints",
 
@@ -230,9 +236,9 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         ClinicalTrials.gov while there are other available registries as well.
                         Also, we rely on the information on ClinicalTrials.gov being accurate.")),
          hr(),
-         h2("Persistent Identifiers"),
+         h2("Broader Transparency"),
 
-         bsCollapse(id = "methodsPanels_persistent_ids",
+         bsCollapse(id = "methodsPanels_broader_transparency",
 
          methods_panel("ORCID",
 
@@ -254,7 +260,18 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         users being up to date. Some users might not enter correct or up to
                         date information or keeping their account information private,
                         which could then not be found. Also no historic data are available
-                        for this metric.")),
+                        for this metric."),
+         methods_panel("ORCIDs in publications",
+                       "This is a general description of what was measured",
+                       "This is how the methods for the authorship statements detection
+                       looked like.",
+                       "Some important limitations will be acknowledged here."),
+         methods_panel("Authorship Statements",
+                       "This is a general description of what was measured",
+                       "This is how the methods for the authorship statements detection
+                       looked like.",
+                       "Some important limitations will be acknowledged here.")
+         ),
 
 
          hr(),
@@ -366,10 +383,16 @@ open_data_tooltip <- strwrap("The Open Data metric measures the the percentage o
                              - Click for methods details.") |>
   paste(collapse = " ")
 
-open_code_tooltip <- strwrap("The Open Code metric measures the the percentage of screened publications
+open_code_tooltip <- strwrap("The Open Code metric measures the percentage of screened publications
                              that state that they shared their analysis code.
                              Like openly shared data, Open Code makes research more transparent,
                              as research findings can be reproduced.
+                             - Click for methods details.") |>
+  paste(collapse = " ")
+
+das_tooltip <- strwrap("The Data or Code Availability Statements metric measures the percentage of screened publications
+                             that included such a statement about data or code availability.
+                             Having a dedicated section for data or code availability increases the findability of these resources.
                              - Click for methods details.") |>
   paste(collapse = " ")
 
@@ -386,6 +409,18 @@ orcid_tooltip <- strwrap("This metric measures how many researchers currently af
                           publications or other types of research output with him/her.
                           Many publishers now request ORCIDs when manuscripts are submitted.
                           - Click for methods details.") |>
+  paste(collapse = " ")
+
+
+orcid_pubs_tooltip <- strwrap("This metric measures the percentage of screened publications
+                             that included ORCIDs. The ORCID makes each researcher uniquely identifiable
+                          despite name variants or name changes and uniquely associates
+                          publications or other types of research output with him/her.
+                          Many publishers now request ORCIDs when manuscripts are submitted.
+                          - Click for methods details.") |>
+  paste(collapse = " ")
+
+authorship_tooltip <- strwrap("This metric measures authorship.") |>
   paste(collapse = " ")
 
 

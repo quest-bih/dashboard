@@ -3,12 +3,93 @@ library(haven)
 library(tidyverse)
 library(vroom)
 library(here)
+library(easyRPubMed)
+library(janitor)
+library(readxl)
 
 #----------------------------------------------------------------------------------------
 # load results
 #----------------------------------------------------------------------------------------
 
-publications <- read_csv("./main/publication_table.csv")
+publications <- read_csv(here("main", "publication_table_old.csv")) |>
+  mutate(doi = tolower(doi))
+publications |>
+  count(year)
+
+
+dupes <- get_dupes(publications, doi)
+
+publications_2022 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2022_230922VN.xlsx")) |>
+  filter(!str_detect(Duplikat, "erscheint|halb") | is.na(Duplikat),
+         `Publication Year` < 2023,
+         is.na(Keine_Charite_Affiliation)) |>
+  transmute(doi = tolower(DOI),
+         pmid = `Pubmed Id`,
+         title = `Article Title`,
+         journal = `Source Title`,
+         year = `Publication Year`,
+         publisher = Publisher,
+         issn = ISSN,
+         e_issn = eISSN,
+         oa_indicator = `Open Access Designations`,
+         oa_status = `OA-Status`) |>
+  select(all_of(names(publications)))
+
+dupes <- get_dupes(publications_2022, doi)
+
+publications |>
+  count(year)
+
+only_new_dois <- publications_2022 |>
+  filter(!doi %in% publications$doi |
+        str_detect(doi, "keine"))
+
+
+missing_dates <- publications_2022 |>
+  filter(is.na(year), !doi %in% publications$doi)
+
+publications <- publications |>
+  rows_append(only_new_dois) |>
+  # filter(str_detect(doi, "10"), doi %in% publications_2022$doi) |>
+  rows_upsert(publications_2022 |>
+                filter(str_detect(doi, "10")) |>
+                select(doi, oa_status), by = "doi")
+
+dupes <- get_dupes(publications, doi)
+
+count(publications, year)
+
+# missing_dates <- publications_2022 |>
+#   filter(is.na(year))
+#
+# missing_dates$DOI
+#
+# with_progress({
+#   metadata <- get_metadata(missing_dates, DOI, chunksize = 50, api_key = Sys.getenv("NCBI_KEY"))
+# })
+#
+# month(1, label = TRUE, abbr = TRUE) |> toupper()
+# pubmed_pubs <- metadata |>
+#   list_rbind() |>
+#   mutate(`Publication Date` = paste(month(as.numeric(month), label = TRUE, abbr = TRUE) |> toupper(), day))
+
+# pubdates <- pubmed_pubs |>
+#   select(doi, year) |>
+#   filter(doi %in% missing_dates$doi)
+
+pubdates <- missing_dates |>
+  mutate(year = 2022) |>
+  select(doi, year)
+#
+
+publications <- publications |>
+  rows_upsert(pubdates, by = "doi")
+
+write_excel_csv2(publications, here("main", "publications_table.csv"))
+
+
+publications <- read_csv2(here("main", "publications_table.csv"))
+
 
 #results files
 results_folder <- "results/"
@@ -21,9 +102,9 @@ results_files <- paste0(results_folder, results_files)
 # open_data_results <- vroom("./results/Open_Data_manual_check_results.csv")
 # open_data_manual_detection <- vroom("./results/Open_Data_manual_detections.csv")
 # open_data_manual_detection <- vroom("./results/Open_Code_manual_detections.csv")
-
+# include das_cas here!!!!!!!!!!!
 # open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
-open_data_results <- vroom("./results/Open_Data_manual_check_results2.csv") |>  # temporary until Anastasiia completes manual screening
+open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv")) |>  # temporary until Anastasiia completes manual screening
   mutate(open_code_category_manual = case_when(
     str_detect(open_code_category_manual, "github") ~ "github",
     str_detect(open_code_category_manual, "supplement") ~ "supplement",
@@ -43,35 +124,49 @@ open_data_results <- vroom("./results/Open_Data_manual_check_results2.csv") |>  
 
   )
 
+
+open_data_22 <- read_csv(here("results", "Open_Data.csv")) |>
+  mutate(doi = str_replace_all(article, "\\+", "\\/") |>
+           str_remove(".txt") |>
+           tolower()) |>
+  select(doi, everything(), -article)
+
+open_data_results <- open_data_results |>
+  mutate(is_reuse = NA,
+         das = NA_character_,
+         cas = NA_character_) |>
+  rows_upsert(open_data_22, by = "doi")
+
+
 #### supplements analysis
 
-open_data_supplements <- vroom("./results/Open_Data_manual_check_results2.csv") |>
-  filter(open_data_category_manual == "supplement") |>
-  mutate(restrictions = case_when(
-    str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
-    str_detect(data_access, "restricted") ~ "full",
-    TRUE ~ "no restricted data")
-    )
-
-supplements_by_year <- open_data_supplements |>
-  left_join(publications, by = "doi") |>
-  mutate(year = replace_na(year, 2021))
-
-supplements_by_year |>
-  count(year)
-
-supplements_2020 <- open_data_supplements |>
-  left_join(publications, by = "doi") |>
-  filter(year == 2020)
-
-supplements_by_year |>
-  write_excel_csv2("T:/Dokumente/supplements_by_year.csv")
-
-anas_list <- vroom("T:/Dokumente/joint_data_cleaned_updated.csv") |>
-  mutate(doi = tolower(doi))
-
-supplements_by_year |>
-  semi_join(anas_list, by = "doi")
+# open_data_supplements <- vroom(here("results", "Open_Data_manual_check_results2.csv")) |>
+#   filter(open_data_category_manual == "supplement") |>
+#   mutate(restrictions = case_when(
+#     str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
+#     str_detect(data_access, "restricted") ~ "full",
+#     TRUE ~ "no restricted data")
+#     )
+#
+# supplements_by_year <- open_data_supplements |>
+#   left_join(publications, by = "doi") |>
+#   mutate(year = replace_na(year, 2021))
+#
+# supplements_by_year |>
+#   count(year)
+#
+# supplements_2020 <- open_data_supplements |>
+#   left_join(publications, by = "doi") |>
+#   filter(year == 2020)
+#
+# supplements_by_year |>
+#   write_excel_csv2("T:/Dokumente/supplements_by_year.csv")
+#
+# anas_list <- vroom("T:/Dokumente/joint_data_cleaned_updated.csv") |>
+#   mutate(doi = tolower(doi))
+#
+# supplements_by_year |>
+#   semi_join(anas_list, by = "doi")
 
 
 ####
@@ -84,10 +179,22 @@ supplements_by_year |>
 open_data_results |>
   count(open_data_manual_check, open_data_category_manual)
 
+
+#ContriBOT results
+contribot_results <- read_csv(here("results", "ContriBOT.csv"))
+orcid_screening_results <- read_csv(here("results", "orcids_extracted.csv"))
+
+
 #Barzooka results
-barzooka_results <- read_csv("./results/Barzooka.csv")  |>
+barzooka_old <- read_csv(here("results", "Barzooka_old.csv"))  |>
   rename(doi = paper_id) |>
-  select(doi, bar, pie, bardot, box, dot, hist, violin)  |>
+  select(doi, bar, pie, bardot, box, dot, hist, violin)
+barzooka_results <- read_csv(here("results", "Barzooka.csv"))  |>
+  rename(doi = paper_id) |>
+  select(doi, bar, pie, bardot, box, dot, hist, violin)
+
+barzooka_results <- barzooka_old |>
+  bind_rows(barzooka_results) |>
   distinct(doi, .keep_all = TRUE)
 
 #----------------------------------------------------------------------------------------
@@ -101,14 +208,27 @@ assert_that(length(barzooka_results$doi) == length(unique(barzooka_results$doi))
 
 dashboard_metrics <- publications |>
   left_join(open_data_results, by = "doi") |>
+  left_join(contribot_results, by = "doi") |>
+  left_join(orcid_screening_results, by = "doi") |>
+  rename(OA_color = oa_status) |>
+  mutate(has_any_orcid = has_orcid | !is.na(orcids)) |>
   left_join(barzooka_results, by = "doi") |>
-  mutate(pdf_downloaded = !is.na(bar)) |>
-  rename(OA_color = oa_status)
+  mutate(pdf_downloaded = !is.na(bar))
+
+dashboard_metrics |>
+  count(has_any_orcid, has_orcid)
+
+orcid_screening_results |>
+  count(is.na(orcids))
+
 
 per_year <- dashboard_metrics |>
   count(year, open_data_category_manual) |>
   group_by(year) |>
   mutate(perc = n / sum(n) * 100)
+
+no_orcid_hyperlinks <- dashboard_metrics |>
+  filter(has_orcid, is.na(orcids))
 
 # miss_year <- dashboard_metrics |>
 #   filter(is.na(year))
@@ -145,11 +265,37 @@ shiny_table <- dashboard_metrics |>
          is_open_data, open_data_manual_check, open_data_category_manual,
          is_open_code, open_code_manual_check, open_code_category_manual,
          open_data_statements, open_code_statements,
+         das, cas,
          restrictions,
+         has_contrib, contrib_statement,
+         has_orcid, orcid_statement,
+         orcids, has_any_orcid,
          bar, pie, bardot, box, dot, hist, violin)
 
-write_csv(shiny_table, "shiny_app/data/dashboard_metrics.csv")
+write_csv(shiny_table, here("shiny_app", "data", "dashboard_metrics.csv"))
 
+# dashboard_metrics |>
+#   count(year, is.na(is_open_data))
+#
+# dashboard_metrics |>
+#   count(year, is.na(has_contrib))
+#
+# year_21 <- wrong_years |>
+#   filter(year == 2021)
+# year_22 <- dashboard_metrics |>
+#   filter(year == 2022)
+#
+# year_22 |>
+#   count(is.na(has_contrib))
+#
+# nas_22 <- year_22 |>
+#   filter(is.na(has_contrib))
+#
+# wrong_years <- dashboard_metrics |>
+#   filter(year != 2022,
+#          !is.na(has_contrib))
+
+# dashboard_metrics <- read_csv(here("shiny_app", "data", "dashboard_metrics.csv"))
 #----------------------------------------------------------------------------------------
 # now for the metrics that are already aggregated by year
 #----------------------------------------------------------------------------------------
