@@ -14,13 +14,13 @@ print("Open Data detection with oddpub...")
 # pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
 # txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
 pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
+# pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
 txt_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_to_text/"
-txt_folder <- "C:/Users/Vladi/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/"
+# txt_folder <- "C:/Users/Vladi/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/"
 
 print("Convert pdfs to text...")
 conversion_success <- oddpub::pdf_convert(pdf_folder, txt_folder)
-
-res <- tibble(file = list.files(pdf_folder), converted = conversion_success)
+list.files(pdf_folder)[!conversion_success]
 
 print("Load txt files...")
 
@@ -43,6 +43,7 @@ if (file.exists("./results/Open_Data.csv"))
   print("Run oddpub...")
   oddpub_results <- oddpub::open_data_search(pdf_text_corpus)
   write_csv(oddpub_results, here("results", "Open_Data.csv"))
+
 }
 
 print("completed!")
@@ -248,4 +249,32 @@ assert_that(OD_manual_num == OD_manual_categories_num)
 OC_manual_num <- sum(manual_check_results$open_code_manual_check, na.rm = TRUE)
 OC_manual_categories_num <- sum(!is.na(manual_check_results$open_code_category_manual))
 assert_that(OC_manual_num == OC_manual_categories_num)
+
+# pdfs <- list.files(pdf_folder) |>
+#   str_remove(".pdf")
+# txts <- list.files(txt_folder) |>
+#   str_remove(".txt")
+#
+# setdiff(pdfs, txts)
+#
+# setdiff(txts, pdfs)
+#
+# PDFs <- tibble(files = pdfs)
+
+od2024 <- oddpub_results |>
+  # filter(is_open_data == TRUE) |>
+  mutate(doi = article |>
+           str_remove(".pdf") |>
+           str_replace_all("\\+", "/"))
+
+write_csv(od2024, here("results", "Open_Data_240119.csv"))
+
+ff <- list.files(pdf_folder)[!conversion_success]
+source_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
+files_to_copy <- paste0(source_folder, ff)
+
+dest_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
+
+file.copy(from = files_to_copy, to = dest_folder)
+
 

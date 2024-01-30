@@ -303,12 +303,12 @@ plot_DAS_perc <- function(plot_data, color_palette) {
 plot_DAS_total <- function(plot_data, color_palette)
 {
   plot_ly(plot_data, x = ~year, y = ~has_das_or_cas,
-          name = "Data or Code Availability Statement", type = "bar",
+          name = "DAS or CAS", type = "bar",
           marker = list(color = color_palette[3],
                         line = list(color = "rgb(0,0,0)",
                                     width = 1.5))) |>
     add_trace(y = ~no_das_nor_cas,
-              name = "No Data or Code Availability Ststement",
+              name = "No DAS or CAS",
               marker = list(color = color_palette[5],
                             line = list(color = "rgb(0,0,0)",
                                         width = 1.5))) |>

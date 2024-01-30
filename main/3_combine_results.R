@@ -85,10 +85,10 @@ pubdates <- missing_dates |>
 publications <- publications |>
   rows_upsert(pubdates, by = "doi")
 
-write_excel_csv2(publications, here("main", "publications_table.csv"))
+write_excel_csv2(publications, here("main", "publication_table.csv"))
 
 
-publications <- read_csv2(here("main", "publications_table.csv"))
+publications <- read_csv2(here("main", "publication_table.csv"))
 
 
 #results files
@@ -186,15 +186,19 @@ orcid_screening_results <- read_csv(here("results", "orcids_extracted.csv"))
 
 
 #Barzooka results
-barzooka_old <- read_csv(here("results", "Barzooka_old.csv"))  |>
-  rename(doi = paper_id) |>
-  select(doi, bar, pie, bardot, box, dot, hist, violin)
-barzooka_results <- read_csv(here("results", "Barzooka.csv"))  |>
-  rename(doi = paper_id) |>
-  select(doi, bar, pie, bardot, box, dot, hist, violin)
+barzooka_old <- read_csv(here("results", "Barzooka_old.csv"))
+  # rename(doi = paper_id) |>
+  # select(doi, bar, pie, bardot, box, dot, hist, violin)
+barzooka_results <- read_csv(here("results", "Barzooka.csv"))
+  # rename(doi = paper_id) |>
+  # select(doi, bar, pie, bardot, box, dot, hist, violin)
+barzooka_ger <- read_csv(here("results", "Barzooka2.csv"))
 
 barzooka_results <- barzooka_old |>
   bind_rows(barzooka_results) |>
+  bind_rows(barzooka_ger) |>
+  rename(doi = paper_id) |>
+  select(doi, bar, pie, bardot, box, dot, hist, violin) |>
   distinct(doi, .keep_all = TRUE)
 
 #----------------------------------------------------------------------------------------

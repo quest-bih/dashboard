@@ -385,10 +385,10 @@ show_dashboard <- function(...) {
     output$DAS <-
       renderUI({
         box_value <- get_current_DAS(dashboard_metrics)
-        box_text <- paste0("of screened publications included a Data or Code Availability Statement in ",
+        box_text <- paste0("of screened publications included a Data (DAS) or Code Availability Statement (CAS) in ",
                            dashboard_metrics$year |>  max())
         alignment <- "left"
-        metricBoxOutput(title = "Any Data or Code Availability Statement",
+        metricBoxOutput(title = "Any Data (DAS) or Code Availability Statement (CAS)",
                         value = box_value,
                         value_text = box_text,
                         plot = ODOutput("plot_DAS", height = "300px"),

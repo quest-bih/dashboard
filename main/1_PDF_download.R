@@ -48,7 +48,7 @@ dois <- sample(dois_sub$doi)
 
 #download pdfs (only if not yet downloaded)
 
-pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(dois, email, pdf_folder, sleep = 5,
+pdf_retrieval_results <- pdfRetrieve::pdf_retrieve(dois, email, pdf_folder, sleep = 1,
                                                    overwrite_files = FALSE)
 
 
