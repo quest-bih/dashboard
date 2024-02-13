@@ -88,6 +88,7 @@ fair_dataset_datatable <- fair_dataset |>
 # metrics_show_year <- dashboard_metrics_aggregate |>  filter(year == show_year)
 
 # oddpub_data <- dashboard_metrics |>
+# filter(year == 2022) |>
 #   make_oddpub_plot_data()
 
 # barzooka_data <- dashboard_metrics |>

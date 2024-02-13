@@ -277,4 +277,15 @@ dest_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
 
 file.copy(from = files_to_copy, to = dest_folder)
 
+text_files <- list.files("C:/Users/nachevv/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/") |>
+  str_remove(".txt")
+
+length(text_files)
+
+pdf_files <- list.files(pdf_folder) |>
+  str_remove(".pdf")
+
+setdiff(text_files, pdf_files)
+
+
 

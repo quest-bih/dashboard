@@ -16,28 +16,35 @@ publications <- read_csv(here("main", "publication_table_old.csv")) |>
 publications |>
   count(year)
 
-
 dupes <- get_dupes(publications, doi)
 
+
 publications_2022 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2022_230922VN.xlsx")) |>
-  filter(!str_detect(Duplikat, "erscheint|halb") | is.na(Duplikat),
-         `Publication Year` < 2023,
+  filter(!str_detect(Duplikat, "erscheint") | is.na(Duplikat),
          is.na(Keine_Charite_Affiliation)) |>
   transmute(doi = tolower(DOI),
          pmid = `Pubmed Id`,
          title = `Article Title`,
          journal = `Source Title`,
-         year = `Publication Year`,
+         year = case_when(
+           str_detect(`Early Access Date`, " ") ~ year(my(`Early Access Date`)),
+           !str_detect(`Early Access Date`, " ") ~ as.numeric(`Early Access Date`) |>
+             as.Date(origin = "1899-12-30") |>
+             year(),
+           str_detect(Duplikat, "halb") ~ year(`Date of Export`) - 1,
+           .default = `Publication Year`
+         ),
          publisher = Publisher,
          issn = ISSN,
          e_issn = eISSN,
          oa_indicator = `Open Access Designations`,
          oa_status = `OA-Status`) |>
-  select(all_of(names(publications)))
+  select(all_of(names(publications))) |>
+  filter(year < 2023)
 
 dupes <- get_dupes(publications_2022, doi)
 
-publications |>
+publications_2022 |>
   count(year)
 
 only_new_dois <- publications_2022 |>
@@ -45,8 +52,6 @@ only_new_dois <- publications_2022 |>
         str_detect(doi, "keine"))
 
 
-missing_dates <- publications_2022 |>
-  filter(is.na(year), !doi %in% publications$doi)
 
 publications <- publications |>
   rows_append(only_new_dois) |>
@@ -55,46 +60,22 @@ publications <- publications |>
                 filter(str_detect(doi, "10")) |>
                 select(doi, oa_status), by = "doi")
 
+
 dupes <- get_dupes(publications, doi)
 
 count(publications, year)
 
-# missing_dates <- publications_2022 |>
-#   filter(is.na(year))
-#
-# missing_dates$DOI
-#
-# with_progress({
-#   metadata <- get_metadata(missing_dates, DOI, chunksize = 50, api_key = Sys.getenv("NCBI_KEY"))
-# })
-#
-# month(1, label = TRUE, abbr = TRUE) |> toupper()
-# pubmed_pubs <- metadata |>
-#   list_rbind() |>
-#   mutate(`Publication Date` = paste(month(as.numeric(month), label = TRUE, abbr = TRUE) |> toupper(), day))
-
-# pubdates <- pubmed_pubs |>
-#   select(doi, year) |>
-#   filter(doi %in% missing_dates$doi)
-
-pubdates <- missing_dates |>
-  mutate(year = 2022) |>
-  select(doi, year)
-#
-
-publications <- publications |>
-  rows_upsert(pubdates, by = "doi")
 
 write_excel_csv2(publications, here("main", "publication_table.csv"))
 
 
 publications <- read_csv2(here("main", "publication_table.csv"))
 
+publications |> pull(doi)
 
 #results files
-results_folder <- "results/"
-results_files <- list.files(results_folder)
-results_files <- paste0(results_folder, results_files)
+results_files <- list.files(here("results"), full.names = TRUE)
+# results_files <- paste0(results_folder, results_files)
 
 
 #manually checked Open Data results + additional cases that were not detected by algorithm
@@ -104,25 +85,6 @@ results_files <- paste0(results_folder, results_files)
 # open_data_manual_detection <- vroom("./results/Open_Code_manual_detections.csv")
 # include das_cas here!!!!!!!!!!!
 # open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
-open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv")) |>  # temporary until Anastasiia completes manual screening
-  mutate(open_code_category_manual = case_when(
-    str_detect(open_code_category_manual, "github") ~ "github",
-    str_detect(open_code_category_manual, "supplement") ~ "supplement",
-    open_code_manual_check == TRUE ~ "other repository/website"
-  ),
-  open_code_manual_check = case_when(
-    str_detect(open_code_category_manual, "supplement") ~ FALSE,
-    TRUE ~ open_code_manual_check),
-  open_data_manual_check = case_when(
-    str_detect(open_data_category_manual, "supplement") ~ FALSE,
-    TRUE ~ open_data_manual_check),
-  restrictions = case_when(
-    str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
-    str_detect(data_access, "restricted") ~ "full",
-    TRUE ~ "no restricted data"
-  )
-
-  )
 
 
 open_data_22 <- read_csv(here("results", "Open_Data.csv")) |>
@@ -131,12 +93,56 @@ open_data_22 <- read_csv(here("results", "Open_Data.csv")) |>
            tolower()) |>
   select(doi, everything(), -article)
 
-open_data_results <- open_data_results |>
+manual_code_results <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
+  select(doi, contains("code")) |>
+  mutate(is_open_code = as.logical(is_open_code),
+         open_code_manual_check = as.logical(open_code_manual_check))
+
+open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv")) |>  # temporary until Anastasiia completes manual screening
   mutate(is_reuse = NA,
          das = NA_character_,
          cas = NA_character_) |>
-  rows_upsert(open_data_22, by = "doi")
+  rows_upsert(open_data_22, by = "doi") |>
+  rows_upsert(manual_code_results, by = "doi") |>
+  mutate(open_code_category_manual = case_when(
+    str_detect(open_code_category_manual, "github") ~ "github",
+    str_detect(open_code_category_manual, "supplement") ~ "supplement",
+    open_code_manual_check == TRUE ~ "other repository/website"
+  ),
+  open_code_manual_check = case_when(
+    str_detect(open_code_category_manual, "supplement") ~ FALSE,
+    .default = open_code_manual_check),
+  open_data_manual_check = case_when(
+    str_detect(open_data_category_manual, "supplement") ~ FALSE,
+    .default = open_data_manual_check),
+  restrictions = case_when(
+    str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
+    str_detect(data_access, "restricted") ~ "full",
+    .default = "no restricted data"
+  )
+  )
 
+#
+# open_data_results <- open_data_results |>
+#   mutate(is_reuse = NA,
+#          das = NA_character_,
+#          cas = NA_character_) |>
+#   rows_upsert(open_data_22, by = "doi")
+
+# manual_code_results <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
+#   select(doi, contains("code")) |>
+  # mutate(is_open_code = as.logical(is_open_code),
+  #        open_code_category_manual = case_when(
+  #          str_detect(open_code_category_manual, "github") ~ "github",
+  #          str_detect(open_code_category_manual, "supplement") ~ "supplement",
+  #          open_code_manual_check == TRUE ~ "other repository/website"
+  #        ),
+  #        open_code_manual_check = case_when(
+  #   str_detect(open_code_category_manual, "supplement") ~ FALSE,
+  #   .default = as.logical(open_code_manual_check)))
+
+# open_data_results <- open_data_results |>
+#   rows_upsert(manual_code_results, by = "doi")
 
 #### supplements analysis
 
@@ -186,17 +192,10 @@ orcid_screening_results <- read_csv(here("results", "orcids_extracted.csv"))
 
 
 #Barzooka results
-barzooka_old <- read_csv(here("results", "Barzooka_old.csv"))
-  # rename(doi = paper_id) |>
-  # select(doi, bar, pie, bardot, box, dot, hist, violin)
 barzooka_results <- read_csv(here("results", "Barzooka.csv"))
-  # rename(doi = paper_id) |>
-  # select(doi, bar, pie, bardot, box, dot, hist, violin)
-barzooka_ger <- read_csv(here("results", "Barzooka2.csv"))
 
-barzooka_results <- barzooka_old |>
-  bind_rows(barzooka_results) |>
-  bind_rows(barzooka_ger) |>
+
+barzooka_results <- barzooka_results |>
   rename(doi = paper_id) |>
   select(doi, bar, pie, bardot, box, dot, hist, violin) |>
   distinct(doi, .keep_all = TRUE)
@@ -230,6 +229,23 @@ per_year <- dashboard_metrics |>
   count(year, open_data_category_manual) |>
   group_by(year) |>
   mutate(perc = n / sum(n) * 100)
+
+per_year <- dashboard_metrics |>
+  count(year, open_code_category_manual) |>
+  group_by(year) |>
+  mutate(perc = n / sum(n) * 100)
+
+
+oc_dois <- manual_code_results |>
+  filter(open_code_manual_check == TRUE,
+         open_code_category_manual != "supplement") |>
+  pull(doi)
+
+dashboard_metrics |>
+  filter(doi %in% oc_dois) |>
+  count(year, open_code_manual_check)
+
+# missing_dois <- setdiff(oc_dois, dashboard_metrics$doi)
 
 no_orcid_hyperlinks <- dashboard_metrics |>
   filter(has_orcid, is.na(orcids))

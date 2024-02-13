@@ -77,3 +77,17 @@ missing_barzooka_dois_22 |>
   filter(not_en == FALSE) |>
   pull(doi) |>
   copy_PDFs_from_doi(from_folder, dest_folder)
+
+# barzooka_old <- read_csv(here("results", "Barzooka_old.csv"))
+# barzooka_results <- read_csv(here("results", "Barzooka.csv"))
+
+# barzooka_ger <- read_csv(here("results", "Barzooka2.csv"))
+
+# barzooka_results <- barzooka_old |>
+#   rows_upsert(barzooka_results, by = "paper_id") |>
+#   rows_upsert(barzooka_ger, by = "paper_id")
+#
+# barzooka_results |>
+#   write_csv(here("results", "Barzooka.csv"))
+
+

@@ -57,20 +57,21 @@ gtoken <- config(token = github_token)
 url <- "https://github.com/ebmdatalab/euctr-tracker-data/commits/master/all_sponsors.json"
 
 history <- read_html(url)
-dates <- history |>
-  html_elements("h2") |>
-  html_text()  |>
-  str_remove_all("Commits on ")
 
-dates <- lubridate::mdy(dates) |>
-  na.omit()
+commits <- history |>
+  html_elements("react-app") |>
+  html_element("script") |>
+  html_text() |>
+  jsonlite::fromJSON()
 
-SHAs <- history |>
-  html_elements("clipboard-copy") |>
-  html_attr("value") |>
-  na.omit()
+charite_trials <- commits$payload$commitGroups$commits |>
+  list_rbind() |>
+  select(retrieval_date = committedDate, SHAs = oid) |>
+  mutate(retrieval_date = as.Date(retrieval_date))
 
-charite_trials <- tibble(retrieval_date = dates, SHAs) |>
+
+
+charite_trials <- charite_trials |>
   mutate(url = paste0("https://github.com/ebmdatalab/euctr-tracker-data/raw/",
                       SHAs,
                       "/all_sponsors.json"))
@@ -97,9 +98,9 @@ for (url in charite_trials$url) {
 }
 
 scraped_trials <- scraped_trials |>
-  mutate(retrieval_date = dates) |>
+  mutate(retrieval_date = charite_trials$retrieval_date) |>
   filter(total_trials > 100,
-         retrieval_date > "2023-05-18") |>
+         retrieval_date > "2023-09-07") |>
   select(retrieval_date, everything())
 
 write_csv(scraped_trials, "./results//EU_trialstracker.csv",
