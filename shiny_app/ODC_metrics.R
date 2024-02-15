@@ -335,30 +335,33 @@ plot_DAS_total <- function(plot_data, color_palette)
 #   filter(is.na(das),
 #          !is.na(cas))
 # has DAS and CAS, DAS only, CAS_only, no DAS nor CAS, not_screened
-dashboard_metrics |>
-  group_by(year) |>
-  summarize(open_data_count = sum(is_open_data, na.rm = TRUE),
-            open_data_neg_count = sum(!is_open_data, na.rm = TRUE),
-            open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
-            open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
-            open_code_neg_count = sum(!is_open_code | !open_code_manual_check, na.rm = TRUE),
-            open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
-            OC_github_count = sum(open_code_category_manual == "github", na.rm = TRUE),
-            OC_other_count = sum(open_code_category_manual == "other repository/website", na.rm = TRUE),
-
-            total = sum(!is.na(is_open_data), na.rm = TRUE),
-            total_code = sum(!is.na(is_open_code), na.rm = TRUE))  |>
+# dashboard_metrics |>
+#   group_by(year) |>
+#   summarize(open_data_count = sum(is_open_data, na.rm = TRUE),
+#             open_data_neg_count = sum(!is_open_data, na.rm = TRUE),
+#             open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
+#             open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
+#             open_code_neg_count = sum(!is_open_code | !open_code_manual_check, na.rm = TRUE),
+#             open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
+#             OC_github_count = sum(open_code_category_manual == "github", na.rm = TRUE),
+#             OC_other_count = sum(open_code_category_manual == "other repository/website", na.rm = TRUE),
+#
+#             total = sum(!is.na(is_open_data), na.rm = TRUE),
+#             total_code = sum(!is.na(is_open_code), na.rm = TRUE))  |>
   # mutate(open_data_perc = round(open_data_count/total * 100, 1),
   #        open_code_perc = round(open_code_count/total_code * 100, 1),
   #        OC_github_perc = round(OC_github_count/total_code * 100, 1),
   #        OC_other_perc = round(OC_other_count/total_code * 100, 1)) |>
-  filter(year == 2022) |>
-  glimpse()
-
-dashboard_metrics |>
-  filter(year == 2022) |>
-  count(is_open_code, open_code_category_manual)
-
+#   filter(year == 2022) |>
+#   glimpse()
+#
+# dashboard_metrics |>
+#   filter(year == 2022) |>
+#   count(is_open_code, open_code_category_manual)
+#
+# nas <- dashboard_metrics |>
+#     filter(year == 2022, is.na(is_open_code))
+# data_table <- dashboard_metrics
 make_oddpub_plot_data <- function(data_table, gr) {
 
   oddpub_plot_data <- data_table |>
@@ -367,7 +370,19 @@ make_oddpub_plot_data <- function(data_table, gr) {
               open_data_neg_count = sum(!is_open_data, na.rm = TRUE),
               open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
 
+                          OD_disciplinary_count = sum(open_data_category_manual == "disciplinary repository", na.rm = TRUE),
+                          OD_general_purpose_count = sum(open_data_category_manual == "general-purpose repository", na.rm = TRUE),
+                          OD_disciplinary_and_general_count = sum(open_data_category_manual == "disciplinary and general-purpose repositories", na.rm = TRUE),
+                          OD_disc_restricted_count = sum(open_data_category_manual == "disciplinary repository" &
+                                                           restrictions == "full", na.rm = TRUE),
+                          OD_gen_restricted_count = sum(open_data_category_manual == "general-purpose repository" &
+                                                          restrictions == "full", na.rm = TRUE),
+                          OD_disc_and_gen_restricted_count = sum(open_data_category_manual == "disciplinary and general-purpose repositories" &
+                                                                   restrictions == "full", na.rm = TRUE),
+
+
               open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
+              open_code_count = sum(is_open_code, na.rm = TRUE),
               open_code_neg_count = sum(!is_open_code | !open_code_manual_check, na.rm = TRUE),
               open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
               OC_github_count = sum(open_code_category_manual == "github", na.rm = TRUE),
@@ -376,9 +391,24 @@ make_oddpub_plot_data <- function(data_table, gr) {
               total = sum(!is.na(is_open_data), na.rm = TRUE),
               total_code = sum(!is.na(is_open_code), na.rm = TRUE))  |>
     mutate(open_data_perc = round(open_data_count/total * 100, 1),
-           open_code_perc = round(open_code_count/total_code * 100, 1),
+           open_code_perc = round(open_code_manual_count/total_code * 100, 1),
            OC_github_perc = round(OC_github_count/total_code * 100, 1),
-           OC_other_perc = round(OC_other_count/total_code * 100, 1))
+           OC_other_perc = round(OC_other_count/total_code * 100, 1),
+                     OD_disciplinary_perc = round(OD_disciplinary_count/total * 100, 1),
+                     OD_general_purpose_perc = round(OD_general_purpose_count/total * 100, 1),
+                     OD_disciplinary_and_general_perc = round(OD_disciplinary_and_general_count/total * 100, 1),
+                     OD_disc_restricted_perc = round(OD_disc_restricted_count/total * 100, 1),
+                     OD_gen_restricted_perc = round(OD_gen_restricted_count/total * 100, 1),
+                     OD_disc_and_gen_restricted_perc = round(OD_disc_and_gen_restricted_count/total * 100, 1),
+                     OD_disc_nonrestricted_perc = round((OD_disciplinary_count - OD_disc_restricted_count)/total * 100, 1),
+                     OD_gen_nonrestricted_perc = round((OD_general_purpose_count - OD_gen_restricted_count)/total * 100, 1),
+                     OD_disc_and_gen_nonrestricted_perc = round((OD_disciplinary_and_general_count - OD_disc_and_gen_restricted_count)/total * 100, 1),OD_gen_restricted_perc = 0,
+           # OD_disc_restricted_perc = 0,
+           # OD_disc_and_gen_restricted_perc = 0,
+           # OD_disc_nonrestricted_perc = 0,
+           # OD_gen_nonrestricted_perc = 0,
+           # OD_disc_and_gen_nonrestricted_perc = 0
+           )
 
 
   # TODO: add restriction info to the table when validated data is ready

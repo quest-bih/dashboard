@@ -51,8 +51,6 @@ only_new_dois <- publications_2022 |>
   filter(!doi %in% publications$doi |
         str_detect(doi, "keine"))
 
-
-
 publications <- publications |>
   rows_append(only_new_dois) |>
   # filter(str_detect(doi, "10"), doi %in% publications_2022$doi) |>
@@ -60,21 +58,21 @@ publications <- publications |>
                 filter(str_detect(doi, "10")) |>
                 select(doi, oa_status), by = "doi")
 
-
-dupes <- get_dupes(publications, doi)
-
 count(publications, year)
 
+corresponding_authorship <- read_csv("T:/Dokumente/publications_CA.csv")
 
-write_excel_csv2(publications, here("main", "publication_table.csv"))
+publications <- publications |>
+  left_join(corresponding_authorship, by = "doi")
 
 
-publications <- read_csv2(here("main", "publication_table.csv"))
+write_excel_csv(publications, here("main", "publication_table.csv"))
 
-publications |> pull(doi)
+
+publications <- read_csv(here("main", "publication_table.csv"))
 
 #results files
-results_files <- list.files(here("results"), full.names = TRUE)
+# results_files <- list.files(here("results"), full.names = TRUE)
 # results_files <- paste0(results_folder, results_files)
 
 
@@ -97,6 +95,13 @@ manual_code_results <- read_xlsx(here("results", "oddpub_code_results_manual.xls
   select(doi, contains("code")) |>
   mutate(is_open_code = as.logical(is_open_code),
          open_code_manual_check = as.logical(open_code_manual_check))
+
+dupes <- open_data_results |>
+  filter(doi %in% manual_code_results$doi)
+
+publications |>
+  filter(doi %in% dupes$doi,
+         year == 2022)
 
 open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv")) |>  # temporary until Anastasiia completes manual screening
   mutate(is_reuse = NA,
@@ -122,6 +127,12 @@ open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv"
   )
   )
 
+old_das_cas <- vroom(here("results", "Open_Data_retroactive.csv")) |>
+  select(doi, das, cas)
+
+open_data_results <- open_data_results |>
+  rows_upsert(old_das_cas, by = "doi")
+
 #
 # open_data_results <- open_data_results |>
 #   mutate(is_reuse = NA,
@@ -144,38 +155,6 @@ open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv"
 # open_data_results <- open_data_results |>
 #   rows_upsert(manual_code_results, by = "doi")
 
-#### supplements analysis
-
-# open_data_supplements <- vroom(here("results", "Open_Data_manual_check_results2.csv")) |>
-#   filter(open_data_category_manual == "supplement") |>
-#   mutate(restrictions = case_when(
-#     str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
-#     str_detect(data_access, "restricted") ~ "full",
-#     TRUE ~ "no restricted data")
-#     )
-#
-# supplements_by_year <- open_data_supplements |>
-#   left_join(publications, by = "doi") |>
-#   mutate(year = replace_na(year, 2021))
-#
-# supplements_by_year |>
-#   count(year)
-#
-# supplements_2020 <- open_data_supplements |>
-#   left_join(publications, by = "doi") |>
-#   filter(year == 2020)
-#
-# supplements_by_year |>
-#   write_excel_csv2("T:/Dokumente/supplements_by_year.csv")
-#
-# anas_list <- vroom("T:/Dokumente/joint_data_cleaned_updated.csv") |>
-#   mutate(doi = tolower(doi))
-#
-# supplements_by_year |>
-#   semi_join(anas_list, by = "doi")
-
-
-####
 
 # open_data_results |>
 #   filter(open_data_manual_check) |>
@@ -185,20 +164,36 @@ open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv"
 open_data_results |>
   count(open_data_manual_check, open_data_category_manual)
 
+# old_das <- read_csv("")
+
 
 #ContriBOT results
 contribot_results <- read_csv(here("results", "ContriBOT.csv"))
-orcid_screening_results <- read_csv(here("results", "orcids_extracted.csv"))
+contribot_results_retro <- read_csv(here("results", "ContriBOT_retroactive.csv"))
+contribot_results <- contribot_results_retro |>
+  rows_upsert(contribot_results, by = "doi")
 
+orcid_screening_results <- read_csv(here("results", "orcids_extracted.csv"))
+orcid_screening_results_retro <- read_csv(here("results", "orcids_retroactive.csv")) |>
+  mutate(doi = str_extract(file, "10\\..*") |>
+           str_remove(".pdf") |>
+           str_replace_all("\\+", "/")) |>
+  select(-file)
+orcid_screening_results <- orcid_screening_results_retro |>
+  rows_upsert(orcid_screening_results, by = "doi")
 
 #Barzooka results
 barzooka_results <- read_csv(here("results", "Barzooka.csv"))
-
 
 barzooka_results <- barzooka_results |>
   rename(doi = paper_id) |>
   select(doi, bar, pie, bardot, box, dot, hist, violin) |>
   distinct(doi, .keep_all = TRUE)
+
+missing_dois <- setdiff(contribot_results$doi, publications$doi)
+
+publications |>
+  filter(doi %in% missing_dois)
 
 #----------------------------------------------------------------------------------------
 # combine results
@@ -213,12 +208,13 @@ dashboard_metrics <- publications |>
   left_join(open_data_results, by = "doi") |>
   left_join(contribot_results, by = "doi") |>
   left_join(orcid_screening_results, by = "doi") |>
-  rename(OA_color = oa_status) |>
+  rename(oa_color = oa_status) |>
   mutate(has_any_orcid = has_orcid | !is.na(orcids)) |>
   left_join(barzooka_results, by = "doi") |>
-  mutate(pdf_downloaded = !is.na(bar))
+  mutate(pdf_downloaded = !is.na(bar) | !is.na(has_contrib))
 
 dashboard_metrics |>
+  filter(pdf_downloaded == TRUE) |>
   count(has_any_orcid, has_orcid)
 
 orcid_screening_results |>
@@ -281,7 +277,8 @@ assert_that(dim(check_tbl)[1] == 0)
 shiny_table <- dashboard_metrics |>
   select(doi, pmid, title, journal, year,
          publisher, issn, e_issn,
-         pdf_downloaded, OA_color,
+         corresponding_author_charite,
+         pdf_downloaded, oa_color,
          is_open_data, open_data_manual_check, open_data_category_manual,
          is_open_code, open_code_manual_check, open_code_category_manual,
          open_data_statements, open_code_statements,

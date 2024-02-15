@@ -75,10 +75,10 @@ get_total_OA <- function(data_table) {
 make_OA_plot_data_total <- function(data_table)
 {
   OA_plot_data <- data_table |>
-    group_by(year, OA_color) |>
+    group_by(year, oa_color) |>
     summarise(count = n()) |>
     calculate_OA_percentages(c("gold", "green", "hybrid", "bronze", "closed")) |>
-    rename(category = OA_color)
+    rename(category = oa_color)
 
   return(OA_plot_data)
 }
@@ -88,11 +88,11 @@ make_OA_plot_data <- function(data_table)
 {
   OA_plot_data <- data_table |>
     #do not filter the missing OA publications to be in line with library numbers
-    #filter(!is.na(OA_color)) |>
-    group_by(year, OA_color) |>
+    #filter(!is.na(oa_color)) |>
+    group_by(year, oa_color) |>
     summarise(count = n()) |>
     calculate_OA_percentages(c("gold", "green", "hybrid", "bronze")) |>
-    rename(category = OA_color)
+    rename(category = oa_color)
 
   return(OA_plot_data)
 }
@@ -107,8 +107,8 @@ calculate_OA_percentages <- function(OA_data, categories)
 
   #number of publ in each OA category
   publ_OA_colors <- OA_data |>
-    filter(OA_color %in% categories) |>
-    group_by(OA_color, year) |>
+    filter(oa_color %in% categories) |>
+    group_by(oa_color, year) |>
     summarise(OA = sum(count))
 
   #OA percentages
@@ -137,11 +137,11 @@ plot_OA_perc <- function(plot_data, color_palette)
               marker = list(color = color_palette[7],
                             line = list(color = "rgb(0,0,0)",
                                         width = 1.5))) |>
-    add_trace(y = ~bronze, name = "Bronze",
-              marker = list(color = color_palette[10],
-                            line = list(color = "rgb(0,0,0)",
-                                        width = 1.5)),
-              visible = "legendonly") |>
+    # add_trace(y = ~bronze, name = "Bronze",
+    #           marker = list(color = color_palette[10],
+    #                         line = list(color = "rgb(0,0,0)",
+    #                                     width = 1.5)),
+    #           visible = "legendonly") |>
     layout(barmode = "stack",
            yaxis = list(title = "<b>Open Access</b>",
                         range = c(0, 100),

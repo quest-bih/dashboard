@@ -62,7 +62,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         delay, such that the OA percentage for a given year typically rises
                         retrospectively. Thus the point in time of data retrieval is
                         important for understanding the OA percentage. The current OA status
-                        data were retrieved in September 2022.'),
+                        data were retrieved in June 2023.'),
 
                                   "Unpaywall only stores information for publications that
                         have a DOI assigned by Crossref. Articles without a Crossref DOI
@@ -262,14 +262,65 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         which could then not be found. Also no historic data are available
                         for this metric."),
          methods_panel("ORCIDs in publications",
-                       "This is a general description of what was measured",
-                       "This is how the methods for the authorship statements detection
-                       looked like.",
+                       "This metric measures the percentage of screened publications that had
+                              authors with Charité affiliations and included ORCIDs in the article.
+                              The ORCID makes each researcher uniquely identifiable
+                              despite name variants or name changes and uniquely associates
+                              publications or other types of research output with him/her.
+                              Many publishers now request ORCIDs when manuscripts are submitted.",
+                       HTML('The Charité Medical Library first created a list
+                            of journal article publications by Charité researchers and manually
+                            extracted the corresponding author affiliations. To identify publications
+                            that include ORCIDs we used the text-mining algorithm ContriBOT
+                            (Code: <a href="https://github.com/quest-bih/ContriBOT">
+                            https://github.com/quest-bih/ContriBOT</a>),
+                            which was developed by QUEST. ContriBOT searches the publication full-text
+                            for sections in the manuscript that include statements indicating authorship
+                            criteria or contributions, acknowledgements, and ORCIDs.
+                            A text-mining approach is necessary, as there is not yet a standardized
+                            way of reporting ORCIDs.
+                            To extract the ORCIDs from the Charité publications,
+                            we first downloaded the full-texts of the publications that were
+                            accessible to us using the unpaywall and crossref APIs.
+                            We screened both the PDF version of the downloaded article, as well
+                            as the plain text version, using ContriBOT and
+                            summarized the results for each publication year. This was
+                            necessary, because some ORCIDs are included only as hyperlinks,
+                            while others only as plain text.
+                            We calculated the percentage of articles including any ORCIDs and with
+                            corresponding authors with Charité affiliations relative
+                            to the publications with available full texts , which could indeed
+                            be screened.'),
                        "Some important limitations will be acknowledged here."),
          methods_panel("Authorship Statements",
-                       "This is a general description of what was measured",
-                       "This is how the methods for the authorship statements detection
-                       looked like.",
+                       "This metric measures the percentage of screened publications that
+                       included an authorship statement. Such statements ideally clearly state
+                       which author made which contributions to the manuscript, following the
+                       Contributor Roles Taxonomy.
+                       Many publishers now require submitted manuscripts to include authorship
+                       statements.",
+                       HTML('The Charité Medical Library first created a list
+                            of journal article publications by Charité researchers and manually
+                            extracted the corresponding author affiliations. To identify publications
+                            that include ORCIDs we used the text-mining algorithm ContriBOT
+                            (Code: <a href="https://github.com/quest-bih/ContriBOT">
+                            https://github.com/quest-bih/ContriBOT</a>),
+                            which was developed by QUEST. ContriBOT searches the publication full-text
+                            for sections in the manuscript that include statements indicating authorship
+                            criteria or contributions, acknowledgements, and ORCIDs.
+                            A text-mining approach is necessary, as there is not yet a standardized
+                            way of reporting authorship criteria and the existing
+                            <a href="https://credit.niso.org/">
+                            Contributor Roles Taxonomy</a> is not adopted by all journals.
+                            To assess author contribution statements for the Charité publications,
+                            we first downloaded the full-texts of the publications that were
+                            accessible to us using the unpaywall and crossref APIs.
+                            Then we converted those full-texts from PDF files to plain text files
+                            with ODDPub, screened them with ContriBOT and summarized the results
+                            for each publication year.
+                            We calculated the percentage of articles including
+                            Authorship Statements relative to the publications with available
+                            full texts, which could indeed be screened.'),
                        "Some important limitations will be acknowledged here.")
          ),
 
@@ -362,8 +413,8 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 #------------------------------------------------------------------------
 
 
-open_access_tooltip <- strwrap("The open access metric shows the percentage of Charité original
-                             research publications that are published as open access (OA) articles.
+open_access_tooltip <- strwrap("This metric shows the percentage of Charité original
+                             research publications that were published as open access (OA) articles.
                              Gold OA denotes publication in a pure OA journal.
                              Green OA denotes a freely available repository version. Hybrid OA denotes
                              an OA publication in a journal with offers both a subscription based model
@@ -374,7 +425,7 @@ open_access_tooltip <- strwrap("The open access metric shows the percentage of C
                              - Click for methods details.") |>
   paste(collapse = " ")
 
-open_data_tooltip <- strwrap("The Open Data metric measures the the percentage of screened publications
+open_data_tooltip <- strwrap("This metric measures the the percentage of screened publications
                              that state that they shared their research data.
                              Openly shared data makes research more transparent,
                              as research findings can be reproduced. Additionally, shared datasets
@@ -383,21 +434,22 @@ open_data_tooltip <- strwrap("The Open Data metric measures the the percentage o
                              - Click for methods details.") |>
   paste(collapse = " ")
 
-open_code_tooltip <- strwrap("The Open Code metric measures the percentage of screened publications
+open_code_tooltip <- strwrap("This metric measures the percentage of screened publications
                              that state that they shared their analysis code.
                              Like openly shared data, Open Code makes research more transparent,
                              as research findings can be reproduced.
                              - Click for methods details.") |>
   paste(collapse = " ")
 
-das_tooltip <- strwrap("The Data or Code Availability Statements metric measures the percentage of screened publications
-                             that included such a statement about data or code availability.
-                             Having a dedicated section for data or code availability increases the findability of these resources.
-                             - Click for methods details.") |>
+das_tooltip <- strwrap("This metric measures the percentage of screened publications
+                       that included a statement about data or code availability, regardless of
+                       whether data or code were actually shared.
+                       Having a dedicated section for data or code availability increases the findability of these resources.
+                       - Click for methods details.") |>
   paste(collapse = " ")
 
 preprints_tooltip <- strwrap("This metric measures how many preprints with authors from the Charité
-                             have been published on a range of preprint servers. Preprints allow
+                             were published on a range of preprint servers. Preprints allow
                              rapid and transparent communication of preliminary research results
                              before publication in a peer-reviewed journal.
                              - Click for methods details.") |>
@@ -412,15 +464,22 @@ orcid_tooltip <- strwrap("This metric measures how many researchers currently af
   paste(collapse = " ")
 
 
-orcid_pubs_tooltip <- strwrap("This metric measures the percentage of screened publications
-                             that included ORCIDs. The ORCID makes each researcher uniquely identifiable
-                          despite name variants or name changes and uniquely associates
-                          publications or other types of research output with him/her.
-                          Many publishers now request ORCIDs when manuscripts are submitted.
-                          - Click for methods details.") |>
+orcid_pubs_tooltip <- strwrap("This metric measures the percentage of screened publications that had
+                              authors with Charité affiliations and included ORCIDs in the article.
+                              The ORCID makes each researcher uniquely identifiable
+                              despite name variants or name changes and uniquely associates
+                              publications or other types of research output with him/her.
+                              Many publishers now request ORCIDs when manuscripts are submitted.
+                              - Click for methods details.") |>
   paste(collapse = " ")
 
-authorship_tooltip <- strwrap("This metric measures authorship.") |>
+authorship_tooltip <- strwrap("This metric measures the percentage of screened publications that
+                              included an authorship statement. Such statements ideally clearly state
+                              which author made which contributions to the manuscript, following the
+                              Contributor Roles Taxonomy.
+                              Many publishers now require submitted manuscripts to include authorship
+                              statements.
+                              - Click for methods details.") |>
   paste(collapse = " ")
 
 

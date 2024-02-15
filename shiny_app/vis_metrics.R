@@ -91,7 +91,7 @@ plot_barzooka_problem_total<- function(plot_data, color_palette)
     add_trace(y = ~has_pie, name = "pie chart", mode = "lines+markers",
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) |>
-    add_trace(y = ~total, name = "accessible publications", mode = "lines+markers",
+    add_trace(y = ~total, name = "publications screened", mode = "lines+markers",
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) |>
     layout(yaxis = list(title = "<b>Publications with graph type</b>"),
@@ -156,7 +156,7 @@ plot_barzooka_inform_total <- function(plot_data, color_palette)
     add_trace(y = ~has_violin, name = "violin plot", mode = "lines+markers",
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) |>
-    add_trace(y = ~total, name = "accessible publications", mode = "lines+markers",
+    add_trace(y = ~total, name = "publications screened", mode = "lines+markers",
               line = list(color = color_palette[5]),
               marker = list(color = color_palette[5])) |>
     layout(yaxis = list(title = "<b>Publications with graph type</b>"),

@@ -128,11 +128,13 @@ show_dashboard <- function(...) {
                               the reproducibility of results
                               (<a href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/">Rethinking Health – Charité 2030</a>).')),
                             h4(style = "margin-left:0cm",
-                               "This dashboard gives an overview of several metrics of open and responsible
+                               HTML('This dashboard gives an overview of several metrics of open and responsible
                         research at the Charité (including the Berlin Institute of Health).
+                        For a detailed discussion about which metrics to include in Open Science Dashboards see
+                        (<a href = "https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001949">Cobey et al. 2023</a>).
                         For more detailed information on the methods used to
                         calculate those metrics, the dataset underlying the metrics, or resources
-                        to improve your own research practices, click one of the following buttons."),
+                        to improve your own research practices, click one of the following buttons on the right.')),
                         h4(style = "margin-left:0cm",
                            "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
                         h4(style = "margin-left:0cm",
@@ -143,6 +145,7 @@ show_dashboard <- function(...) {
                         br()),
                      column(4,
                             hr(),
+                            br(),
                             br(),
                             br(),
                             actionButton(style = "color: white; background-color: #aa1c7d;",
@@ -497,7 +500,7 @@ show_dashboard <- function(...) {
 
     output$orcid_pubs <- renderUI({
       box_value <- get_current_orcids_from_pubs(dashboard_metrics)
-      box_text <- paste0("of publications from the Charité", " included ORCIDs in ",
+      box_text <- paste0("of publications with a Charité correspondence author", " included at least one ORCID in ",
                          dashboard_metrics$year |> max())
 
       metricBoxOutput(title = "ORCIDs in Publications",
@@ -533,7 +536,7 @@ show_dashboard <- function(...) {
         col_width <- 6
         alignment <- "left"
       } else {
-        col_width <- 3
+        col_width <- 4
         alignment <- "right"
       }
 
@@ -546,13 +549,14 @@ show_dashboard <- function(...) {
                 fluidRow(
                   column(col_width, uiOutput("OA") |>
                            shinycssloaders::withSpinner(color = "#007265")),
+                  column(col_width, uiOutput("preprints") |>
+                           shinycssloaders::withSpinner(color = "#007265"))
+                  ),
+                  fluidRow(column(col_width, uiOutput("DAS") |>
+                           shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("OD") |>
                            shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("OC") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
-                  column(col_width, uiOutput("DAS") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
-                  column(col_width, uiOutput("preprints") |>
                            shinycssloaders::withSpinner(color = "#007265"))
                 )
       )
@@ -563,10 +567,10 @@ show_dashboard <- function(...) {
     output$CT_metrics <- renderUI({
       req(input$width)
       if(input$width < 1400) {
-        # col_width <- 6
+        col_width <- 6
         alignment <- "left"
       } else {
-        # col_width <- 3
+        col_width <- 4
         alignment <- "right"
       }
 
@@ -579,9 +583,9 @@ show_dashboard <- function(...) {
                            column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
                          ),
                          fluidRow(
-                           column(4, uiOutput("sumres") |>
+                           column(col_width, uiOutput("sumres") |>
                                     shinycssloaders::withSpinner(color = "#007265")),
-                           column(4, metricBoxOutput(title = "Timely publication of results",
+                           column(col_width, metricBoxOutput(title = "Timely publication of results",
                                                 value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
                                                 value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
                                                                     intovalue_dataset$completion_year |> last(),
@@ -592,7 +596,7 @@ show_dashboard <- function(...) {
                                                 info_title = "Timely publication of results",
                                                 info_text = intovalue_tooltip,
                                                 info_alignment = alignment)),
-                           column(4, uiOutput("prospreg") |>
+                           column(col_width, uiOutput("prospreg") |>
                                     shinycssloaders::withSpinner(color = "#007265")))))
       )
     })
@@ -603,7 +607,7 @@ show_dashboard <- function(...) {
         col_width <- 6
         alignment <- "left"
         } else {
-          col_width <- 3
+          col_width <- 4
           alignment <- "right"
         }
       wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
@@ -613,15 +617,6 @@ show_dashboard <- function(...) {
                   column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
                 ),
                 fluidRow(
-                  # column(4, metricBoxOutput(title = "ORCID",
-                  #                       value = orcid_dataset$orcid_count %>% last(),
-                  #                       value_text = paste0("Charité researchers with an ORCID (as of ",
-                  #                                           orcid_dataset$date %>% last() %>% str_replace_all("-", "/"), ")"),
-                  #                       plot = plotlyOutput('plot_orcid', height = "300px"),
-                  #                       info_id = "infoOrcid",
-                  #                       info_title = "ORCID",
-                  #                       info_text = orcid_tooltip,
-                  #                       info_alignment = "left")
                   column(
                     col_width, uiOutput("orcid") |>
                       shinycssloaders::withSpinner(color = "#007265")
