@@ -60,7 +60,7 @@ prosp_reg_dataset_shiny <- vroom("./data/prosp_reg_dataset_shiny.csv") |>
             as.character)
 preprints_dataset_shiny <- vroom("./data/preprints_dataset_shiny.csv")
 
-orcid_dataset <- vroom("./data/orcid_results.csv")
+# orcid_dataset <- vroom("./data/orcid_results.csv")
 
 # fair dataset
 fair_dataset <- vroom("./data/fair_assessment_2021.csv", show_col_types = FALSE) |>
@@ -331,7 +331,7 @@ show_dashboard <- function(...) {
     ctgovServer("plot_prosp_reg", dashboard_metrics_aggregate, reactive(RVs$total_ct), color_palette)
     visServer("plot_barzooka_problem", dashboard_metrics, "problem", reactive(RVs$total_vis), color_palette)
     visServer("plot_barzooka_inform", dashboard_metrics, "inform", reactive(RVs$total_vis), color_palette)
-    orcidServer("plot_orcid", orcid_dataset, "total", reactive(RVs$total_bt), color_palette)
+    # orcidServer("plot_orcid", orcid_dataset, "total", reactive(RVs$total_bt), color_palette)
     orcidServer("plot_orcid_pubs", dashboard_metrics, "pubs", reactive(RVs$total_bt), color_palette)
     contribotServer("plot_contrib", dashboard_metrics, "credit", reactive(RVs$total_bt), color_palette)
 
@@ -483,20 +483,20 @@ show_dashboard <- function(...) {
                         info_alignment = "left")
       })
 
-    output$orcid <- renderUI({
-      box_value <- orcid_dataset$orcid_count |> last()
-      box_text <- paste0("Charité researchers with an ORCID (as of ",
-                         orcid_dataset$date |> last() |> str_replace_all("-", "/"), ")")
-
-      metricBoxOutput(title = "ORCID",
-                      value = box_value,
-                      value_text = box_text,
-                      plot = orcidOutput('plot_orcid', height = "300px"),
-                      info_id = "infoOrcid",
-                      info_title = "ORCID",
-                      info_text = orcid_tooltip,
-                      info_alignment = "right")
-    })
+    # output$orcid <- renderUI({
+    #   box_value <- orcid_dataset$orcid_count |> last()
+    #   box_text <- paste0("Charité researchers with an ORCID (as of ",
+    #                      orcid_dataset$date |> last() |> str_replace_all("-", "/"), ")")
+    #
+    #   metricBoxOutput(title = "ORCID",
+    #                   value = box_value,
+    #                   value_text = box_text,
+    #                   plot = orcidOutput('plot_orcid', height = "300px"),
+    #                   info_id = "infoOrcid",
+    #                   info_title = "ORCID",
+    #                   info_text = orcid_tooltip,
+    #                   info_alignment = "right")
+    # })
 
     output$orcid_pubs <- renderUI({
       box_value <- get_current_orcids_from_pubs(dashboard_metrics)
@@ -617,10 +617,10 @@ show_dashboard <- function(...) {
                   column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
                 ),
                 fluidRow(
-                  column(
-                    col_width, uiOutput("orcid") |>
-                      shinycssloaders::withSpinner(color = "#007265")
-                    ),
+                  # column(
+                    # col_width, uiOutput("orcid") |>
+                    #   shinycssloaders::withSpinner(color = "#007265")
+                    # ),
                   column(
                     col_width, uiOutput("orcid_pubs") |>
                       shinycssloaders::withSpinner(color = "#007265")
