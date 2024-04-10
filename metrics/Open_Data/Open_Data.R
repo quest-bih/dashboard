@@ -11,11 +11,11 @@ future::plan(multisession)
 print("Open Data detection with oddpub...")
 # pdf_folder <-"S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs/2021/"
 # txt_folder <- "S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs_to_text/2021/"
-# pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
-# txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
-pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
+pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
+txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
+# pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
 # pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
-txt_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_to_text/"
+# txt_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_to_text/"
 # txt_folder <- "C:/Users/Vladi/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/"
 
 print("Convert pdfs to text...")
@@ -260,32 +260,32 @@ assert_that(OC_manual_num == OC_manual_categories_num)
 # setdiff(txts, pdfs)
 #
 # PDFs <- tibble(files = pdfs)
-
-od2024 <- oddpub_results |>
-  # filter(is_open_data == TRUE) |>
-  mutate(doi = article |>
-           str_remove(".pdf") |>
-           str_replace_all("\\+", "/"))
-
-write_csv(od2024, here("results", "Open_Data_240119.csv"))
-
-ff <- list.files(pdf_folder)[!conversion_success]
-source_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
-files_to_copy <- paste0(source_folder, ff)
-
-dest_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
-
-file.copy(from = files_to_copy, to = dest_folder)
-
-text_files <- list.files("C:/Users/nachevv/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/") |>
-  str_remove(".txt")
-
-length(text_files)
-
-pdf_files <- list.files(pdf_folder) |>
-  str_remove(".pdf")
-
-setdiff(text_files, pdf_files)
+#
+# od2024 <- oddpub_results |>
+#   # filter(is_open_data == TRUE) |>
+#   mutate(doi = article |>
+#            str_remove(".pdf") |>
+#            str_replace_all("\\+", "/"))
+#
+# write_csv(od2024, here("results", "Open_Data_240119.csv"))
+#
+# ff <- list.files(pdf_folder)[!conversion_success]
+# source_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
+# files_to_copy <- paste0(source_folder, ff)
+#
+# dest_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
+#
+# file.copy(from = files_to_copy, to = dest_folder)
+#
+# text_files <- list.files("C:/Users/nachevv/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/") |>
+#   str_remove(".txt")
+#
+# length(text_files)
+#
+# pdf_files <- list.files(pdf_folder) |>
+#   str_remove(".pdf")
+#
+# setdiff(text_files, pdf_files)
 
 
 

@@ -75,40 +75,41 @@ publications <- read_csv(here("main", "publication_table.csv"))
 # results_files <- list.files(here("results"), full.names = TRUE)
 # results_files <- paste0(results_folder, results_files)
 
-
-#manually checked Open Data results + additional cases that were not detected by algorithm
-#but found in manual searches or submitted by researchers for the LOM
-# open_data_results <- vroom("./results/Open_Data_manual_check_results.csv")
-# open_data_manual_detection <- vroom("./results/Open_Data_manual_detections.csv")
-# open_data_manual_detection <- vroom("./results/Open_Code_manual_detections.csv")
-# include das_cas here!!!!!!!!!!!
-# open_data_results <- rows_update(open_data_results, open_data_manual_detection, by = "doi")
-
-
 open_data_22 <- read_csv(here("results", "Open_Data.csv")) |>
   mutate(doi = str_replace_all(article, "\\+", "\\/") |>
            str_remove(".txt") |>
            tolower()) |>
   select(doi, everything(), -article)
 
-manual_code_results <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
+
+
+#manually checked Open Data results + additional cases that were not detected by algorithm
+#but found in manual searches or submitted by researchers for the LOM
+
+
+open_data_22_manual <- read_csv2(here("results", "OD_manual_tidy.csv")) |>
+  mutate(doi = tolower(doi)) |>
+  select(doi, open_data_manual_check, open_data_category_manual, data_access)
+
+open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
   select(doi, contains("code")) |>
   mutate(is_open_code = as.logical(is_open_code),
          open_code_manual_check = as.logical(open_code_manual_check))
 
-dupes <- open_data_results |>
-  filter(doi %in% manual_code_results$doi)
+# dupes <- open_data_22 |>
+#   filter(doi %in% manual_code_results$doi)
+# publications |>
+#   filter(doi %in% dupes$doi,
+#          year == 2022)
+# old template had some MDC papers that were later excluded
 
-publications |>
-  filter(doi %in% dupes$doi,
-         year == 2022)
-
-open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv")) |>  # temporary until Anastasiia completes manual screening
+open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.csv")) |>
   mutate(is_reuse = NA,
-         das = NA_character_,
-         cas = NA_character_) |>
+         das = as.character(das),
+         cas = as.character(cas)) |>
   rows_upsert(open_data_22, by = "doi") |>
-  rows_upsert(manual_code_results, by = "doi") |>
+  rows_upsert(open_code_22_manual, by = "doi") |>
+  rows_upsert(open_data_22_manual, by = "doi") |>
   mutate(open_code_category_manual = case_when(
     str_detect(open_code_category_manual, "github") ~ "github",
     str_detect(open_code_category_manual, "supplement") ~ "supplement",
@@ -127,45 +128,36 @@ open_data_results <- vroom(here("results", "Open_Data_manual_check_results2.csv"
   )
   )
 
+
+# when finished update the template to contain the data from previous year
+# open_data_results |>
+#   write_excel_csv2(here("results", "Open_Data_manual_check_template.csv"))
+
+# template_miss <- template |>
+#   filter(!doi %in% open_data_results$doi)
+
+
+
 old_das_cas <- vroom(here("results", "Open_Data_retroactive.csv")) |>
   select(doi, das, cas)
 
 open_data_results <- open_data_results |>
   rows_upsert(old_das_cas, by = "doi")
 
-#
-# open_data_results <- open_data_results |>
-#   mutate(is_reuse = NA,
-#          das = NA_character_,
-#          cas = NA_character_) |>
-#   rows_upsert(open_data_22, by = "doi")
+open_data_results |>
+  filter(is.na(is_open_data),
+         open_data_category_manual == "disciplinary and general-purpose repositories") |>
+  pull(doi)
 
-# manual_code_results <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
-#   select(doi, contains("code")) |>
-  # mutate(is_open_code = as.logical(is_open_code),
-  #        open_code_category_manual = case_when(
-  #          str_detect(open_code_category_manual, "github") ~ "github",
-  #          str_detect(open_code_category_manual, "supplement") ~ "supplement",
-  #          open_code_manual_check == TRUE ~ "other repository/website"
-  #        ),
-  #        open_code_manual_check = case_when(
-  #   str_detect(open_code_category_manual, "supplement") ~ FALSE,
-  #   .default = as.logical(open_code_manual_check)))
+open_data_results |>
+  filter(open_data_manual_check) |>
+  count(is_open_data, open_data_category_manual)
 
-# open_data_results <- open_data_results |>
-#   rows_upsert(manual_code_results, by = "doi")
+open_data_results |>
+  count(is_open_code, open_code_manual_check)
 
-
-# open_data_results |>
-#   filter(open_data_manual_check) |>
-#   count(is_open_data, open_data_category_manual)
-# open_data_results |>
-#   count(is_open_code, open_code_manual_check)
 open_data_results |>
   count(open_data_manual_check, open_data_category_manual)
-
-# old_das <- read_csv("")
-
 
 #ContriBOT results
 contribot_results <- read_csv(here("results", "ContriBOT.csv"))
@@ -232,7 +224,7 @@ per_year <- dashboard_metrics |>
   mutate(perc = n / sum(n) * 100)
 
 
-oc_dois <- manual_code_results |>
+oc_dois <- open_code_22_manual |>
   filter(open_code_manual_check == TRUE,
          open_code_category_manual != "supplement") |>
   pull(doi)
@@ -265,8 +257,23 @@ check_tbl <- dashboard_metrics |>
          open_data_statements, open_code_statements,
          open_data_manual_check, open_data_category_manual,
          open_code_manual_check, open_code_category_manual)
+
+# check_tbl |>
+#   filter(doi %in% c("10.1126/scitranslmed.abq3010",
+#                     "10.18332/ejm/150582"))
+
+# debug ODDPUb until these false_positives are is_open_data == FALSE!!!
+# for now set to false manually
+dashboard_metrics <- dashboard_metrics |>
+  mutate(is_open_data = case_when(
+    doi %in% check_tbl$doi ~ FALSE,
+    .default = is_open_data
+  ))
+
+
+
 assert_that(dim(check_tbl)[1] == 0)
-# write_csv(check_tbl, "./results/OD_manual_check/pdf_update_cases.csv")
+ # write_csv(check_tbl, "./results/pdf_update_cases.csv")
 
 
 #----------------------------------------------------------------------------------------
