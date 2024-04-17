@@ -424,7 +424,6 @@
 "10.18332/ejm/150582";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
 "10.1038/s42256-020-00269-9";FALSE;FALSE;TRUE;"reuse_access|yes";FALSE;FALSE;TRUE;NA;TRUE
 "10.1016/j.jaci.2021.09.009";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
-"10.1159/000522068";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
 "10.1182/blood.2021014007";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
 "10.1016/j.expneurol.2022.113978";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
 "10.1371/journal.pone.0266744";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
@@ -631,53 +630,53 @@
 "10.1038/s42003-022-03448-z";FALSE;FALSE;FALSE;"reuse_access";FALSE;FALSE;TRUE;NA;TRUE
 "10.1002/14651858.cd011740.pub2";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
 "10.1038/s41531-022-00396-7";FALSE;FALSE;FALSE;"";FALSE;FALSE;FALSE;NA;FALSE
-"10.3324/haematol.2021.280005";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.3390/jcm11216561";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1111/adb.13198";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.3324/haematol.2021.280005";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.3390/jcm11216561";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1111/adb.13198";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1002/jlb.2a0421-200r";FALSE;TRUE;TRUE;"yes|restricted";FALSE;FALSE;TRUE;NA;TRUE
-"10.1002/pbc.29361";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1093/geronb/gbab094";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1002/alz.12763";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.1002/pbc.29361";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1093/geronb/gbab094";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1002/alz.12763";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1002/oby.23452";FALSE;TRUE;FALSE;"restricted|restricted";FALSE;FALSE;FALSE;NA;FALSE
-"10.1182/bloodadvances.2022008497";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.bpsgos.2021.07.008";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1007/s00330-021-08358-y";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.annonc.2022.07.008";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1158/1078-0432.ccr-21-3716";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1186/s13046-022-02519-7";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.jhep.2022.07.009";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.2807/1560-7917.es.2022.27.1.2001848";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1128/aac.00931-22";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.dib.2022.108739";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.hroo.2021.02.005";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.1182/bloodadvances.2022008497";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.bpsgos.2021.07.008";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1007/s00330-021-08358-y";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.annonc.2022.07.008";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1158/1078-0432.ccr-21-3716";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1186/s13046-022-02519-7";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.jhep.2022.07.009";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.2807/1560-7917.es.2022.27.1.2001848";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1128/aac.00931-22";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.dib.2022.108739";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"general-purpose repository";FALSE
+"10.1016/j.hroo.2021.02.005";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1016/j.neuroimage.2022.119504";FALSE;TRUE;TRUE;"yes|restricted";FALSE;FALSE;FALSE;NA;FALSE
-"10.1007/s10654-022-00890-5";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.1007/s10654-022-00890-5";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41467-022-31355-8";FALSE;TRUE;FALSE;"restricted|reuse_access|reuse_access|reuse_access|reuse_access|reuse_access";FALSE;FALSE;TRUE;NA;TRUE
-"10.1126/science.abo1984";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1038/s41525-022-00300-5";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1038/s41375-022-01587-0";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.ajhg.2022.04.009";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.xgen.2022.100232";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1084/jem.20201405";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1038/s41467-022-31866-4";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.1126/science.abo1984";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1038/s41525-022-00300-5";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1038/s41375-022-01587-0";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.ajhg.2022.04.009";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.xgen.2022.100232";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1084/jem.20201405";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1038/s41467-022-31866-4";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41586-022-04434-5";FALSE;TRUE;FALSE;"restricted|restricted";FALSE;FALSE;FALSE;NA;FALSE
-"10.3390/biomedicines10112798";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/s2468-2667(22)00134-7";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.3390/biomedicines10112798";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/s2468-2667(22)00134-7";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1002/eji.202149726";FALSE;TRUE;FALSE;"restricted|not_uploaded";FALSE;FALSE;FALSE;NA;FALSE
-"10.1016/j.neurobiolaging.2021.10.006";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.3390/cancers14143363";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1007/s10654-022-00896-z";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.eclinm.2022.101651";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/s2213-2600(22)00097-2";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.1016/j.neurobiolaging.2021.10.006";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.3390/cancers14143363";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1007/s10654-022-00896-z";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.eclinm.2022.101651";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/s2213-2600(22)00097-2";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41591-022-02055-z";FALSE;TRUE;FALSE;"restricted|restricted";FALSE;FALSE;FALSE;NA;FALSE
-"10.1177/17474930211059608";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1186/s12014-022-09371-z";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1530/eje-21-1085";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1002/ijc.34051";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.1177/17474930211059608";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1186/s12014-022-09371-z";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1530/eje-21-1085";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1002/ijc.34051";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41586-022-05275-y";FALSE;TRUE;FALSE;"reuse_access|restricted|restricted|reuse_access";FALSE;FALSE;TRUE;NA;TRUE
-"10.3389/fonc.2022.889789";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1007/s11357-022-00581-9";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
-"10.1016/j.lanepe.2022.100341";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;NA;FALSE
+"10.3389/fonc.2022.889789";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1007/s11357-022-00581-9";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
+"10.1016/j.lanepe.2022.100341";FALSE;TRUE;FALSE;"restricted";TRUE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1186/s12883-022-02682-6";FALSE;TRUE;FALSE;"reuse_access|restricted";FALSE;FALSE;TRUE;NA;TRUE
 "10.1038/s41588-022-01016-z";FALSE;TRUE;FALSE;"reuse_access|restricted";FALSE;FALSE;TRUE;NA;TRUE
 "10.1038/s41588-021-01010-x";FALSE;TRUE;FALSE;"reuse_access|restricted";FALSE;FALSE;TRUE;NA;TRUE
@@ -777,7 +776,7 @@
 "10.1371/journal.pdig.0000094";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1080/2162402x.2022.2148850";TRUE;FALSE;TRUE;"yes|yes|yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1002/pon.5798";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
-"10.1016/j.envres.2022.113896";TRUE;TRUE;TRUE;"yes|restricted|unsure|restricted";FALSE;FALSE;TRUE;"disciplinary and general-purpose repositories";FALSE
+"10.1016/j.envres.2022.113896";TRUE;TRUE;TRUE;"yes|restricted|unsure|restricted";FALSE;FALSE;TRUE;"general-purpose repository";FALSE
 "10.1016/j.neuroimage.2022.119190";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1016/j.ccell.2022.02.006";TRUE;TRUE;TRUE;"yes|restricted|yes";FALSE;FALSE;TRUE;"disciplinary repository";FALSE
 "10.1002/glia.24274";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
@@ -802,7 +801,7 @@
 "10.1111/cge.14241";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1038/s41380-021-01385-7";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1111/apha.13773";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
-"10.1126/sciadv.abk2814";TRUE;TRUE;TRUE;"yes|restricted";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
+"10.1126/sciadv.abk2814";TRUE;TRUE;TRUE;"yes|restricted";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1016/j.ymthe.2022.03.014";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41375-022-01755-2";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1016/j.dib.2022.108347";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
@@ -856,7 +855,7 @@
 "10.1182/blood.2021012081";TRUE;FALSE;TRUE;"yes|yes|not_uploaded";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1016/j.isci.2022.104760";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1182/bloodadvances.2021005532";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
-"10.1016/j.xhgg.2022.100166";TRUE;TRUE;TRUE;"yes|yes|not_persistent|restricted";FALSE;FALSE;TRUE;"disciplinary and general-purpose repositories";FALSE
+"10.1016/j.xhgg.2022.100166";TRUE;TRUE;TRUE;"yes|yes|not_persistent|restricted";FALSE;FALSE;TRUE;"general-purpose repository";FALSE
 "10.1016/j.stem.2022.04.007";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1186/s12915-022-01396-y";TRUE;FALSE;TRUE;"yes|yes";FALSE;FALSE;TRUE;"disciplinary repository";FALSE
 "10.1186/s12961-022-00841-2";TRUE;TRUE;TRUE;"restricted|yes|reuse_access";FALSE;FALSE;TRUE;"disciplinary repository";FALSE
@@ -875,14 +874,14 @@
 "10.1371/journal.pone.0262114";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1016/j.isci.2022.104276";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s42255-022-00584-y";TRUE;FALSE;TRUE;"yes|yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
-"10.1038/s41467-022-31999-6";TRUE;TRUE;TRUE;"yes|reuse_access|yes|reuse_access|restricted";FALSE;FALSE;TRUE;"disciplinary and general-purpose repositories";FALSE
+"10.1038/s41467-022-31999-6";TRUE;TRUE;TRUE;"yes|reuse_access|yes|reuse_access|restricted";FALSE;FALSE;TRUE;"general-purpose repository";FALSE
 "10.1371/journal.ppat.1010193";TRUE;FALSE;TRUE;"yes|yes|yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1093/neuonc/noac088";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1093/nargab/lqac042";TRUE;FALSE;TRUE;"yes|yes";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
 "10.3390/ijms232314554";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1016/j.isci.2022.104498";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41389-022-00433-3";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
-"10.1038/s41587-021-01037-9";TRUE;TRUE;TRUE;"yes|restricted";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
+"10.1038/s41587-021-01037-9";TRUE;TRUE;TRUE;"yes|restricted";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1038/s41467-022-29614-9";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1002/hep.32456";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1016/j.jcv.2022.105222";TRUE;FALSE;TRUE;"yes|reuse_access";FALSE;FALSE;TRUE;"disciplinary repository";FALSE
@@ -1007,14 +1006,14 @@
 "10.3390/cells11111752";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41467-022-34241-5";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1126/scitranslmed.abq3010";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
-"10.1053/j.gastro.2020.11.010";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
-"10.1098/rsos.220142";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;NA;FALSE
+"10.1053/j.gastro.2020.11.010";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
+"10.1098/rsos.220142";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1126/scitranslmed.abe5795";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1183/13993003.02049-2021";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1007/s00392-022-02054-7";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1016/j.concog.2022.103318";TRUE;FALSE;TRUE;"yes|yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1016/j.cub.2022.11.016";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
-"10.1038/s41467-022-30050-y";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
+"10.1038/s41467-022-30050-y";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1038/s41540-022-00225-w";TRUE;FALSE;TRUE;"yes|yes";FALSE;FALSE;TRUE;"disciplinary repository";FALSE
 "10.1038/s41598-022-07059-w";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s42003-022-03828-5";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
@@ -1149,16 +1148,16 @@
 "10.1681/asn.2021030286";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.3389/fonc.2022.941666";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1186/s12968-021-00833-1";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
-"10.1038/s41467-022-32103-8";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
+"10.1038/s41467-022-32103-8";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1111/tbed.14621";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1016/j.isci.2022.104613";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.1038/s41563-022-01293-3";TRUE;FALSE;TRUE;"yes|yes|yes";FALSE;FALSE;TRUE;"disciplinary and general-purpose repositories";FALSE
 "10.1038/s41598-022-18097-9";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
-"10.1158/0008-5472.can-21-3836";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
-"10.1038/s41467-022-34899-x";TRUE;TRUE;TRUE;"restricted|unsure|yes";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
+"10.1158/0008-5472.can-21-3836";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
+"10.1038/s41467-022-34899-x";TRUE;TRUE;TRUE;"restricted|unsure|yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1038/s41698-022-00278-4";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1016/j.xhgg.2022.100111";TRUE;FALSE;TRUE;"yes|yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
-"10.1038/s42003-022-03978-6";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"disciplinary and general-purpose repositories";FALSE
+"10.1038/s42003-022-03978-6";TRUE;TRUE;TRUE;"restricted|yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1101/gr.276960.122";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"disciplinary repository";FALSE
 "10.3390/nu14204435";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE
 "10.1007/s10461-022-03646-0";TRUE;FALSE;TRUE;"yes";FALSE;FALSE;FALSE;"general-purpose repository";FALSE

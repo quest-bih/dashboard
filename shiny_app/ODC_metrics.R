@@ -157,7 +157,7 @@ plot_OD_perc <- function(plot_data, color_palette)
                                         width = 1.5)),
               showlegend = FALSE) |>
     add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
-              name = 'disciplinary and general<br>',
+              name = 'disciplinary and general',
               marker = list(color = color_palette[2],
                             line = list(color = 'rgb(0,0,0)',
                                         width = 1.5))) |>
@@ -361,7 +361,9 @@ plot_DAS_total <- function(plot_data, color_palette)
 #
 # nas <- dashboard_metrics |>
 #     filter(year == 2022, is.na(is_open_code))
-# data_table <- dashboard_metrics
+# data_table <- shiny_table
+# test <- make_oddpub_plot_data(data_table, year)
+
 make_oddpub_plot_data <- function(data_table, gr) {
 
   oddpub_plot_data <- data_table |>
@@ -391,7 +393,8 @@ make_oddpub_plot_data <- function(data_table, gr) {
 
       total = sum(!is.na(is_open_data), na.rm = TRUE),
       total_code = sum(!is.na(is_open_code), na.rm = TRUE))  |>
-    mutate(open_data_perc = round(open_data_manual_count/total * 100, 1),
+    mutate(open_data_perc = round((open_data_manual_count)/total * 100, 1),
+           # open_data_perc = round((open_data_manual_count + OD_disc_restricted_count)/total * 100, 1),open_data_perc = round((open_data_manual_count + OD_disc_restricted_count)/total * 100, 1),
            open_code_perc = round(open_code_manual_count/total_code * 100, 1),
            OC_github_perc = round(OC_github_count/total_code * 100, 1),
            OC_other_perc = round(OC_other_count/total_code * 100, 1),

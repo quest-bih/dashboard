@@ -20,7 +20,7 @@ charite_url <-  "https://eu.trialstracker.net/sponsor/charite-universitatsmedizi
 
 webpage <- read_lines(charite_url) |>  paste(collapse = " ")
 
-webpage <- read_html(charite_url) |>  rvest::html_text()
+# webpage <- read_html(charite_url) |>  rvest::html_text()
 var_names <- c("total_unreported", "total_reported", "total_due",
   "not_yet_due_trials", "inconsistent_trials", "total_trials")
 
@@ -100,7 +100,7 @@ for (url in charite_trials$url) {
 scraped_trials <- scraped_trials |>
   mutate(retrieval_date = charite_trials$retrieval_date) |>
   filter(total_trials > 100,
-         retrieval_date > "2023-09-07") |>
+         retrieval_date > "2024-01-10") |>
   select(retrieval_date, everything())
 
 write_csv(scraped_trials, "./results//EU_trialstracker.csv",

@@ -357,7 +357,7 @@ show_dashboard <- function(...) {
         box_value <- get_current_OD(dashboard_metrics)
         box_text <- paste0("of screened publications mentioned sharing data openly in ",
                            dashboard_metrics$year |>  max())
-        alignment <- "right"
+        alignment <- "left"
         metricBoxOutput(title = "Any Open Data",
                         value = box_value,
                         value_text = box_text,
