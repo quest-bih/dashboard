@@ -374,7 +374,7 @@ show_dashboard <- function(...) {
         box_value <- get_current_OC(dashboard_metrics)
         box_text <- paste0("of screened publications mentioned sharing code openly in ",
                            dashboard_metrics$year |>  max())
-        alignment <- "right"
+        alignment <- "left"
         metricBoxOutput(title = "Any Open Code",
                         value = box_value,
                         value_text = box_text,
