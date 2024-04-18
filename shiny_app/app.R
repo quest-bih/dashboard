@@ -130,13 +130,13 @@ show_dashboard <- function(...) {
                             h4(style = "margin-left:0cm",
                                HTML('This dashboard gives an overview of several metrics of open and responsible
                         research at the Charité (including the Berlin Institute of Health).
-                        For a detailed discussion about which metrics to include in Open Science Dashboards see
+                        For a detailed discussion about monitoring core Open Science practices see
                         (<a href = "https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001949">Cobey et al. 2023</a>).
-                        For more detailed information on the methods used to
-                        calculate those metrics, the dataset underlying the metrics, or resources
-                        to improve your own research practices, click one of the following buttons on the right.')),
-                        h4(style = "margin-left:0cm",
-                           "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
+                        For more detailed information on the methods used to calculate those metrics, the dataset
+                        underlying the metrics, or resources to improve your own research practices, click one of
+                        the following buttons on the right.')),
+                        # h4(style = "margin-left:0cm",
+                        #    "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
                         h4(style = "margin-left:0cm",
                            HTML('For more detailed open access metrics you can visit the
                          <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
@@ -157,7 +157,9 @@ show_dashboard <- function(...) {
                             actionButton(style = "color: white; background-color: #aa1c7d;",
                                          'buttonDatasets',
                                          'See dataset'),
-                            br())
+                            br(),
+                            br(),
+                            h4(style = "margin-left:18mm", strong("Latest Update: April 2024")))
                    ),
                  ),
 
