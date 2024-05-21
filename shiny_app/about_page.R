@@ -16,7 +16,7 @@ about_page <- tabPanel("About", value = "tabAbout",
                        br(),
                        h4("ODDPub - Open Data & Code detection"),
                        helpText(HTML('Nico Riedel (Conceptualization, Methodology, Technical Implementation, Validation);
-                                Evgeny Bobrov (Conceptualization, Methodology, Validation); Miriam Kip (Conceptualization, Methodology); Vladislav Nachev (Conceptualization, Methodology, Technical Impelementation, Validation), Anastasiia Iarkaeva (Methodology, Validation)')),
+                                Evgeny Bobrov (Conceptualization, Methodology, Validation); Miriam Kip (Conceptualization, Methodology); Vladislav Nachev (Conceptualization, Methodology, Technical Impelementation, Validation); Anastasiia Iarkaeva (Methodology, Validation)')),
                        br(),
                        h4("Barzooka - Visualization type detection"),
                        helpText(HTML('Nico Riedel (Conceptualization, Methodology, Technical Implementation); Tracey Weissgerber (Conceptualization, Methodology); Robert Schulz (Validation); Vladislav Nachev (Technical Impelementation)')),
