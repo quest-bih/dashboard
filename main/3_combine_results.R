@@ -298,6 +298,9 @@ shiny_table <- dashboard_metrics |>
 
 write_csv(shiny_table, here("shiny_app", "data", "dashboard_metrics.csv"))
 
+shiny_table |>
+  count(year, restrictions)
+
 # dashboard_metrics |>
 #   count(year, is.na(is_open_data))
 #
@@ -333,12 +336,12 @@ prosp_reg_dataset_shiny <- vroom(here("results", "prosp_reg_dataset_shiny.csv"))
   select(nct_id, start_date, registration_date, has_prospective_registration)
 write_csv(prosp_reg_dataset_shiny, here("shiny_app", "data", "prosp_reg_dataset_shiny.csv"))
 
-orcid_dataset_shiny <- vroom(here("results", "orcid.csv")) |>
-  distinct(date, .keep_all = TRUE) |> # next part only if false parsing in file with spliced rows
-  mutate(orcid_count = if_else(str_length(orcid_count) > 5, str_sub(orcid_count, 1, 4),
-                               as.character(orcid_count)),
-         orcid_count = as.numeric(orcid_count))
-write_csv(orcid_dataset_shiny, here("shiny_app", "data", "orcid_results.csv"))
+# orcid_dataset_shiny <- vroom(here("results", "orcid.csv")) |>
+#   distinct(date, .keep_all = TRUE) |> # next part only if false parsing in file with spliced rows
+#   mutate(orcid_count = if_else(str_length(orcid_count) > 5, str_sub(orcid_count, 1, 4),
+#                                as.character(orcid_count)),
+#          orcid_count = as.numeric(orcid_count))
+# write_csv(orcid_dataset_shiny, here("shiny_app", "data", "orcid_results.csv"))
 
 EU_trialstracker_dataset_shiny <- vroom(here("results", "EU_trialstracker.csv")) |>
   group_by(retrieval_date) |>
