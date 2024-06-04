@@ -89,7 +89,6 @@ show_dashboard <- function(...) {
   ui <-
     tagList(
       tags$head(tags$script(type="text/javascript", src = "code.js")),
-      rclipboardSetup(),
       navbarPage(
         "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
         tabPanel("Start page", value = "tabStart",
