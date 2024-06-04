@@ -21,6 +21,8 @@ library(vroom)
 # load data & functions
 #----------------------------------------------------------------------------------------------------------------------
 
+Sys.setlocale("LC_TIME", "English_Germany.utf8")
+
 source("impressum.R", encoding="UTF-8")
 source("metric_box.R")
 source("OA_metrics.R")
@@ -60,8 +62,6 @@ prosp_reg_dataset_shiny <- vroom("./data/prosp_reg_dataset_shiny.csv") |>
             as.character)
 preprints_dataset_shiny <- vroom("./data/preprints_dataset_shiny.csv")
 
-# orcid_dataset <- vroom("./data/orcid_results.csv")
-
 # fair dataset
 fair_dataset <- vroom("./data/fair_assessment_2021.csv", show_col_types = FALSE) |>
   arrange(repository_re3data, article)
@@ -80,31 +80,6 @@ fair_dataset_datatable <- fair_dataset |>
          guid_scheme = guid_scheme_fuji) |>
   arrange(repository_name, article_doi)
 
-#----------------------------------------------------------------------------------------------------------------------
-# preprocessing, need to move somewhere else later
-#----------------------------------------------------------------------------------------------------------------------
-
-# show_year <- "2022"
-# metrics_show_year <- dashboard_metrics_aggregate |>  filter(year == show_year)
-
-# oddpub_data <- dashboard_metrics |>
-# filter(year == 2022) |>
-#   make_oddpub_plot_data()
-
-# barzooka_data <- dashboard_metrics |>
-#   filter(pdf_downloaded) |>
-#   group_by(year) |>
-#   summarize(total = n(),
-#             has_bar = sum(bar > 0, na.rm = TRUE),
-#             has_pie = sum(pie > 0, na.rm = TRUE),
-#             has_bardot = sum(bardot > 0, na.rm = TRUE),
-#             has_box = sum(box > 0, na.rm = TRUE),
-#             has_dot = sum(dot > 0, na.rm = TRUE),
-#             has_hist = sum(hist > 0, na.rm = TRUE),
-#             has_violin = sum(violin > 0, na.rm = TRUE),
-#             has_informative = sum(bardot > 0 | box > 0 | dot > 0 | hist > 0 | violin > 0,
-#                                   na.rm = TRUE))
-
 
 show_dashboard <- function(...) {
   #----------------------------------------------------------------------------------------------------------------------
@@ -114,6 +89,7 @@ show_dashboard <- function(...) {
   ui <-
     tagList(
       tags$head(tags$script(type="text/javascript", src = "code.js")),
+      rclipboardSetup(),
       navbarPage(
         "Charité Metrics Dashboard", theme = shinytheme("flatly"), id = "navbarTabs",
         tabPanel("Start page", value = "tabStart",
@@ -123,26 +99,33 @@ show_dashboard <- function(...) {
                      column(8,
                             h1(style = "margin-left:0cm", strong("Charité Dashboard on Responsible Research"), align = "left"),
                             h4(style = "margin-left:0cm",
-                               HTML('Charité has committed itself to establish, promote and maintain a
-                              research environment which enhances the robustness of research and
-                              the reproducibility of results
-                              (<a href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/">Rethinking Health – Charité 2030</a>).')),
+                            HTML('Charité has committed itself to establish, promote and maintain a
+                            research environment which enhances the robustness of research and
+                            the reproducibility of results
+                                 (<a href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/">Rethinking Health – Charité 2030</a>).')),
                             h4(style = "margin-left:0cm",
-                               HTML('This dashboard gives an overview of several metrics of open and responsible
-                        research at the Charité (including the Berlin Institute of Health).
-                        For a detailed discussion about monitoring core Open Science practices see
-                        (<a href = "https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001949">Cobey et al. 2023</a>).
-                        For more detailed information on the methods used to calculate those metrics, the dataset
-                        underlying the metrics, or resources to improve your own research practices, click one of
-                        the following buttons on the right.')),
-                        # h4(style = "margin-left:0cm",
-                        #    "This dashboard is a pilot that is still under development. More metrics will be added in the future."),
-                        h4(style = "margin-left:0cm",
-                           HTML('For more detailed open access metrics you can visit the
-                         <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
-                         developed by the Charité Medical Library.')),
+                            HTML('This dashboard gives an overview of several metrics of open and responsible
+                            research at the Charité (including the Berlin Institute of Health).
+                            For a detailed discussion about monitoring core Open Science practices see
+                            (<a href = "https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001949">Cobey et al. 2023</a>).
+                            For more detailed information on the methods used to calculate those metrics, the dataset
+                            underlying the metrics, or resources to improve your own research practices, click one of
+                                 the following buttons on the right.')),
+                            # h4(style = "margin-left:0cm",
+                            #"This dashboard is a pilot that is still under development. More metrics will be added in the future."),
+                            h4(style = "margin-left:0cm",
+                            HTML('For more detailed open access metrics you can visit the
+                            <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
+                                 developed by the Charité Medical Library.')),
+                            br(),
+                            selectInput("citationStyle", "Cite us:",
+                                        c("APA",
+                                          "MLA",
+                                          "Chicago"),
+                                        width = "100px"),
+                            htmlOutput("citation_text"),
 
-                        br()),
+                        ),
                      column(4,
                             hr(),
                             br(),
@@ -196,10 +179,6 @@ show_dashboard <- function(...) {
         navbarMenu("Methods/Resources/Data",
                    methods_panel,
                    resources_panel,
-
-                   #possibly let users choose which dataset (publications/clinical trials) is shown
-                   #instead of showing both
-
                    tabPanel("Datasets", value = "tabDatasets",
                             h1("Datasets"),
                             h4("The following tables contain the datasets underlying the numbers and plots
@@ -333,9 +312,26 @@ show_dashboard <- function(...) {
     ctgovServer("plot_prosp_reg", dashboard_metrics_aggregate, reactive(RVs$total_ct), color_palette)
     visServer("plot_barzooka_problem", dashboard_metrics, "problem", reactive(RVs$total_vis), color_palette)
     visServer("plot_barzooka_inform", dashboard_metrics, "inform", reactive(RVs$total_vis), color_palette)
-    # orcidServer("plot_orcid", orcid_dataset, "total", reactive(RVs$total_bt), color_palette)
     orcidServer("plot_orcid_pubs", dashboard_metrics, "pubs", reactive(RVs$total_bt), color_palette)
     contribotServer("plot_contrib", dashboard_metrics, "credit", reactive(RVs$total_bt), color_palette)
+
+    output$citation_text <-
+      renderUI({
+        date <- format(Sys.Date(), "%d %B, %Y")
+        date_mla <- format(Sys.Date(), "%B %d %Y")
+        dplyr::case_when(
+          input$citationStyle == "APA" ~ HTML("BIH QUEST Center for Responsible Research. (n. d.).
+                          <i>Charité Dashboard on Responsible Research.</i>
+                          Retrieved", paste0(date, ","), "from https://quest-dashboard.charite.de/"),
+          input$citationStyle == "MLA" ~ HTML("BIH QUEST Center for Responsible Research. <i>Charité Dashboard on Responsible Research.</i>
+                                              https://quest-dashboard.charite.de/. Accessed  ", paste0(date_mla, ".")),
+          input$citationStyle == "Chicago" ~ HTML("BIH QUEST Center for Responsible Research. n. d.
+                                                  “Charité Dashboard on Responsible Research.” Accessed ", paste0(date,"."),
+                                                  "https://quest-dashboard.charite.de/.")
+        )
+
+      }) |>
+      bindEvent(input$citationStyle)
 
     output$OA <-
       renderUI({
@@ -471,8 +467,6 @@ show_dashboard <- function(...) {
     output$vis_inform <-
       renderUI({
         box_value <- get_current_vis(dashboard_metrics, perc_informative)
-        # paste((filter(barzooka_data, year == show_year)$has_bar/
-        #                       filter(barzooka_data, year == show_year)$total*100) %>% round(0), "%")
         box_text <- paste0("of publications from ", dashboard_metrics$year |> max(), " used more informative graph types")
 
         metricBoxOutput(title = "More informative graph types for continuous data",
@@ -484,21 +478,6 @@ show_dashboard <- function(...) {
                         info_text = vis_inform_tooltip,
                         info_alignment = "left")
       })
-
-    # output$orcid <- renderUI({
-    #   box_value <- orcid_dataset$orcid_count |> last()
-    #   box_text <- paste0("Charité researchers with an ORCID (as of ",
-    #                      orcid_dataset$date |> last() |> str_replace_all("-", "/"), ")")
-    #
-    #   metricBoxOutput(title = "ORCID",
-    #                   value = box_value,
-    #                   value_text = box_text,
-    #                   plot = orcidOutput('plot_orcid', height = "300px"),
-    #                   info_id = "infoOrcid",
-    #                   info_title = "ORCID",
-    #                   info_text = orcid_tooltip,
-    #                   info_alignment = "right")
-    # })
 
     output$orcid_pubs <- renderUI({
       box_value <- get_current_orcids_from_pubs(dashboard_metrics)
@@ -619,10 +598,6 @@ show_dashboard <- function(...) {
                   column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
                 ),
                 fluidRow(
-                  # column(
-                    # col_width, uiOutput("orcid") |>
-                    #   shinycssloaders::withSpinner(color = "#007265")
-                    # ),
                   column(
                     col_width, uiOutput("orcid_pubs") |>
                       shinycssloaders::withSpinner(color = "#007265")

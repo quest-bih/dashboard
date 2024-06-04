@@ -53,7 +53,7 @@ get_current_contribot <- function(data_table, metric) {
 make_contribot_plot_data <- function(data_table) {
   data_table |>
     dplyr::group_by(year) |>
-    dplyr::summarize(total_screened = sum(!is.na(has_contrib)),
+    dplyr::summarize(total_screened = sum(!is.na(has_contrib), na.rm = TRUE),
               has_contrib = sum(has_contrib, na.rm = TRUE),
               has_no_contrib = total_screened - has_contrib,
               has_orcid = sum(has_orcid, na.rm = TRUE),

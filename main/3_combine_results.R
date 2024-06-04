@@ -27,11 +27,13 @@ publications_2022 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2022
          title = `Article Title`,
          journal = `Source Title`,
          year = case_when(
+           doi == "10.1016/j.accpm.2021.101015" ~ `Publication Year` - 1,
            str_detect(`Early Access Date`, " ") ~ year(my(`Early Access Date`)),
            !str_detect(`Early Access Date`, " ") ~ as.numeric(`Early Access Date`) |>
              as.Date(origin = "1899-12-30") |>
              year(),
            str_detect(Duplikat, "halb") ~ year(`Date of Export`) - 1,
+
            .default = `Publication Year`
          ),
          publisher = Publisher,
@@ -82,7 +84,6 @@ open_data_22 <- read_csv(here("results", "Open_Data.csv")) |>
   select(doi, everything(), -article)
 
 
-
 #manually checked Open Data results + additional cases that were not detected by algorithm
 #but found in manual searches or submitted by researchers for the LOM
 
@@ -94,7 +95,8 @@ open_data_22_manual <- read_csv2(here("results", "OD_manual_tidy.csv")) |>
 open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
   select(doi, contains("code")) |>
   mutate(is_open_code = as.logical(is_open_code),
-         open_code_manual_check = as.logical(open_code_manual_check))
+         open_code_manual_check = as.logical(open_code_manual_check)) |>
+  filter(doi %in% open_data_22$doi)
 
 # dupes <- open_data_22 |>
 #   filter(doi %in% manual_code_results$doi)
