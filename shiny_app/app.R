@@ -138,12 +138,13 @@ show_dashboard <- function(...) {
                    ),
                    fluidRow(column(1,
                                    selectInput("citationStyle",
-                                               h5(HTML("<b>Cite us:</b>"), style = "margin-left:1.3cm"),
+                                               h5(HTML("<b>Cite us:</b>")),
                                         c("APA",
                                           "MLA",
                                           "Chicago"),
                                         width = "100px")),
                             column(11,
+                                   hr(),
                                    # br(),
                                    htmlOutput("citation_text"))
                             ),
@@ -331,7 +332,7 @@ show_dashboard <- function(...) {
                                                   “Charité Dashboard on Responsible Research.” Accessed ", paste0(date,"."),
                                                   "https://quest-dashboard.charite.de/.")
         )
-        h5(citation, style = "margin-left:0cm")
+        h5(citation, style = "margin-left:0cm; margin-top:8mm")
 
       }) |>
       bindEvent(input$citationStyle)
