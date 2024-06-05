@@ -116,14 +116,7 @@ show_dashboard <- function(...) {
                             HTML('For more detailed open access metrics you can visit the
                             <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
                                  developed by the Charité Medical Library.')),
-                            br(),
-                            selectInput("citationStyle", "Cite us:",
-                                        c("APA",
-                                          "MLA",
-                                          "Chicago"),
-                                        width = "100px"),
-                            htmlOutput("citation_text"),
-
+                            br()
                         ),
                      column(4,
                             hr(),
@@ -143,6 +136,17 @@ show_dashboard <- function(...) {
                             br(),
                             h4(style = "margin-left:18mm", strong("Latest Update: April 2024")))
                    ),
+                   fluidRow(column(1,
+                                   selectInput("citationStyle",
+                                               h5(HTML("<b>Cite us:</b>"), style = "margin-left:1.3cm"),
+                                        c("APA",
+                                          "MLA",
+                                          "Chicago"),
+                                        width = "100px")),
+                            column(11,
+                                   # br(),
+                                   htmlOutput("citation_text"))
+                            ),
                  ),
 
                  # generate Open Science & Clinical trial metrics UI dynamically to determine column width during start of the app
@@ -203,7 +207,6 @@ show_dashboard <- function(...) {
                                          HTML('This dataset was already published
                         <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
                         style = "default")),
-
               br(),
               bsCollapse(id = "datasetPanels_PublicationDatasetFAIR",
                          bsCollapsePanel(title = "Data reusability (FAIR data) dataset",
@@ -318,7 +321,7 @@ show_dashboard <- function(...) {
       renderUI({
         date <- format(Sys.Date(), "%d %B, %Y")
         date_mla <- format(Sys.Date(), "%B %d %Y")
-        dplyr::case_when(
+        citation <- dplyr::case_when(
           input$citationStyle == "APA" ~ HTML("BIH QUEST Center for Responsible Research. (n. d.).
                           <i>Charité Dashboard on Responsible Research.</i>
                           Retrieved", paste0(date, ","), "from https://quest-dashboard.charite.de/"),
@@ -328,6 +331,7 @@ show_dashboard <- function(...) {
                                                   “Charité Dashboard on Responsible Research.” Accessed ", paste0(date,"."),
                                                   "https://quest-dashboard.charite.de/.")
         )
+        h5(citation, style = "margin-left:0cm")
 
       }) |>
       bindEvent(input$citationStyle)
