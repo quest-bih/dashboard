@@ -49,11 +49,10 @@ prosp_reg_dataset_shiny <- read_csv("./data/prosp_reg_dataset_shiny.csv") %>%
                  has_prospective_registration),
             as.character)
 preprints_dataset_shiny <- read_csv("./data/preprints_dataset_shiny.csv")
-
 orcid_dataset <- read_csv("./data/orcid_results.csv")
 
 # fair dataset
-fair_dataset <- read_csv("./data/fair_assessment_2021.csv", show_col_types = FALSE) |>
+fair_dataset <- read_csv("./data/fair_assessment_2022.csv", show_col_types = FALSE) |>
   arrange(repository_re3data, article)
 
 # fair dataset for datatables
@@ -576,7 +575,7 @@ server <- function(input, output, session)
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "FAIR scores by principles",
                                              value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
-                                             value_text = "is the average FAIR score of datasets from 2021 in disciplinary repositories",
+                                             value_text = "is the average FAIR score of datasets from 2022 in disciplinary repositories",
                                              plot = plotlyOutput('plot_fair_principle', height = "300px"),
                                              info_id = "infoFAIRprinciples",
                                              info_title = "FAIR scores by principles",
@@ -595,7 +594,7 @@ server <- function(input, output, session)
                 column(col_width, metric_box(style_resp = style_resp,
                                              title = "FAIR scores by identifiers",
                                              value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
-                                             value_text = "of 2021 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
+                                             value_text = "of 2022 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
                                              plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
                                              info_id = "infoFAIRidentifiers",
                                              info_title = "Dataset identifiers",
