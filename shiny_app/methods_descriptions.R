@@ -14,12 +14,12 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                     bsCollapsePanel("Publication Search",
                                     p("Many of the assessed metrics are publication-based metrics.
                         To assess those metrics on the institutional level, we first need to
-                        identify the publications that can be assigned to the Charité.
+                        identify the publications that can be assigned to the Charité and BIH.
                         The Charité Medical Library provided this list of publications, which
                         was created by merging, deduplicating and improving data resulting from
                         searches in two separate publication databases. Web of Science and Embase
                         were both searched for biomedical publications with at least one author
-                        affiliated to the Charité or the Berlin Institute of Health."),
+                        affiliated to the Charité or BIH."),
                                     value = "methodsPanels_PublicationSearch",
                                     style = "default")),
 
@@ -29,12 +29,12 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                     methods_panel("Open Access",
 
                                   "The open access metric measures the degree of openness
-                        of the publications by Charité researchers. Open access publications
+                        of the publications by Charité and BIH researchers. Open access publications
                         are available to everyone worldwide for free, helping to distribute
                         research results quickly and transparently.",
 
                                   HTML('The Charité Medical Library first created a list
-                        of journal article publications by Charité researchers, then queried
+                        of journal article publications by Charité and BIH researchers, then queried
                         the Unpaywall database via its API to obtain information on the
                         Open Access (OA) status of those publications. Unpaywall is today
                         the most comprehensive database of open access information on
@@ -62,7 +62,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         delay, such that the OA percentage for a given year typically rises
                         retrospectively. Thus the point in time of data retrieval is
                         important for understanding the OA percentage. The current OA status
-                        data were retrieved in September 2022.'),
+                        data were retrieved in June 2023.'),
 
                                   "Unpaywall only stores information for publications that
                         have a DOI assigned by Crossref. Articles without a Crossref DOI
@@ -84,7 +84,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         for further details on the Open Data definition used see
                         <a href="https://osf.io/preprints/metaarxiv/ajhs4/">
                         here</a>. This definition is also used for the distribution of performance-oriented
-                        funding for publications with Open Data at the Charité.
+                        funding for publications with Open Data at the Charité and BIH.
                         Here, we distinguish several subcategories for Open Data & Open Code.
                         For Open Data we distinguish 1) disciplinary repositories, that are typically
                         made for a specific type of dataset with a standardized format and which is used in
@@ -109,7 +109,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         A text-mining approach is necessary, as there is not yet a standardized
                         way of sharing and reporting Open Data, and no database offers
                         comprehensive information on shared datasets or code.
-                        To assess data and code sharing for the Charité publications,
+                        To assess data and code sharing for the Charité and BIH publications,
                         we first downloaded the full-texts of the publications that were
                         accessible to us using the unpaywall and crossref APIs.
                         Then we screened those full-texts with ODDPub and
@@ -118,7 +118,12 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         by ODDPub as potentially open data or open code, in order to exclude
                         false positive detections. We calculated the percentages of
                         Open Data & Code relative to the publications with available full texts,
-                        which could indeed be screened.'),
+                        which could indeed be screened.
+                        For the publications from 2022 our Open Data criteria were updated to exclude
+                        non-persistent repositories such as github. ODDPub was also being updated at
+                        the same time. While we used both the legacy and the development versions to
+                        flag potentially open data for manual review, only the output from the final
+                        version is included in the dataset.') ,
 
                                   "Several limitations apply:
                         Only full texts for open access publications or publications in journals
@@ -127,34 +132,61 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         Open Data is not relevant for all publications, so we would not
                         expect 100% of the publications to contain Open Data, even not in an ideal case.
                         We considered all publications that had at least one author affiliated
-                        with the Charité – in some cases where those were only middle authors
+                        with the Charité or BIH – in some cases where those were only middle authors
                         with minor contributions to the project, they might have little impact
                         on the decision if data were made available."),
 
-                    # ODDPub only finds ~75% of all Open Data
-                    # publications and finds false positive cases (no manual check of the results
-                    # is done).
-                    # ODDPub also does not verify that the indicated dataset
-                    # is indeed available and if the dataset fulfills our definition
-                    # of Open Data.
+                    methods_panel("Data or Code Availability Statements",
+                                  "This metric measures how many publications
+                        include a statement about the availability of research data or analysis code in
+                        the publication. Reporting such statements in a dedicated section increases the
+                        findability of shared data and code. Openly shared data and code makes research
+                        more transparent, as research findings can be reproduced.",
+                                  HTML('To identify publications that include availability
+                                       statements about research data or analysis code,
+                        we use the text-mining algorithm ODDPub
+                        (Code: <a href="https://github.com/quest-bih/oddpub">
+                        https://github.com/quest-bih/oddpub</a>,
+                        publication: <a href="https://doi.org/10.5334/dsj-2020-042">
+                        https://doi.org/10.5334/dsj-2020-042</a>),
+                        which was developed by QUEST. ODDPub searches the publication full-text
+                        for statements indicating sharing of raw data or analysis code.
+                        A text-mining approach is necessary, as there is not yet a standardized
+                        way of reporting data or code availability.
+                        To assess the reporting of data and code availability for the
+                        Charité and BIH publications, we first downloaded the full-texts
+                        of the publications that were accessible to us using the unpaywall, crossref, and
+                        publisher APIs. Then we screened those full-texts with ODDPub and
+                        summarized the results for each publication year.
+                        We calculated the percentages of data or code availability statements relative to
+                        the publications with available full texts, which could indeed be screened.'),
+                                  "Several limitations apply: The decision whether to include a
+                       Data or Code Availability Statement largely depends on the journal policy.
+                       We considered all publications that had at least one author affiliated
+                       with the Charité or BIH – in some cases where those were only middle authors
+                       with minor contributions to the project, they might have little impact on
+                       the decision to report data or code availability.
+                       The ODDPub tool takes PDF files as input, which are not optimized for
+                       machine readability. As a result complex page layouts may cause sections and columns
+                       to be improperly parsed and the data or code availability statements to be overlooked."
+                                  ),
 
                     methods_panel("Preprints",
 
-                                  "This metric measures how many preprints with authors from the Charité
+                                  "This metric measures how many preprints with authors from the Charité or BIH
                         have been published on a range of preprint servers. Preprints allow
                         rapid and transparent communication of preliminary research results
                         before publication in a peer-reviewed journal.",
 
-                                  HTML('To identify preprints published by Charité authors we used the
-                        <a href="www.dimensions.ai">dimensions</a> database,
+                                  HTML('To identify preprints published by Charité and BIH authors we used the
+                        <a href="https://www.OpenAlex.org">OpenAlex</a> database,
                         which indexes many preprint servers, including arXiv and bioRxiv.
-                        We searched for articles of the type \'preprint\' and
-                        with authors assigned to the Charité via its Grid ID. The number of preprints
+                        We searched for articles of the type \'posted-content\' and version \'submittedVersion\'
+                        with authors assigned to the Charité or BIH via their ror IDs. The number of preprints
                         found by this search are then summarized by year.
-                        The current preprint data were retrieved on: 30.09.2022.'),
+                        The current preprint data were retrieved on: 20.11.2023.'),
 
-                                  "Not all relevant preprint servers are currently indexed by dimensions,
-                        including some of the bigger preprint servers like OSF preprints or medRxiv.
+                                  "Not all relevant preprint servers are currently indexed by OpenAlex.
                         Thus we likely underestimate the number of published preprints.")),
          hr(),
          h2("Clinical trials"),
@@ -230,31 +262,109 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         ClinicalTrials.gov while there are other available registries as well.
                         Also, we rely on the information on ClinicalTrials.gov being accurate.")),
          hr(),
-         h2("Persistent Identifiers"),
+         h2("Broader Transparency"),
 
-         bsCollapse(id = "methodsPanels_persistent_ids",
+         bsCollapse(id = "methodsPanels_broader_transparency",
 
-         methods_panel("ORCID",
-
-                       "This metric measures how many researchers currently affiliated with the
-                        Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
-                        despite name variants or name changes and uniquely associates
-                        publications or other types of research output with them.
-                        Many publishers now request ORCIDs when manuscripts are submitted.",
-
-                       HTML('To identify Charité researchers with ORCIDs, we query the
-                        <a href="https://members.orcid.org/api">ORCID API</a> using the following
-                        search query: "current-institution-affiliation-name:
-                        (Charité OR Charite OR (Universitätsmedizin AND Berlin)
-                        OR (Berlin AND Institute AND of AND Health))". That way, we only identify
-                        researchers that have listed the Charité as their current institution,
-                        but not researchers that have listed it as a past institution.'),
-
-                       "The method relies on the information entered by the ORCID
-                        users being up to date. Some users might not enter correct or up to
-                        date information or keeping their account information private,
-                        which could then not be found. Also no historic data are available
-                        for this metric.")),
+         # methods_panel("ORCID",
+         #
+         #               "This metric measures how many researchers currently affiliated with the
+         #                Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
+         #                despite name variants or name changes and uniquely associates
+         #                publications or other types of research output with them.
+         #                Many publishers now request ORCIDs when manuscripts are submitted.",
+         #
+         #               HTML('To identify Charité researchers with ORCIDs, we query the
+         #                <a href="https://members.orcid.org/api">ORCID API</a> using the following
+         #                search query: "current-institution-affiliation-name:
+         #                (Charité OR Charite OR (Universitätsmedizin AND Berlin)
+         #                OR (Berlin AND Institute AND of AND Health))". That way, we only identify
+         #                researchers that have listed the Charité as their current institution,
+         #                but not researchers that have listed it as a past institution.'),
+         #
+         #               "The method relies on the information entered by the ORCID
+         #                users being up to date. Some users might not enter correct or up to
+         #                date information or keeping their account information private,
+         #                which could then not be found. Also no historic data are available
+         #                for this metric."),
+         methods_panel("ORCIDs in publications",
+                       "This metric measures the percentage of screened publications that had
+                              authors with Charité or BIH affiliations and included at least one ORCID in the article.
+                              The ORCID makes each researcher uniquely identifiable
+                              despite name variants or name changes and uniquely associates
+                              publications or other types of research output with him/her.
+                              Many publishers now request ORCIDs when manuscripts are submitted.",
+                       HTML('The Charité Medical Library first created a list
+                            of journal article publications by Charité and BIH researchers and manually
+                            extracted the corresponding author affiliations. To identify publications
+                            that include ORCIDs we used the text-mining algorithm ContriBOT
+                            (Code: <a href="https://github.com/quest-bih/ContriBOT">
+                            https://github.com/quest-bih/ContriBOT</a>),
+                            which was developed by QUEST. ContriBOT searches the publication full-text
+                            for sections in the manuscript that include statements indicating authorship
+                            criteria or contributions, acknowledgements, and ORCIDs.
+                            A text-mining approach is necessary, as there is not yet a standardized
+                            way of reporting ORCIDs.
+                            To extract the ORCIDs from the Charité and BIH publications,
+                            we first downloaded the full-texts of the publications that were
+                            accessible to us using the unpaywall and crossref APIs.
+                            We screened both the PDF version of the downloaded article, as well
+                            as the plain text version, using ContriBOT and
+                            summarized the results for each publication year. This was
+                            necessary, because some ORCIDs are included only as hyperlinks,
+                            while others only as plain text.
+                            We calculated the percentage of articles including any ORCIDs and with
+                            corresponding authors with Charité or BIH affiliations relative
+                            to the publications with available full texts which could indeed
+                            be screened.'),
+                       "We assumed that the corresponding authors might have an impact on
+                       the decision of all authors to include their ORCIDs, but this is not
+                       necessarily the case. We did not check whether the corresponding authors
+                       themselves included their ORCIDs in the publications, but whether at least
+                       one ORCID was included. As ORCIDs become more widely adopted and reported we
+                       may further refine this metric."),
+         methods_panel("Authorship Statements",
+                       "This metric measures the percentage of screened publications that
+                       included an authorship statement. Such statements ideally clearly state
+                       which author made which contributions to the manuscript, following the
+                       Contributor Roles Taxonomy.
+                       Many publishers now require submitted manuscripts to include authorship
+                       statements.",
+                       HTML('The Charité Medical Library first created a list
+                            of journal article publications by Charité and BIH researchers and manually
+                            extracted the corresponding author affiliations. To identify publications
+                            that include ORCIDs we used the text-mining algorithm ContriBOT
+                            (Code: <a href="https://github.com/quest-bih/ContriBOT">
+                            https://github.com/quest-bih/ContriBOT</a>),
+                            which was developed by QUEST. ContriBOT searches the publication full-text
+                            for sections in the manuscript that include statements indicating authorship
+                            criteria or contributions, acknowledgements, and ORCIDs.
+                            A text-mining approach is necessary, as there is not yet a standardized
+                            way of reporting authorship criteria and the existing
+                            <a href="https://credit.niso.org/">
+                            Contributor Roles Taxonomy</a> is not adopted by all journals.
+                            To assess author contribution statements for the Charité and BIH publications,
+                            we first downloaded the full-texts of the publications that were
+                            accessible to us using the unpaywall and crossref APIs.
+                            Then we converted those full-texts from PDF files to plain text files
+                            with ODDPub, screened them with ContriBOT and summarized the results
+                            for each publication year.
+                            We calculated the percentage of articles including
+                            Authorship Statements relative to the publications with available
+                            full texts, which could indeed be screened.'),
+                       HTML('Several limitations apply: The decision whether to include an
+                       Author Contribution Statement largely depends on the journal policy.
+                       We considered all publications that had at least one author affiliated
+                       with the Charité or BIH – in some cases where those were only middle authors
+                       with minor contributions to the project, they might have little impact on
+                       the decision to report author contributions. The current version of the
+                       ContriBOT tool only detects the presence of author contribution statements, but its
+                       functionality will be expanded to detect adherence to the
+                       <a href="https://credit.niso.org/">CRediT taxonomy<a>.
+                       The ContriBOT tool takes PDF files as input, which are not optimized for
+                       machine readability. As a result complex page layouts may cause sections and columns
+                       to be improperly parsed and the author contribution statements to be overlooked.'))
+         ),
 
 
          hr(),
@@ -345,8 +455,8 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 #------------------------------------------------------------------------
 
 
-open_access_tooltip <- strwrap("The open access metric shows the percentage of Charité original
-                             research publications that are published as open access (OA) articles.
+open_access_tooltip <- strwrap("This metric shows the percentage of Charité original
+                             research publications that were published as open access (OA) articles.
                              Gold OA denotes publication in a pure OA journal.
                              Green OA denotes a freely available repository version. Hybrid OA denotes
                              an OA publication in a journal with offers both a subscription based model
@@ -354,38 +464,64 @@ open_access_tooltip <- strwrap("The open access metric shows the percentage of C
                              freely available on the journal page, but without a clear open license.
                              Closed articles are not freely available. For some articles no open access
                              information was available.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
-open_data_tooltip <- strwrap("The Open Data metric measures the the percentage of screened publications
+open_data_tooltip <- strwrap("This metric measures the the percentage of screened publications
                              that state that they shared their research data.
                              Openly shared data makes research more transparent,
                              as research findings can be reproduced. Additionally, shared datasets
                              can be reused and combined by other scientists to answer new research
                              questions.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
-open_code_tooltip <- strwrap("The Open Code metric measures the the percentage of screened publications
+open_code_tooltip <- strwrap("This metric measures the percentage of screened publications
                              that state that they shared their analysis code.
                              Like openly shared data, Open Code makes research more transparent,
                              as research findings can be reproduced.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
-preprints_tooltip <- strwrap("This metric measures how many preprints with authors from the Charité
-                             have been published on a range of preprint servers. Preprints allow
+das_tooltip <- strwrap("This metric measures the percentage of screened publications
+                       that included a statement about data or code availability, regardless of
+                       whether data or code were actually shared.
+                       Having a dedicated section for data or code availability increases the findability of these resources.
+                       - Click for methods details.") |>
+  paste(collapse = " ")
+
+preprints_tooltip <- strwrap("This metric measures how many preprints with authors from the Charité and BIH
+                             were published on a range of preprint servers. Preprints allow
                              rapid and transparent communication of preliminary research results
                              before publication in a peer-reviewed journal.
-                             - Click for methods details.") %>%
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
-orcid_tooltip <- strwrap("This metric measures how many researchers currently affiliated with the
-                          Charité have an ORCID. The ORCID makes each researcher uniquely identifiable
-                          despite name variants or name changes and uniquely associates
-                          publications or other types of research output with him/her.
-                          Many publishers now request ORCIDs when manuscripts are submitted.
-                          - Click for methods details.") %>%
+# orcid_tooltip <- strwrap("This metric measures how many researchers currently affiliated with the
+#                           Charité or BIH have an ORCID. The ORCID makes each researcher uniquely identifiable
+#                           despite name variants or name changes and uniquely associates
+#                           publications or other types of research output with him/her.
+#                           Many publishers now request ORCIDs when manuscripts are submitted.
+#                           - Click for methods details.") |>
+#   paste(collapse = " ")
+
+
+orcid_pubs_tooltip <- strwrap("This metric measures the percentage of screened publications that had
+                              authors with Charité or BIH affiliations and included at least one ORCID in the article.
+                              The ORCID makes each researcher uniquely identifiable
+                              despite name variants or name changes and uniquely associates
+                              publications or other types of research output with him/her.
+                              Many publishers now request ORCIDs when manuscripts are submitted.
+                              - Click for methods details.") |>
+  paste(collapse = " ")
+
+authorship_tooltip <- strwrap("This metric measures the percentage of screened publications that
+                              included an authorship statement. Such statements ideally clearly state
+                              which author made which contributions to the manuscript, following the
+                              Contributor Roles Taxonomy.
+                              Many publishers now require submitted manuscripts to include authorship
+                              statements.
+                              - Click for methods details.") |>
   paste(collapse = " ")
 
 
@@ -398,7 +534,7 @@ summary_results_tooltip <- strwrap("This metric measures how many clinical trial
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.
-                                       - Click for methods details.") %>%
+                                       - Click for methods details.") |>
   paste(collapse = " ")
 
 intovalue_tooltip <- strwrap("This metric measures how many clinical trials registered on CT.gov or
@@ -413,7 +549,7 @@ intovalue_tooltip <- strwrap("This metric measures how many clinical trials regi
                         A fast dissemination of the trial results is crucial to make the evidence gained
                         in those trials available. The World Health organization recommends publishing
                         clinical trial results within one year after the end of a study.
-                                       - Click for methods details.") %>%
+                                       - Click for methods details.") |>
   paste(collapse = " ")
 
 prospective_registration_tooltip <- strwrap("This metric measures if the clinical trials are registered before the
@@ -421,7 +557,7 @@ prospective_registration_tooltip <- strwrap("This metric measures if the clinica
                         The idea of prospective registration of studies is to make the trail specifications,
                         including primary and secondary outcomes, publicly available before study start.
                         Prospective registration adds transparency, helps protect against outcome switching.
-                                       - Click for methods details.") %>%
+                                       - Click for methods details.") |>
   paste(collapse = " ")
 
 
@@ -434,7 +570,7 @@ vis_problem_tooltip <- strwrap("Bar graphs for continuous data are common but ar
                                 such as dot plots, box plots, violin plots or histograms. Pie charts are suboptimal,
                                 as humans have difficulty assessing proportions based on differences in area and angle.
                                 This is especially difficult when a pie chart includes many slices, or groups with similar proportions.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 
@@ -444,13 +580,13 @@ vis_inform_tooltip <- strwrap("Bar graphs for continuous data are common but are
                                 Bar graphs of continuous data should be replaced with more informative graphs
                                 that provide information about the data distribution and sample size,
                                 such as dot plots, box plots, violin plots or histograms.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 12 (out of 15) FAIR principles.
 As FAIR principles are abstract and generically defined F-UJI specifies one or more metrics for each assessed FAIR principle.
 Since each metric can be tested in various means depending on data contexts and current best practises F-UJI additionally uses one or more practical tests to evaluate datasets against a particular metric.
-                             - Click for more info.") %>%
+                             - Click for more info.") |>
   paste(collapse = " ")
 
 fair_repositories_tooltip <- strwrap("This metric measures the average FAIR score (in percent) by data repositories
@@ -460,7 +596,7 @@ fair_repositories_tooltip <- strwrap("This metric measures the average FAIR scor
                                 and Reusability of digital assets.
                                 The FAIR score is based on practical tests executed by an automated FAIR data assessment tool
                                 against specific metrics derived from the FAIR principles.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 fair_principles_tooltip <- strwrap("This metric measures the average FAIR score (in percent)
@@ -468,15 +604,15 @@ fair_principles_tooltip <- strwrap("This metric measures the average FAIR score 
                                 and Reusability for research data published in 2021.
                                 The FAIR score is based on practical tests executed by the automated FAIR data assessment tool
                                 F-UJI against specific metrics derived from the FAIR principles.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
 
 fair_licenses_tooltip <-
   strwrap(
     "This metric measures if a standard, machine readable license is specified under which research data published in 2021 can be reused. It is derived from the FAIR principle R1.1 — (Meta)data are released with a clear and accessible data usage license. - Click for more info."
-  ) %>%
+  ) |>
   paste(collapse = " ")
 
 fair_identifiers_tooltip <- strwrap("This metric measures the average FAIR score of the 2021 datasets by the unique identifiers. It is derived from the FAIR principle F1 — (Meta)data are assigned a globally unique and persistent identifier.
-                                - Click for more info.") %>%
+                                - Click for more info.") |>
   paste(collapse = " ")
