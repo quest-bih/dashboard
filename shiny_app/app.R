@@ -40,13 +40,13 @@ source("resources_descriptions.R", encoding = "UTF-8")
 source("fair_panel.R", encoding = "UTF-8")
 source("bss_panel.R", encoding = "UTF-8")
 source("about_page.R", encoding = "UTF-8")
-source("plots.R", encoding = "UTF-8")
+source("iv_plot.R", encoding = "UTF-8")
 source("datasets_panel.R")
 
 dashboard_metrics <- vroom("./data/dashboard_metrics.csv")
 # dashboard_metrics <- read_csv("./shiny_app/data/dashboard_metrics.csv")
 dashboard_metrics_aggregate <- vroom("./data/dashboard_metrics_aggregate.csv")
-  # dashboard_metrics_aggregate <- read_csv("./shiny_app/data/dashboard_metrics_aggregate.csv") |>
+# dashboard_metrics_aggregate <- read_csv("./shiny_app/data/dashboard_metrics_aggregate.csv") |>
 
 
 # EU_trialstracker_dataset <- read_csv("./data/EU_trialstracker_past_data.csv")
@@ -98,12 +98,12 @@ show_dashboard <- function(...) {
                      column(8,
                             h1(style = "margin-left:0cm", strong("Charité Dashboard on Responsible Research"), align = "left"),
                             h4(style = "margin-left:0cm",
-                            HTML('Charité has committed itself to establish, promote and maintain a
+                               HTML('Charité has committed itself to establish, promote and maintain a
                             research environment which enhances the robustness of research and
                             the reproducibility of results
                                  (<a href="https://www.charite.de/en/charite/about_us/strategic_direction_2030/">Rethinking Health – Charité 2030</a>).')),
                             h4(style = "margin-left:0cm",
-                            HTML('This dashboard gives an overview of several metrics of open and responsible
+                               HTML('This dashboard gives an overview of several metrics of open and responsible
                             research at the Charité (including the Berlin Institute of Health).
                             For a detailed discussion about monitoring core Open Science practices see
                             (<a href = "https://journals.plos.org/plosbiology/article?id=10.1371/journal.pbio.3001949">Cobey et al. 2023</a>).
@@ -113,11 +113,11 @@ show_dashboard <- function(...) {
                             # h4(style = "margin-left:0cm",
                             #"This dashboard is a pilot that is still under development. More metrics will be added in the future."),
                             h4(style = "margin-left:0cm",
-                            HTML('For more detailed open access metrics you can visit the
+                               HTML('For more detailed open access metrics you can visit the
                             <a href="https://medbib-charite.github.io/oa-dashboard/">Charité Open Access Dashboard</a>
                                  developed by the Charité Medical Library.')),
                             br()
-                        ),
+                     ),
                      column(4,
                             hr(),
                             br(),
@@ -139,15 +139,15 @@ show_dashboard <- function(...) {
                    fluidRow(column(1,
                                    selectInput("citationStyle",
                                                h5(HTML("<b>Cite us:</b>")),
-                                        c("APA",
-                                          "MLA",
-                                          "Chicago"),
-                                        width = "100px")),
+                                               c("APA",
+                                                 "MLA",
+                                                 "Chicago"),
+                                               width = "100px")),
                             column(11,
                                    hr(),
                                    # br(),
                                    htmlOutput("citation_text"))
-                            ),
+                   ),
                  ),
 
                  # generate Open Science & Clinical trial metrics UI dynamically to determine column width during start of the app
@@ -187,53 +187,53 @@ show_dashboard <- function(...) {
                             h1("Datasets"),
                             h4("The following tables contain the datasets underlying the numbers and plots
               shown for the metrics included in this Shiny app."),
-              br(),
-              bsCollapse(id = "datasetPanels_PublicationDataset",
-                         bsCollapsePanel("Publication dataset",
-                                         DT::dataTableOutput("data_table_publ"),
-                                         style = "default")),
-              br(),
-              bsCollapse(id = "datasetPanels_PreprintDataset",
-                         bsCollapsePanel("Preprint dataset",
-                                         DT::dataTableOutput("data_table_preprints"),
-                                         style = "default")),
-              br(),
-              bsCollapse(id = "datasetPanels_PublicationDataset",
-                         bsCollapsePanel("Prospective registration dataset",
-                                         DT::dataTableOutput("data_table_prosp_reg"),
-                                         style = "default")),
-              br(),
-              bsCollapse(id = "datasetPanels_PublicationDataset",
-                         bsCollapsePanel("Timely publication dataset",
-                                         HTML('This dataset was already published
+                            br(),
+                            bsCollapse(id = "datasetPanels_PublicationDataset",
+                                       bsCollapsePanel("Publication dataset",
+                                                       DT::dataTableOutput("data_table_publ"),
+                                                       style = "default")),
+                            br(),
+                            bsCollapse(id = "datasetPanels_PreprintDataset",
+                                       bsCollapsePanel("Preprint dataset",
+                                                       DT::dataTableOutput("data_table_preprints"),
+                                                       style = "default")),
+                            br(),
+                            bsCollapse(id = "datasetPanels_PublicationDataset",
+                                       bsCollapsePanel("Prospective registration dataset",
+                                                       DT::dataTableOutput("data_table_prosp_reg"),
+                                                       style = "default")),
+                            br(),
+                            bsCollapse(id = "datasetPanels_PublicationDataset",
+                                       bsCollapsePanel("Timely publication dataset",
+                                                       HTML('This dataset was already published
                         <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
-                        style = "default")),
-              br(),
-              bsCollapse(id = "datasetPanels_PublicationDatasetFAIR",
-                         bsCollapsePanel(title = "Data reusability (FAIR data) dataset",
-                                         DT::dataTableOutput("data_table_FAIR"),
-                                         style = "default")),
-              br(),
-              bsCollapse(id = "datasetPanels_PublicationDatasetBSS",
-                         bsCollapsePanel(title = "Berlin Science Survey (BSS) dataset",
-                                         DT::dataTableOutput("data_table_BSS"),
-                                         style = "default")),
-              br(),
-              br(),
-              br(),
-              br(),
-              br(),
-              br(),
-              br(),
-              br(),
-              br(),
-              hr(),
-              bsCollapsePanel(strong("Impressum"),
-                              impressum_text,
-                              style = "default"),
-              bsCollapsePanel(strong("Datenschutz"),
-                              datenschutz_text,
-                              style = "default")
+                                                       style = "default")),
+                            br(),
+                            bsCollapse(id = "datasetPanels_PublicationDatasetFAIR",
+                                       bsCollapsePanel(title = "Data reusability (FAIR data) dataset",
+                                                       DT::dataTableOutput("data_table_FAIR"),
+                                                       style = "default")),
+                            br(),
+                            bsCollapse(id = "datasetPanels_PublicationDatasetBSS",
+                                       bsCollapsePanel(title = "Berlin Science Survey (BSS) dataset",
+                                                       DT::dataTableOutput("data_table_BSS"),
+                                                       style = "default")),
+                            br(),
+                            br(),
+                            br(),
+                            br(),
+                            br(),
+                            br(),
+                            br(),
+                            br(),
+                            br(),
+                            hr(),
+                            bsCollapsePanel(strong("Impressum"),
+                                            impressum_text,
+                                            style = "default"),
+                            bsCollapsePanel(strong("Datenschutz"),
+                                            datenschutz_text,
+                                            style = "default")
                    )
         ),
         about_page,
@@ -536,13 +536,13 @@ show_dashboard <- function(...) {
                            shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("preprints") |>
                            shinycssloaders::withSpinner(color = "#007265"))
-                  ),
-                  fluidRow(column(col_width, uiOutput("DAS") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
-                  column(col_width, uiOutput("OD") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
-                  column(col_width, uiOutput("OC") |>
-                           shinycssloaders::withSpinner(color = "#007265"))
+                ),
+                fluidRow(column(col_width, uiOutput("DAS") |>
+                                  shinycssloaders::withSpinner(color = "#007265")),
+                         column(col_width, uiOutput("OD") |>
+                                  shinycssloaders::withSpinner(color = "#007265")),
+                         column(col_width, uiOutput("OC") |>
+                                  shinycssloaders::withSpinner(color = "#007265"))
                 )
       )
     })
@@ -571,16 +571,16 @@ show_dashboard <- function(...) {
                            column(col_width, uiOutput("sumres") |>
                                     shinycssloaders::withSpinner(color = "#007265")),
                            column(col_width, metricBoxOutput(title = "Timely publication of results",
-                                                value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
-                                                value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
-                                                                    intovalue_dataset$completion_year |> last(),
-                                                                    " published results
+                                                             value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
+                                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
+                                                                                 intovalue_dataset$completion_year |> last(),
+                                                                                 " published results
                                                                  within 2 years"),
-                                                plot = plotlyOutput('plot_intovalue', height = "300px"),
-                                                info_id = "infoIntoValue",
-                                                info_title = "Timely publication of results",
-                                                info_text = intovalue_tooltip,
-                                                info_alignment = alignment)),
+                                                             plot = plotlyOutput('plot_intovalue', height = "300px"),
+                                                             info_id = "infoIntoValue",
+                                                             info_title = "Timely publication of results",
+                                                             info_text = intovalue_tooltip,
+                                                             info_alignment = alignment)),
                            column(col_width, uiOutput("prospreg") |>
                                     shinycssloaders::withSpinner(color = "#007265")))))
       )
@@ -591,10 +591,10 @@ show_dashboard <- function(...) {
       if(input$width < 1400) {
         col_width <- 6
         alignment <- "left"
-        } else {
-          col_width <- 4
-          alignment <- "right"
-        }
+      } else {
+        col_width <- 4
+        alignment <- "right"
+      }
       wellPanel(style = "padding-top: 0px; padding-bottom: 0px;",
                 h2(strong("Broader Transparency"), align = "left"),
                 fluidRow(
@@ -610,9 +610,9 @@ show_dashboard <- function(...) {
                     col_width, uiOutput("authorship") |>
                       shinycssloaders::withSpinner(color = "#007265")
                   )
-                  )
                 )
-      })
+      )
+    })
 
     output$Visualizations_metrics <- renderUI({
 
@@ -624,9 +624,9 @@ show_dashboard <- function(...) {
                 h2(strong("Visualizations"),
                    align = "left"),
                 fluidRow(
-                           column(2, checkboxInput("checkbox_total_Vis", strong("Show absolute numbers"), value = FALSE)),
-                           column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
-                         ),
+                  column(2, checkboxInput("checkbox_total_Vis", strong("Show absolute numbers"), value = FALSE)),
+                  column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
+                ),
                 fluidRow(
                   column(col_width, uiOutput("vis_problem") |>
                            shinycssloaders::withSpinner(color = "#007265")),
@@ -635,459 +635,432 @@ show_dashboard <- function(...) {
                 ))
     })
 
-    output$DataReusability_2_metrics <- renderUI({
+  output$DataReusability_2_metrics <- renderUI({
 
-      # Create choices for selectInput
-      choices <- list(
-        `Repository types` = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) %>% setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
-        `General-purpose repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])) %>%
-          setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])),
-        `Field-specific repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"])) %>%
-          setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]))
-      )
+    # Create choices for selectInput
+    choices <- list(
+      `Repository types` = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) %>% setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
+      `General-purpose repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])) %>%
+        setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])),
+      `Field-specific repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"])) %>%
+        setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]))
+    )
 
-      title <- "FAIR assessment by F-UJI"
-      # title <- NULL
-      value <- textOutput("select_perc")
-      value_text <- textOutput("select_text")
-      plot <- plotlyOutput('plot_fair_principle_sunburst', height = "400px")
+    title <- "FAIR assessment by F-UJI"
+    # title <- NULL
+    value <- textOutput("select_perc")
+    value_text <- textOutput("select_text")
+    plot <- plotlyOutput('plot_fair_principle_sunburst', height = "400px")
 
-      wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                h2(strong("FAIR assessment"), align = "left"),
-                fluidRow(
-                  column(8, selectInput("select_repository", label = "Select repository type or repository",
-                                        choices = choices,
-                                        selected = 1))),
-                fluidRow(
-                  column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
-                                      fluidRow(
-                                        column(8, align="left", h4(strong(title)))
-                                      ),
-                                      h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-                                      h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
-                                      plot)),
-                  column(4, includeMarkdown("texts/text_FAIR.md"))
-                )
-      )
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+              h2(strong("FAIR assessment"), align = "left"),
+              fluidRow(
+                column(8, selectInput("select_repository", label = "Select repository type or repository",
+                                      choices = choices,
+                                      selected = 1))),
+              fluidRow(
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                                    fluidRow(
+                                      column(8, align="left", h4(strong(title)))
+                                    ),
+                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    plot)),
+                column(4, includeMarkdown("texts/text_FAIR.md"))
+              )
+    )
 
-    })
+  })
 
-    output$select_perc <- renderText({
-      if(input$select_repository == "all repositories") {
-        glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-      } else if (input$select_repository == "general-purpose repositories") {
-        glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "general-purpose repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-      } else if (input$select_repository == "field-specific repositories") {
-        glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-      } else {
-        glue::glue("{n} %", n = fair_dataset %>% filter(repository_re3data == input$select_repository) %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-      }
-    })
+  output$select_perc <- renderText({
+    if(input$select_repository == "all repositories") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$select_repository == "general-purpose repositories") {
+      glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "general-purpose repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$select_repository == "field-specific repositories") {
+      glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else {
+      glue::glue("{n} %", n = fair_dataset %>% filter(repository_re3data == input$select_repository) %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    }
+  })
 
-    output$select_text <- renderText({
-      if(input$select_repository == "field-specific repositories") {
-        "is the average FAIR score of research data objects in disciplinary repositories"
-      } else {
-        glue::glue("is the average FAIR score of research data objects in {input$select_repository}")
-      }
-    })
-
-
-
-    output$DataReusability_1_metrics <- renderUI({
-
-      title <- "FAIR scores by repositories"
-      # title <- NULL
-      value <- textOutput("var")
-      value_text <- textOutput("text")
-      plot <- plotlyOutput('plot_fair_treemap', height = "400px")
-
-      wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                h2(strong("FAIR assessment by repositories"), align = "left"),
-                fluidRow(
-                  column(8, selectInput("checkbox_FAIR", label = "Select FAIR principle",
-                                        choices = list(`Select all FAIR principles` = list("all FAIR principles" = "fair_score"), `Select individual FAIR principles` = list("Findability" = "f_score", "Accessibility" = "a_score", "Interoperability" = "i_score", "Reusability" = "r_score")),
-                                        selected = "fair_score"))
-                ),
-                fluidRow(
-                  column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
-                                      fluidRow(
-                                        column(8, align="left", h4(strong(title)))
-                                      ),
-                                      h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-                                      h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
-                                      plot)),
-                  column(4, includeMarkdown("texts/text_repositories.md"))
-                )
-      )
-    })
-
-    output$text <- renderText({
-      if(input$checkbox_FAIR == "fair_score") {
-        "is the average FAIR score of research data objects"
-      } else if (input$checkbox_FAIR == "f_score") {
-        "is the average Findability score of research data objects"
-      } else if (input$checkbox_FAIR == "a_score") {
-        "is the average Accessibility score of research data objects"
-      } else if (input$checkbox_FAIR == "i_score") {
-        "is the average Interoperability score of research data objects"
-      } else if (input$checkbox_FAIR == "r_score") {
-        "is the average Reusability score of research data objects"
-      }
-    })
-
-    output$var <- renderText({
-      if(input$checkbox_FAIR == "fair_score") {
-        glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-      } else if (input$checkbox_FAIR == "f_score") {
-        glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_f) %>% mean(na.rm = TRUE) %>% round(0))
-      } else if (input$checkbox_FAIR == "a_score") {
-        glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_a) %>% mean(na.rm = TRUE) %>% round(0))
-      } else if (input$checkbox_FAIR == "i_score") {
-        glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_i) %>% mean(na.rm = TRUE) %>% round(0))
-      } else if (input$checkbox_FAIR == "r_score") {
-        glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_r) %>% mean(na.rm = TRUE) %>% round(0))
-      }
-    })
+  output$select_text <- renderText({
+    if(input$select_repository == "field-specific repositories") {
+      "is the average FAIR score of research data objects in disciplinary repositories"
+    } else {
+      glue::glue("is the average FAIR score of research data objects in {input$select_repository}")
+    }
+  })
 
 
-    output$DataReusability_metrics <- renderUI({
 
-      req(input$width)
-      if(input$width < 1400 & input$width > 700) {
-        col_width <- 6
-        alignment <- "left"
-        style_resp <- "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5" #"overflow: scroll; height = 500px; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5"
-      } else {
-        col_width <- 4
-        alignment <- "right"
-        style_resp <- "padding-top: 0px; padding-bottom: 10px; background-color:#DCE3E5"
-      }
+  output$DataReusability_1_metrics <- renderUI({
 
-      wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
-                h2(strong("FAIR assessment (other metrics)"), align = "left"),
-                checkboxInput("checkbox_total_FAIR", strong("Show absolute numbers"), value = FALSE),
-                fluidRow(
+    title <- "FAIR scores by repositories"
+    # title <- NULL
+    value <- textOutput("var")
+    value_text <- textOutput("text")
+    plot <- plotlyOutput('plot_fair_treemap', height = "400px")
 
-                  column(col_width, metricBoxOutput(style_resp = style_resp,
-                                               title = "FAIR scores by principles",
-                                               value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
-                                               value_text = "is the average FAIR score of datasets from 2021 in disciplinary repositories",
-                                               plot = plotlyOutput('plot_fair_principle', height = "300px"),
-                                               info_id = "infoFAIRprinciples",
-                                               info_title = "FAIR scores by principles",
-                                               info_text = fair_principles_tooltip,
-                                               info_alignment = "bottom")),
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+              h2(strong("FAIR assessment by repositories"), align = "left"),
+              fluidRow(
+                column(8, selectInput("checkbox_FAIR", label = "Select FAIR principle",
+                                      choices = list(`Select all FAIR principles` = list("all FAIR principles" = "fair_score"), `Select individual FAIR principles` = list("Findability" = "f_score", "Accessibility" = "a_score", "Interoperability" = "i_score", "Reusability" = "r_score")),
+                                      selected = "fair_score"))
+              ),
+              fluidRow(
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                                    fluidRow(
+                                      column(8, align="left", h4(strong(title)))
+                                    ),
+                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    plot)),
+                column(4, includeMarkdown("texts/text_repositories.md"))
+              )
+    )
+  })
 
-                  column(col_width, metricBoxOutput(style_resp = style_resp,
-                                               title = "Dataset licenses",
-                                               value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository" & fair_dataset$license_fuji != "no license", ])/nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository", ])*100, 0)),
-                                               value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
-                                               plot = plotlyOutput('plot_fair_license', height = "300px"),
-                                               info_id = "infoFAIRlicenses",
-                                               info_title = "Dataset licenses",
-                                               info_text = fair_licenses_tooltip,
-                                               info_alignment = "bottom")),
-                  column(col_width, metricBoxOutput(style_resp = style_resp,
-                                               title = "FAIR scores by identifiers",
-                                               value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
-                                               value_text = "of 2021 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
-                                               plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
-                                               info_id = "infoFAIRidentifiers",
-                                               info_title = "Dataset identifiers",
-                                               info_text = fair_identifiers_tooltip,
-                                               info_alignment = "bottom"))
-                )
-      )
-    })
+  output$text <- renderText({
+    if(input$checkbox_FAIR == "fair_score") {
+      "is the average FAIR score of research data objects"
+    } else if (input$checkbox_FAIR == "f_score") {
+      "is the average Findability score of research data objects"
+    } else if (input$checkbox_FAIR == "a_score") {
+      "is the average Accessibility score of research data objects"
+    } else if (input$checkbox_FAIR == "i_score") {
+      "is the average Interoperability score of research data objects"
+    } else if (input$checkbox_FAIR == "r_score") {
+      "is the average Reusability score of research data objects"
+    }
+  })
 
-    #actionButton to switch tabs
-    observeEvent(input$buttonMethods, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      #updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
-    })
-
-    observeEvent(input$buttonResources, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabRessources")
-    })
-
-    observeEvent(input$buttonDatasets, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabDatasets")
-    })
-
-    #actionButton on FAIR tab to switch tabs
-    observeEvent(input$buttonMethodsFAIR, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-    })
-
-    observeEvent(input$buttonDatasetFAIR, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabDatasets")
-      updateCollapse(session, "datasetPanels_PublicationDatasetFAIR",
-                     open = "Data reusability (FAIR data) dataset")
-    })
-
-    #actionButton on BSS tab to switch to tabs
-    observeEvent(input$buttonMethodsBSS, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_BSS",
-                     open = "methodsPanels_BSS")
-    })
-
-    observeEvent(input$buttonDatasetBSS, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabDatasets")
-      updateCollapse(session, "datasetPanels_PublicationDatasetBSS",
-                     open = "Berlin Science Survey (BSS) dataset")
-    })
+  output$var <- renderText({
+    if(input$checkbox_FAIR == "fair_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "f_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_f) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "a_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_a) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "i_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_i) %>% mean(na.rm = TRUE) %>% round(0))
+    } else if (input$checkbox_FAIR == "r_score") {
+      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_r) %>% mean(na.rm = TRUE) %>% round(0))
+    }
+  })
 
 
-    #tooltip buttons -> methods section
-    observeEvent(input$infoOA, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_OpenScience", open = "Open Access")
-    })
+  output$DataReusability_metrics <- renderUI({
 
-    observeEvent(input$infoOD, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
-    })
+    req(input$width)
+    if(input$width < 1400 & input$width > 700) {
+      col_width <- 6
+      alignment <- "left"
+      style_resp <- "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5" #"overflow: scroll; height = 500px; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5"
+    } else {
+      col_width <- 4
+      alignment <- "right"
+      style_resp <- "padding-top: 0px; padding-bottom: 10px; background-color:#DCE3E5"
+    }
 
-    observeEvent(input$infoOC, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
-    })
+    wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
+              h2(strong("FAIR assessment (other metrics)"), align = "left"),
+              checkboxInput("checkbox_total_FAIR", strong("Show absolute numbers"), value = FALSE),
+              fluidRow(
 
-    observeEvent(input$infoDAS, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_OpenScience", open = "Data or Code Availability Statements")
-    })
+                column(col_width, metricBoxOutput(style_resp = style_resp,
+                                             title = "FAIR scores by principles",
+                                             value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
+                                             value_text = "is the average FAIR score of datasets from 2022 in disciplinary repositories",
+                                             plot = plotlyOutput('plot_fair_principle', height = "300px"),
+                                             info_id = "infoFAIRprinciples",
+                                             info_title = "FAIR scores by principles",
+                                             info_text = fair_principles_tooltip,
+                                             info_alignment = "bottom")),
 
-    observeEvent(input$infoPreprints, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
-    })
+                column(col_width, metricBoxOutput(style_resp = style_resp,
+                                             title = "Dataset licenses",
+                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository" & fair_dataset$license_fuji != "no license", ])/nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository", ])*100, 0)),
+                                             value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
+                                             plot = plotlyOutput('plot_fair_license', height = "300px"),
+                                             info_id = "infoFAIRlicenses",
+                                             info_title = "Dataset licenses",
+                                             info_text = fair_licenses_tooltip,
+                                             info_alignment = "bottom")),
+                column(col_width, metricBoxOutput(style_resp = style_resp,
+                                             title = "FAIR scores by identifiers",
+                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
+                                             value_text = "of 2022 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
+                                             plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
+                                             info_id = "infoFAIRidentifiers",
+                                             info_title = "Dataset identifiers",
+                                             info_text = fair_identifiers_tooltip,
+                                             info_alignment = "bottom"))
+              )
+    )
+  })
 
-    observeEvent(input$infoOrcid, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_broader_transparency", open = "ORCID")
-    })
+  #actionButton to switch tabs
+  observeEvent(input$buttonMethods, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    #updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
+  })
 
-    observeEvent(input$infoOrcidPubs, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_broader_transparency", open = "ORCIDs in publications")
-    })
+  observeEvent(input$buttonResources, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabRessources")
+  })
 
-    observeEvent(input$infoAuthorship, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_broader_transparency", open = "Authorship")
-    })
+  observeEvent(input$buttonDatasets, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabDatasets")
+  })
 
-    observeEvent(input$infoSumRes, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Summary results reporting")
-    })
+  #actionButton on FAIR tab to switch tabs
+  observeEvent(input$buttonMethodsFAIR, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
 
-    observeEvent(input$infoIntoValue, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely publication of results")
-    })
+  observeEvent(input$buttonDatasetFAIR, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabDatasets")
+    updateCollapse(session, "datasetPanels_PublicationDatasetFAIR",
+                   open = "Data reusability (FAIR data) dataset")
+  })
 
-    observeEvent(input$infoProspReg, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Prospective registration")
-    })
+  #actionButton on BSS tab to switch to tabs
+  observeEvent(input$buttonMethodsBSS, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_BSS",
+                   open = "methodsPanels_BSS")
+  })
 
-    observeEvent(input$infoVisProblem, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabRessources")
-    })
+  observeEvent(input$buttonDatasetBSS, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabDatasets")
+    updateCollapse(session, "datasetPanels_PublicationDatasetBSS",
+                   open = "Berlin Science Survey (BSS) dataset")
+  })
 
-    observeEvent(input$infoVisInform, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabRessources")
-    })
+
+  #tooltip buttons -> methods section
+  observeEvent(input$infoOA, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Open Access")
+  })
+
+  observeEvent(input$infoOD, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
+  })
+
+  observeEvent(input$infoOC, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
+  })
+
+  observeEvent(input$infoPreprints, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
+  })
+
+  observeEvent(input$infoOrcid, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_persistent_ids", open = "ORCID")
+  })
+
+  observeEvent(input$infoSumRes, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Summary results reporting")
+  })
+
+  observeEvent(input$infoIntoValue, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely publication of results")
+  })
+
+  observeEvent(input$infoProspReg, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Prospective registration")
+  })
+
+  observeEvent(input$infoVisProblem, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabRessources")
+  })
+
+  observeEvent(input$infoVisInform, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabRessources")
+  })
+
+  observeEvent(input$infoFAIRrepository, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
 
     observeEvent(input$infoFAIRrepository, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-    })
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
 
-    observeEvent(input$infoFAIRrepository, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-    })
+  observeEvent(input$infoFAIRprinciples, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
 
-    observeEvent(input$infoFAIRprinciples, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-    })
+  observeEvent(input$infoFAIRlicenses, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
 
-    observeEvent(input$infoFAIRlicenses, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-    })
-
-    observeEvent(input$infoFAIRidentifiers, {
-      updateTabsetPanel(session, "navbarTabs",
-                        selected = "tabMethods")
-      updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-    })
+  observeEvent(input$infoFAIRidentifiers, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
+  })
 
 
-    #data table to show the underlying datasets
-    output$data_table_publ <- DT::renderDataTable({
-      make_datatable(dashboard_metrics)
-    })
+  #data table to show the underlying datasets
+  output$data_table_publ <- DT::renderDataTable({
+    make_datatable(dashboard_metrics)
+  })
 
-    output$data_table_preprints <- DT::renderDataTable({
-      make_datatable(preprints_dataset_shiny)
-    })
+  output$data_table_preprints <- DT::renderDataTable({
+    make_datatable(preprints_dataset_shiny)
+  })
 
-    output$data_table_prosp_reg <- DT::renderDataTable({
-      make_datatable(prosp_reg_dataset_shiny)
-    })
+  output$data_table_prosp_reg <- DT::renderDataTable({
+    make_datatable(prosp_reg_dataset_shiny)
+  })
 
-    output$data_table_FAIR <- DT::renderDataTable({
-      make_datatable(fair_dataset_datatable)
-    })
+  output$data_table_FAIR <- DT::renderDataTable({
+    make_datatable(fair_dataset_datatable)
+  })
 
-    output$data_table_BSS <- DT::renderDataTable({
-      make_datatable_BSS(bss_labeled_dataset)
-    })
+  output$data_table_BSS <- DT::renderDataTable({
+    make_datatable_BSS(bss_labeled_dataset)
+  })
 
-    color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
-                       "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
-                       "#DCE3E5", "#CF9188")
+  color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+                     "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
+                     "#DCE3E5")
 
+  #---------------------------------
+  # IntoValue
+  #---------------------------------
 
-    # Orcid
-    # output$plot_orcid <- renderPlotly({
-    #   plot_orcid(orcid_dataset, color_palette)
-    # })
+  output$plot_intovalue <- renderPlotly({
+    if(input$checkbox_total_CT) {
+      return(plot_intovalue_total(intovalue_dataset, color_palette))
+    } else {
+      return(plot_intovalue_perc(intovalue_dataset, color_palette))
+    }
+  })
 
+  #---------------------------------
+  # Data reusability (FAIR) plots
+  #---------------------------------
 
-    #---------------------------------
-    # Clinical trials plots
-    #---------------------------------
+  # FAIR license
 
-    output$plot_intovalue <- renderPlotly({
-      if(input$checkbox_total_CT) {
-        return(plot_intovalue_total(intovalue_dataset, color_palette))
-      } else {
-        return(plot_intovalue_perc(intovalue_dataset, color_palette))
-      }
-    })
+  fair_license_plot_data <- fair_dataset %>%
+    make_fair_license_plot_data()
 
+  output$plot_fair_license <- renderPlotly({
+    if(input$checkbox_total_FAIR) {
+      return(plot_fair_license_total(fair_license_plot_data, color_palette))
+    } else {
+      return(plot_fair_license_perc(fair_license_plot_data, color_palette))
+    }
+  })
 
-    #---------------------------------
-    # Data reusability (FAIR) plots
-    #---------------------------------
+  # FAIR principle
 
-    # FAIR license
+  fair_principle_plot_data <- fair_dataset %>%
+    make_fair_principle_plot_data()
 
-    fair_license_plot_data <- fair_dataset %>%
-      make_fair_license_plot_data()
-
-    output$plot_fair_license <- renderPlotly({
-      if(input$checkbox_total_FAIR) {
-        return(plot_fair_license_total(fair_license_plot_data, color_palette))
-      } else {
-        return(plot_fair_license_perc(fair_license_plot_data, color_palette))
-      }
-    })
-
-    # FAIR principle
-
-    fair_principle_plot_data <- fair_dataset %>%
-      make_fair_principle_plot_data()
-
-    output$plot_fair_principle <- renderPlotly({
-      plot_fair_principle_perc(fair_principle_plot_data, color_palette)
-    })
+  output$plot_fair_principle <- renderPlotly({
+    plot_fair_principle_perc(fair_principle_plot_data, color_palette)
+  })
 
 
-    # FAIR repository treemap
+  # FAIR repository treemap
 
-    fair_treemap_plot_data <- fair_dataset %>%
-      make_fair_treemap_plot_data()
+  fair_treemap_plot_data <- fair_dataset %>%
+    make_fair_treemap_plot_data()
 
-    output$plot_fair_treemap <- renderPlotly({
-      fair_perc <- glue::glue_collapse(input$checkbox_FAIR)
+  output$plot_fair_treemap <- renderPlotly({
+    fair_perc <- glue::glue_collapse(input$checkbox_FAIR)
 
-      if(input$checkbox_colorblind){
-        color_seq <- c("#440154", "#25858E", "#FDE725")
-      } else {
-        color_seq <- c("#AA493A", "#F1BA50", "#007265")
-      }
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
 
-      plot_fair_treemap(fair_treemap_plot_data, color_palette, fair_perc, color_seq)
-    })
+    plot_fair_treemap(fair_treemap_plot_data, color_palette, fair_perc, color_seq)
+  })
 
-    # FAIR identifiers sunburst
+  # FAIR identifiers sunburst
 
-    fair_sunburst_plot_data <- fair_dataset %>%
-      make_fair_sunburst_plot_data()
+  fair_sunburst_plot_data <- fair_dataset %>%
+    make_fair_sunburst_plot_data()
 
-    output$plot_fair_sunburst <- renderPlotly({
+  output$plot_fair_sunburst <- renderPlotly({
 
-      if(input$checkbox_colorblind){
-        color_seq <- c("#440154", "#25858E", "#FDE725")
-      } else {
-        color_seq <- c("#AA493A", "#F1BA50", "#007265")
-      }
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
 
-      plot_fair_sunburst(fair_sunburst_plot_data, color_palette, color_seq)
-    })
+    plot_fair_sunburst(fair_sunburst_plot_data, color_palette, color_seq)
+  })
 
-    # FAIR principles sunburst
+  # FAIR principles sunburst
 
-    output$plot_fair_principle_sunburst <- renderPlotly({
-      select_repository <- input$select_repository
+  output$plot_fair_principle_sunburst <- renderPlotly({
+    select_repository <- input$select_repository
 
-      if(input$checkbox_colorblind){
-        color_seq <- c("#440154", "#25858E", "#FDE725") # db colors c("#634587", "#F1BA50", "#007265") # viridis c("#440154", "#25858E", "#FDE725")
-      } else {
-        color_seq <- c("#AA493A", "#F1BA50", "#007265")
-      }
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725") # db colors c("#634587", "#F1BA50", "#007265") # viridis c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
 
-      plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository, color_seq)
-    })
+    plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository, color_seq)
+  })
 
-    #---------------------------------
-    # Berlin Science Survey (BSS) server modules
-    #---------------------------------
+  #---------------------------------
+  # Berlin Science Survey (BSS) server modules
+  #---------------------------------
 
-    moduleServer_plot("prio")
-    moduleServer_plot("practices")
-    moduleServer_plot("environment")
+  moduleServer_plot("prio")
+  moduleServer_plot("practices")
+  moduleServer_plot("environment")
 
-  }
-
-  shinyApp(ui, server)
 }
 
+shinyApp(ui, server)
+
+}
 
 show_dashboard()
-

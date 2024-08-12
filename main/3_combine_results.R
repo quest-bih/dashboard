@@ -11,6 +11,10 @@ library(readxl)
 # load results
 #----------------------------------------------------------------------------------------
 
+dashboard_metrics |>
+  filter(year == 2022) |>
+  count(is_open_data, open_data_manual_check)
+
 publications <- read_csv(here("main", "publication_table_old.csv")) |>
   mutate(doi = tolower(doi))
 publications |>

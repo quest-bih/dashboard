@@ -6,7 +6,6 @@ library(lubridate)
 #----------------------------------------------------------------------------------------------------------------------
 
 #the AACT dataset has to be downloaded first from https://aact.ctti-clinicaltrials.org/pipe_files
-# AACT_folder <- "C:/Datenablage/AACT/AACT dataset 20210222/" #insert the AACT download folder here
 AACT_folder <- "C:/Datenablage/AACT/AACT_dataset_230930/" #insert the AACT download folder here
 
 #AACT filenames that we need to load
