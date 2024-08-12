@@ -60,18 +60,12 @@ prosp_reg_dataset_shiny <- vroom("./data/prosp_reg_dataset_shiny.csv") |>
   mutate_at(vars(nct_id, start_date, registration_date,
                  has_prospective_registration),
             as.character)
-<<<<<<< HEAD
+
 preprints_dataset_shiny <- read_csv("./data/preprints_dataset_shiny.csv")
 orcid_dataset <- read_csv("./data/orcid_results.csv")
 
 # fair dataset
 fair_dataset <- read_csv("./data/fair_assessment_2022.csv", show_col_types = FALSE) |>
-=======
-preprints_dataset_shiny <- vroom("./data/preprints_dataset_shiny.csv")
-
-# fair dataset
-fair_dataset <- vroom("./data/fair_assessment_2021.csv", show_col_types = FALSE) |>
->>>>>>> modularized
   arrange(repository_re3data, article)
 
 # fair dataset for datatables
