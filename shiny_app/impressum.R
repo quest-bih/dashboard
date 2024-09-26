@@ -18,7 +18,7 @@
 #                                        10178 Berlin<br>
 #                                        E-Mail: quest@bih-charite.de")
 
-impressum_text <- HTML('<b>Information according to <a href="https://www.gesetze-im-internet.de/tmg/__5.html">§ 5 TMG</a></b><p></p>
+impressum_text <- HTML('<b>Information according to <a href="https://www.gesetze-im-internet.de/tkg_2021/__5.html">§ 5 TKG</a></b><p></p>
 
 		<blockquote>
 
