@@ -23,7 +23,7 @@ metricBoxOutput <- function(style_resp = "padding-top: 0px;
             h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
             plot)
 }
-get_current_val(tib <- dashboard_metrics_aggregate, n_preprints)
+
 
 get_current_val <- function(tib, col) {
   if ("year" %in% names(tib)) {

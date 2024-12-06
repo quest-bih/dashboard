@@ -36,7 +36,7 @@ EU_data_charite <- tibble(retrieval_date = as.character(Sys.Date()),
                           inconsistent_trials = var_values[5],
                           total_trials = var_values[6])
 
-# write_csv(EU_data_charite, "./results//EU_trialstracker.csv",
+# write_csv(EU_data_charite, "./results/EU_trialstracker.csv",
 #           append = TRUE)
 
 

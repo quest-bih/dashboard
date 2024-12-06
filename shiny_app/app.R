@@ -33,6 +33,7 @@ source("ctgov_metrics.R")
 source("vis_metrics.R")
 source("orcid_metrics.R")
 source("contribot_metrics.R")
+source("rtransparent_metrics.R")
 source("app_functions_fair.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
@@ -326,6 +327,8 @@ show_dashboard <- function(...) {
                 reactive(RVs$total_bt), color_palette)
     contribotServer("plot_contrib", dashboard_metrics, "credit",
                     reactive(RVs$total_bt), color_palette)
+    rtransparentServer("plot_coi", dashboard_metrics, "coi",
+                       reactive(RVs$total_bt), color_palette)
 
     output$citation_text <-
       renderUI({
@@ -542,6 +545,21 @@ show_dashboard <- function(...) {
     }) |>
       bindEvent(reactive(RVs$total_bt))
 
+    output$coi <- renderUI({
+      box_value <- get_current_rtransparent(dashboard_metrics, perc_has_coi)
+      box_text <- paste0("of screened publications had Conflict of Interest (COI) statements in ",
+                         dashboard_metrics$year |> max())
+      metricBoxOutput(title = "Conflict of Interest (COI) Statements",
+                      value = box_value,
+                      value_text = box_text,
+                      plot = contribotOutput("plot_coi", height = "300px"),
+                      info_id = "infoCOI",
+                      info_title = "COI",
+                      info_text = coi_tooltip,
+                      info_alignment = "left")
+    }) |>
+      bindEvent(reactive(RVs$total_bt))
+
     # dynamically determine column width of Open Science metrics at program start
     # four columns if resolution large enough, otherwise two columns
     output$OpenScience_metrics <- renderUI({
@@ -639,6 +657,10 @@ show_dashboard <- function(...) {
                   ),
                   column(
                     col_width, uiOutput("authorship") |>
+                      shinycssloaders::withSpinner(color = "#007265")
+                  ),
+                  column(
+                    col_width, uiOutput("coi") |>
                       shinycssloaders::withSpinner(color = "#007265")
                   )
                 )
@@ -926,6 +948,12 @@ show_dashboard <- function(...) {
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_persistent_ids", open = "ORCID")
+  })
+
+  observeEvent(input$infoCOI, {
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_persistent_ids", open = "Conflict of Interest Statements")
   })
 
   observeEvent(input$infoSumRes, {

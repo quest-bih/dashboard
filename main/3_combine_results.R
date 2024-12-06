@@ -207,7 +207,6 @@ contribot_results <- contribot_results_old |>
 contribot_results |>
   write_excel_csv(here("results", "ContriBOT_old.csv"))
 
-
 orcid_screening_results <- read_csv(here("results", "orcids_extracted_2023.csv"))
 
 # orcid_screening_results_retro <- read_csv(here("results", "orcids_retroactive.csv")) |>
@@ -246,6 +245,21 @@ missing_dois <- setdiff(contribot_results$doi, publications$doi)
 publications |>
   filter(doi %in% missing_dois)
 
+
+rtransparent_2023 <- read_csv(here("results", "rtransparent_2023.csv")) |>
+  transmute(doi = tolower(doi),
+            has_coi = is_coi_pred,
+            has_funding = is_funded_pred
+  )
+
+rtransparent_old <- read_csv(here("results", "rtransparent_old.csv"))
+
+rtransparent_results <- rtransparent_old |>
+  rows_upsert(rtransparent_2023, by = "doi")
+
+rtransparent_old |>
+  write_excel_csv(here("results", "rtransparent_old.csv"))
+
 #----------------------------------------------------------------------------------------
 # combine results
 #----------------------------------------------------------------------------------------
@@ -259,6 +273,7 @@ dashboard_metrics <- publications |>
   left_join(open_data_results, by = "doi") |>
   left_join(contribot_results, by = "doi") |>
   left_join(orcid_screening_results, by = "doi") |>
+  left_join(rtransparent_results, by = "doi") |>
   rename(oa_color = oa_status) |>
   mutate(has_any_orcid = has_orcid | !is.na(orcids)) |>
   left_join(barzooka_results, by = "doi") |>
@@ -358,7 +373,14 @@ shiny_table <- dashboard_metrics |>
          has_contrib, contrib_statement,
          has_orcid, orcid_statement,
          orcids, has_any_orcid,
+         has_coi, has_funding,
          bar, pie, bardot, box, dot, hist, violin)
+
+shiny_table |>
+  count(is.na(has_any_orcid), is.na(has_coi))
+
+cois_missing <- shiny_table |>
+  filter(!is.na(has_any_orcid), is.na(has_coi))
 
 write_csv(shiny_table, here("shiny_app", "data", "dashboard_metrics.csv"))
 

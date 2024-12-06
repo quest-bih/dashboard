@@ -375,7 +375,23 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        <a href="https://credit.niso.org/">CRediT taxonomy</a>.
                        The ContriBOT tool takes PDF files as input, which are not optimized for
                        machine readability. As a result complex page layouts may cause sections and columns
-                       to be improperly parsed and the author contribution statements to be overlooked.'))
+                       to be improperly parsed and the author contribution statements to be overlooked.')),
+         methods_panel("Conflict of Interest Statements",
+           "This metric measures the percentage of screened publications that
+           included a conflict of interest statement. Such statements ideally clearly state
+           which author has potention conflicts of interest, often following criteria provided by
+           the journal. Declarations of funding and conflict of interest are quintessential for transparency.
+           Many publishers now require submitted manuscripts to include conflict of interest disclosures.",
+           HTML('Methodssssss'),
+           HTML('Several limitations apply: The decision whether to include a
+                       Conflict of Interest Statement largely depends on journal policy.
+                       Only the presence of conflict of interest and funding statements (among others)
+                       is detected with the rtransparent tool, whereas the fidelity and completeness of such
+                       statements <a href="https://doi.org/10.1371/journal.pone.0275380">remains difficult to verify</a>.
+                       The rtransparent tool takes PDF files as input, which are not optimized for
+                       machine readability. As a result complex page layouts may cause sections and columns
+                       to be improperly parsed and the relevant statements to be overlooked.')
+                       )
          ),
 
 
@@ -540,6 +556,22 @@ authorship_tooltip <- strwrap("This metric measures the percentage of screened p
                               Contributor Roles Taxonomy.
                               Many publishers now require submitted manuscripts to include authorship
                               statements.
+                              - Click for methods details.") |>
+  paste(collapse = " ")
+
+coi_tooltip <- strwrap("This metric measures the percentage of screened publications that
+                              included a conflict of interest statement. Such statements ideally clearly state
+                              which author has potention conflicts of interest, often following criteria provided by
+                              the journal. Declarations of funding and conflict of interest are quintessential for transparency.
+                              Many publishers now require submitted manuscripts to include conflict of interest disclosures.
+                              - Click for methods details.") |>
+  paste(collapse = " ")
+
+funding_tooltip <- strwrap("This metric measures the percentage of screened publications that
+                              reported their funding sources or stated that there was no specific funding.
+                              Declarations of funding and conflict of interest are quintessential for transparency.
+                              Many publishers now require submitted manuscripts to include funding disclosures in a dedicated
+                              funding statement.
                               - Click for methods details.") |>
   paste(collapse = " ")
 

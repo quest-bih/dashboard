@@ -302,7 +302,7 @@ genannten Server-Log-Dateien, die Ihr Browser automatisch an uns &uuml;bermittel
 <li>Browsertyp und Browserversion</li> <li>verwendetes Betriebssystem</li> <li>Referrer URL</li>
 <li>Hostname des zugreifenden Rechners</li> <li>Uhrzeit der Serveranfrage</li> <li>IP-Adresse</li> </ul>
 <p>Diese Daten werden mit &ouml;ffentlicher Information &uuml;ber den Internetanbieter
-(Internetanbieter, Organisation und Stadt) angereicht. Eine weitere Zusammenf&uuml;hrung dieser Daten wird nicht vorgenommen.</p>
+(Internetanbieter, Organisation und Stadt) angereichert. Eine weitere Zusammenf&uuml;hrung dieser Daten wird nicht vorgenommen.</p>
 <p>Die Erfassung dieser Daten erfolgt auf Grundlage von Art. 6 Abs. 1 lit. f DSGVO. Der Websitebetreiber hat ein
 berechtigtes Interesse an der technisch fehlerfreien Darstellung und der Optimierung seiner Website &ndash;
 hierzu m&uuml;ssen die Server-Log-Files erfasst werden.</p>

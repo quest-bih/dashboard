@@ -5,13 +5,16 @@ library(furrr)
 library(here)
 
 txt_folder <- "C:/Datenablage/charite_dashboard/2023/PDFs_to_text/"
+txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
 
 plan(multisession)
-
+# plan(sequential)
 txt_corpus <- pdf_load(txt_folder, lowercase = FALSE)
 
 txt_corpus <- txt_corpus |>
   furrr::future_map(\(x) paste(x, collapse = "\n"), .progress = TRUE)
+
+# rt_all(txt_corpus[["10.1038+s41569-022-00729-2.txt"]])
 
 res <- furrr::future_map(txt_corpus, rt_all, .progress = TRUE)
 
@@ -24,7 +27,8 @@ results <- res |>
   write_excel_csv(here("results", "rtransparent_2023.csv"))
 
 
-
+res_old <- results |>
+  write_excel_csv(here("results", "rtransparent_old.csv"))
 
 # results <- rr
 # text <- rt_read_pdf("C:/Datenablage/charite_dashboard/2023/PDFs/10.3389+fnagi.2023.1204134.pdf")
