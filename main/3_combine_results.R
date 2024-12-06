@@ -11,9 +11,9 @@ library(readxl)
 # load results
 #----------------------------------------------------------------------------------------
 
-dashboard_metrics |>
-  filter(year == 2022) |>
-  count(is_open_data, open_data_manual_check)
+# dashboard_metrics |>
+#   filter(year == 2023) |>
+#   count(is_open_data, open_data_manual_check)
 
 publications <- read_csv(here("main", "publication_table_old.csv")) |>
   mutate(doi = tolower(doi))
@@ -22,21 +22,23 @@ publications |>
 
 dupes <- get_dupes(publications, doi)
 
-
-publications_2022 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2022_230922VN.xlsx")) |>
-  filter(!str_detect(Duplikat, "erscheint") | is.na(Duplikat),
-         is.na(Keine_Charite_Affiliation)) |>
+publications_2023 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2023_241119VN.xlsx")) |>
+  filter(str_detect(Duplikate, "DOI|kein") | is.na(Duplikate),
+         is.na(Keine_Charite_Affiliation)
+         ) |>
   transmute(doi = tolower(DOI),
          pmid = `Pubmed Id`,
          title = `Article Title`,
          journal = `Source Title`,
-         year = case_when(
-           doi == "10.1016/j.accpm.2021.101015" ~ `Publication Year` - 1,
-           str_detect(`Early Access Date`, " ") ~ year(my(`Early Access Date`)),
-           !str_detect(`Early Access Date`, " ") ~ as.numeric(`Early Access Date`) |>
-             as.Date(origin = "1899-12-30") |>
-             year(),
-           str_detect(Duplikat, "halb") ~ year(`Date of Export`) - 1,
+         year =
+           case_when(
+           # doi == "10.1016/j.accpm.2021.101015" ~ `Publication Year` - 1,
+           !is.na(`Early Access Date`) ~ year(`Early Access Date`),
+             # str_detect(`Early Access Date`, " ") ~ year(my(`Early Access Date`)),
+           # !str_detect(`Early Access Date`, " ") ~ as.numeric(`Early Access Date`) |>
+             # as.Date(origin = "1899-12-30") |>
+             # year(),
+           # str_detect(Duplikat, "halb") ~ year(`Date of Export`) - 1,
 
            .default = `Publication Year`
          ),
@@ -44,32 +46,38 @@ publications_2022 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2022
          issn = ISSN,
          e_issn = eISSN,
          oa_indicator = `Open Access Designations`,
-         oa_status = `OA-Status`) |>
-  select(all_of(names(publications))) |>
-  filter(year < 2023)
+         oa_status = `OA-Status`,
+         corresponding_author_charite = !is.na(CA)
+         # ,
+         # orcids_lib = ORCIDs # ORCIDs that library has are not necessarily in the paper!
+         ) |>
+  select(all_of(names(publications)))
 
-dupes <- get_dupes(publications_2022, doi)
+dupes <- get_dupes(publications_2023, doi) # should only be articles w/o doi
 
-publications_2022 |>
+publications_2023 |>
   count(year)
 
-only_new_dois <- publications_2022 |>
+only_new_dois <- publications_2023 |>
   filter(!doi %in% publications$doi |
-        str_detect(doi, "keine"))
+        str_detect(doi, "keine") | is.na(doi))
 
 publications <- publications |>
   rows_append(only_new_dois) |>
   # filter(str_detect(doi, "10"), doi %in% publications_2022$doi) |>
-  rows_upsert(publications_2022 |>
+  rows_upsert(publications_2023 |>
                 filter(str_detect(doi, "10")) |>
                 select(doi, oa_status), by = "doi")
 
 count(publications, year)
 
-corresponding_authorship <- read_csv("T:/Dokumente/publications_CA.csv")
+# old_dupes <- publications_2023 |>
+#   filter(doi %in% publications_2022$doi)
 
-publications <- publications |>
-  left_join(corresponding_authorship, by = "doi")
+# corresponding_authorship <- read_csv("T:/Dokumente/publications_CA.csv")
+
+# publications <- publications |>
+#   left_join(corresponding_authorship, by = "doi")
 
 
 write_excel_csv(publications, here("main", "publication_table.csv"))
@@ -77,30 +85,40 @@ write_excel_csv(publications, here("main", "publication_table.csv"))
 
 publications <- read_csv(here("main", "publication_table.csv"))
 
+publications |>
+  count(year, oa_status) |>
+  pivot_wider(names_from = year, values_from = n)
+
 #results files
 # results_files <- list.files(here("results"), full.names = TRUE)
 # results_files <- paste0(results_folder, results_files)
 
-open_data_22 <- read_csv(here("results", "Open_Data.csv")) |>
-  mutate(doi = str_replace_all(article, "\\+", "\\/") |>
-           str_remove(".txt") |>
-           tolower()) |>
+open_data_23 <- read_csv(here("results", "Open_Data.csv")) |>
+  # mutate(doi = str_replace_all(article, "\\+", "\\/") |>
+  #          str_remove(".txt") |>
+  #          tolower()) |>
   select(doi, everything(), -article)
+
+# open_data_23 |>
+#   filter(is_open_code == TRUE) |>
+#   write_excel_csv2("T:/Dokumente/open_code_2023.csv")
 
 
 #manually checked Open Data results + additional cases that were not detected by algorithm
-#but found in manual searches or submitted by researchers for the LOM
+#but found in manual searches or submitted by researchers for the LOM/IOM
+open_data_retro <- read_csv(here("results", "Open_Data_retroactive.csv")) |>
+  mutate(doi = tolower(doi)) |>
+  select(doi, everything(), -article)
 
-
-open_data_22_manual <- read_csv2(here("results", "OD_manual_tidy.csv")) |>
+open_data_23_manual <- read_csv2(here("results", "OD_manual_tidy.csv")) |>
   mutate(doi = tolower(doi)) |>
   select(doi, open_data_manual_check, open_data_category_manual, data_access)
 
-open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
+open_code_23_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
   select(doi, contains("code")) |>
   mutate(is_open_code = as.logical(is_open_code),
          open_code_manual_check = as.logical(open_code_manual_check)) |>
-  filter(doi %in% open_data_22$doi)
+  filter(doi %in% open_data_23$doi)
 
 # dupes <- open_data_22 |>
 #   filter(doi %in% manual_code_results$doi)
@@ -110,12 +128,15 @@ open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xls
 # old template had some MDC papers that were later excluded
 
 open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.csv")) |>
-  mutate(is_reuse = NA,
+  mutate(is_reuse = NA, ### missing from previous screenings
+         is_open_data_das = NA, ### missing from previous screenings
+         is_open_code_cas = NA, ### missing from previous screenings
          das = as.character(das),
          cas = as.character(cas)) |>
-  rows_upsert(open_data_22, by = "doi") |>
-  rows_upsert(open_code_22_manual, by = "doi") |>
-  rows_upsert(open_data_22_manual, by = "doi") |>
+  rows_upsert(open_data_retro, by = "doi") |>
+  rows_upsert(open_data_23, by = "doi") |>
+  rows_upsert(open_code_23_manual, by = "doi") |>
+  rows_upsert(open_data_23_manual, by = "doi") |>
   mutate(open_code_category_manual = case_when(
     str_detect(open_code_category_manual, "github") ~ "github",
     str_detect(open_code_category_manual, "supplement") ~ "supplement",
@@ -134,6 +155,13 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.
   )
   )
 
+open_data_results |>
+  left_join(publications |> select(doi, year)) |>
+  count(year, is.na(das))
+
+# missing_years <- open_data_results |>
+#   left_join(publications |> select(doi, year)) |>
+#   filter(is.na(year))
 
 # when finished update the template to contain the data from previous year
 # open_data_results |>
@@ -143,12 +171,13 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.
 #   filter(!doi %in% open_data_results$doi)
 
 
+# old_das_cas <- vroom(here("results", "Open_Data_retroactive.csv")) |>
+#   select(doi, das, cas)
+#
+# open_data_results <- open_data_results |>
+#   rows_upsert(old_das_cas, by = "doi")
 
-old_das_cas <- vroom(here("results", "Open_Data_retroactive.csv")) |>
-  select(doi, das, cas)
-
-open_data_results <- open_data_results |>
-  rows_upsert(old_das_cas, by = "doi")
+### some LOM articles here, which will not be joined to main table!
 
 open_data_results |>
   filter(is.na(is_open_data),
@@ -166,22 +195,46 @@ open_data_results |>
   count(open_data_manual_check, open_data_category_manual)
 
 #ContriBOT results
-contribot_results <- read_csv(here("results", "ContriBOT.csv"))
-contribot_results_retro <- read_csv(here("results", "ContriBOT_retroactive.csv"))
-contribot_results <- contribot_results_retro |>
+
+contribot_results <- read_csv(here("results", "ContriBOT_2023.csv"))
+# contribot_results_retro <- read_csv(here("results", "ContriBOT_retroactive.csv"))
+# contribot_results <- contribot_results_retro |>
+#   rows_upsert(contribot_results, by = "doi")
+contribot_results_old <- read_csv(here("results", "ContriBOT_old.csv"))
+contribot_results <- contribot_results_old |>
   rows_upsert(contribot_results, by = "doi")
 
-orcid_screening_results <- read_csv(here("results", "orcids_extracted.csv"))
-orcid_screening_results_retro <- read_csv(here("results", "orcids_retroactive.csv")) |>
-  mutate(doi = str_extract(file, "10\\..*") |>
-           str_remove(".pdf") |>
-           str_replace_all("\\+", "/")) |>
-  select(-file)
-orcid_screening_results <- orcid_screening_results_retro |>
+contribot_results |>
+  write_excel_csv(here("results", "ContriBOT_old.csv"))
+
+
+orcid_screening_results <- read_csv(here("results", "orcids_extracted_2023.csv"))
+
+# orcid_screening_results_retro <- read_csv(here("results", "orcids_retroactive.csv")) |>
+#   mutate(doi = str_extract(file, "10\\..*") |>
+#            str_remove(".pdf") |>
+#            str_replace_all("\\+", "/")) |>
+#   select(-file)
+
+# orcid_screening_results <- orcid_screening_results_retro |>
+#   rows_upsert(orcid_screening_results, by = "doi")
+
+orcid_screening_results_old <- read_csv(here("results", "orcids_extracted_old.csv"))
+
+orcid_screening_results <- orcid_screening_results_old |>
   rows_upsert(orcid_screening_results, by = "doi")
+
+orcid_screening_results |>
+  write_excel_csv(here("results", "orcids_extracted_old.csv"))
 
 #Barzooka results
 barzooka_results <- read_csv(here("results", "Barzooka.csv"))
+barzooka_old <- read_csv(here("results", "Barzooka_old.csv"))
+
+barzooka_results <- barzooka_old |>
+  rename(flowconcept = flowno,
+         flowinex = flowyes) |>
+  rows_upsert(barzooka_results, by = "paper_id")
 
 barzooka_results <- barzooka_results |>
   rename(doi = paper_id) |>
@@ -214,6 +267,12 @@ dashboard_metrics <- publications |>
 dashboard_metrics |>
   filter(pdf_downloaded == TRUE) |>
   count(has_any_orcid, has_orcid)
+
+nas_orcids <- dashboard_metrics |>
+  filter(is.na(has_any_orcid))
+
+nas_orcids |>
+  count(year)
 
 orcid_screening_results |>
   count(is.na(orcids))
@@ -270,12 +329,11 @@ check_tbl <- dashboard_metrics |>
 
 # debug ODDPUb until these false_positives are is_open_data == FALSE!!!
 # for now set to false manually
-dashboard_metrics <- dashboard_metrics |>
-  mutate(is_open_data = case_when(
-    doi %in% check_tbl$doi ~ FALSE,
-    .default = is_open_data
-  ))
-
+# dashboard_metrics <- dashboard_metrics |>
+#   mutate(is_open_data = case_when(
+#     doi %in% check_tbl$doi ~ FALSE,
+#     .default = is_open_data
+#   ))
 
 
 assert_that(dim(check_tbl)[1] == 0)
@@ -334,20 +392,13 @@ shiny_table |>
 #----------------------------------------------------------------------------------------
 
 preprints_dataset_shiny <- vroom(here("results", "preprints_oa.csv")) |>
-  select(doi, title, journal_title, year)
+  select(doi, title, journal_title, year, has_published_version)
 write_csv(preprints_dataset_shiny, here("shiny_app", "data", "preprints_dataset_shiny.csv"))
 
 prosp_reg_dataset_shiny <- vroom(here("results", "prosp_reg_dataset_shiny.csv")) |>
   rename(registration_date = study_first_submitted_date) |>
   select(nct_id, start_date, registration_date, has_prospective_registration)
 write_csv(prosp_reg_dataset_shiny, here("shiny_app", "data", "prosp_reg_dataset_shiny.csv"))
-
-# orcid_dataset_shiny <- vroom(here("results", "orcid.csv")) |>
-#   distinct(date, .keep_all = TRUE) |> # next part only if false parsing in file with spliced rows
-#   mutate(orcid_count = if_else(str_length(orcid_count) > 5, str_sub(orcid_count, 1, 4),
-#                                as.character(orcid_count)),
-#          orcid_count = as.numeric(orcid_count))
-# write_csv(orcid_dataset_shiny, here("shiny_app", "data", "orcid_results.csv"))
 
 EU_trialstracker_dataset_shiny <- vroom(here("results", "EU_trialstracker.csv")) |>
   group_by(retrieval_date) |>
@@ -358,7 +409,9 @@ write_csv(EU_trialstracker_dataset_shiny, here("shiny_app", "data", "EU_trialstr
 
 preprints <- vroom(here("results", "preprints_oa.csv")) |>
   group_by(year) |>
-  summarize(n_preprints = n())
+  summarize(n_preprints = n(),
+            n_preprints_with_articles = sum(has_published_version, na.rm = TRUE),
+            perc_preprints_with_articles = n_preprints_with_articles / n_preprints)
 
 prospective_registration <- vroom(here("results", "prospective_registration.csv"))
 

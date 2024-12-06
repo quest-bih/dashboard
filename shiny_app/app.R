@@ -46,7 +46,7 @@ source("datasets_panel.R")
 dashboard_metrics <- vroom("./data/dashboard_metrics.csv")
 # dashboard_metrics <- read_csv("./shiny_app/data/dashboard_metrics.csv")
 dashboard_metrics_aggregate <- vroom("./data/dashboard_metrics_aggregate.csv")
-# dashboard_metrics_aggregate <- read_csv("./shiny_app/data/dashboard_metrics_aggregate.csv") |>
+# dashboard_metrics_aggregate <- read_csv("./shiny_app/data/dashboard_metrics_aggregate.csv")
 
 
 # EU_trialstracker_dataset <- read_csv("./data/EU_trialstracker_past_data.csv")
@@ -308,17 +308,24 @@ show_dashboard <- function(...) {
     }) |>
       bindEvent(input$checkbox_total_Vis)
 
-    preprintsServer("plot_preprints", dashboard_metrics_aggregate, dashboard_metrics, reactive(RVs$total_os), color_palette)
+    preprintsServer("plot_preprints", dashboard_metrics_aggregate, dashboard_metrics,
+                    "overall", reactive(RVs$total_os), color_palette)
+    preprintsServer("plot_preprints_published", dashboard_metrics_aggregate, dashboard_metrics,
+                    "published", reactive(RVs$total_os), color_palette)
     OAServer("plot_OA", dashboard_metrics, reactive(RVs$total_os), color_palette)
     ODServer("plot_OD", dashboard_metrics, "data", reactive(RVs$total_os), color_palette)
     ODServer("plot_OC", dashboard_metrics, "code", reactive(RVs$total_os), color_palette)
     ODServer("plot_DAS", dashboard_metrics, "das", reactive(RVs$total_os), color_palette)
     sumresServer("plot_sumres", sumres_data, reactive(RVs$total_ct), color_palette)
     ctgovServer("plot_prosp_reg", dashboard_metrics_aggregate, reactive(RVs$total_ct), color_palette)
-    visServer("plot_barzooka_problem", dashboard_metrics, "problem", reactive(RVs$total_vis), color_palette)
-    visServer("plot_barzooka_inform", dashboard_metrics, "inform", reactive(RVs$total_vis), color_palette)
-    orcidServer("plot_orcid_pubs", dashboard_metrics, "pubs", reactive(RVs$total_bt), color_palette)
-    contribotServer("plot_contrib", dashboard_metrics, "credit", reactive(RVs$total_bt), color_palette)
+    visServer("plot_barzooka_problem", dashboard_metrics, "problem",
+              reactive(RVs$total_vis), color_palette)
+    visServer("plot_barzooka_inform", dashboard_metrics, "inform",
+              reactive(RVs$total_vis), color_palette)
+    orcidServer("plot_orcid_pubs", dashboard_metrics, "pubs",
+                reactive(RVs$total_bt), color_palette)
+    contribotServer("plot_contrib", dashboard_metrics, "credit",
+                    reactive(RVs$total_bt), color_palette)
 
     output$citation_text <-
       renderUI({
@@ -412,8 +419,7 @@ show_dashboard <- function(...) {
       renderUI({
         box_value <- get_current_val(dashboard_metrics_aggregate, n_preprints)
         box_text <- paste0("preprints published in ", dashboard_metrics_aggregate$year |> max())
-
-        metricBoxOutput(title = "Preprints",
+        metricBoxOutput(title = "Preprints and journal publications",
                         value = box_value,
                         value_text = box_text,
                         plot = preprintsOutput("plot_preprints", height = "300px"),
@@ -423,6 +429,27 @@ show_dashboard <- function(...) {
                         info_alignment = "left")
       }) |>
       bindEvent(reactive(RVs$total_os))
+
+    output$preprints_published  <-
+      renderUI({
+        box_value <- get_current_val(dashboard_metrics_aggregate, perc_preprints_with_articles)
+        # get_preprints_perc(dashboard_metrics_aggregate, perc_preprints_with_articles, type = "total")
+          # get_current_val(dashboard_metrics_aggregate, n_preprints)
+        box_text <- paste0("of preprints published in ",
+                           dashboard_metrics_aggregate$year |> max(),
+                           " were also published in peer-reviewed journals as of December 2024"
+                           )
+        metricBoxOutput(title = "Any preprints with journal publications",
+                        value = box_value,
+                        value_text = box_text,
+                        plot = preprintsOutput("plot_preprints_published", height = "300px"),
+                        info_id = "infoPreprintsPublished",
+                        info_title = "Preprints with Journal Articles",
+                        info_text = preprints_with_pubs_tooltip,
+                        info_alignment = "left")
+      }) |>
+      bindEvent(reactive(RVs$total_os))
+
 
     output$sumres <-
       renderUI({
@@ -537,6 +564,8 @@ show_dashboard <- function(...) {
                   column(col_width, uiOutput("OA") |>
                            shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("preprints") |>
+                           shinycssloaders::withSpinner(color = "#007265")),
+                  column(col_width, uiOutput("preprints_published") |>
                            shinycssloaders::withSpinner(color = "#007265"))
                 ),
                 fluidRow(column(col_width, uiOutput("DAS") |>
@@ -851,29 +880,47 @@ show_dashboard <- function(...) {
 
 
   #tooltip buttons -> methods section
-  observeEvent(input$infoOA, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_OpenScience", open = "Open Access")
-  })
+  }) |>
+    bindEvent(input$infoOA)
 
-  observeEvent(input$infoOD, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
-  })
+  }) |>
+    bindEvent(input$infoOD)
 
-  observeEvent(input$infoOC, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_OpenScience", open = "Open Data and Open Code")
-  })
+  }) |>
+    bindEvent(input$infoOC)
 
-  observeEvent(input$infoPreprints, {
+  observe({
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Data or Code Availability Statements")
+  }) |>
+    bindEvent(input$infoDAS)
+
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints")
-  })
+  }) |>
+    bindEvent(input$infoPreprints)
+
+  observe({
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_OpenScience", open = "Preprints with journal publications")
+  }) |>
+    bindEvent(input$infoPreprintsPublished)
 
   observeEvent(input$infoOrcid, {
     updateTabsetPanel(session, "navbarTabs",

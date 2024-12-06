@@ -6,7 +6,7 @@ library(lubridate)
 #----------------------------------------------------------------------------------------------------------------------
 
 #the AACT dataset has to be downloaded first from https://aact.ctti-clinicaltrials.org/pipe_files
-AACT_folder <- "C:/Datenablage/AACT/AACT_dataset_230930/" #insert the AACT download folder here
+AACT_folder <- "C:/Datenablage/AACT/AACT_dataset_240927/" #insert the AACT download folder here
 
 #AACT filenames that we need to load
 AACT_dataset_names <- c("studies", "overall_officials", "sponsors", "responsible_parties",
@@ -127,13 +127,13 @@ CTgov_sample_full <- CTgov_sample_full |>
 CTgov_sample_Charite <- list()
 CTgov_sample_Charite[[1]] <- CTgov_sample_full |>
   filter(nct_id %in% institutions_ncts_primary,
-         study_type == "Interventional")
+         study_type == "INTERVENTIONAL")
 
 
 #results for the prospective registration metric
 summary_prosp_reg <- CTgov_sample_Charite |>
   map(filter, start_date > "2006-01-01") |>
-  map(filter, start_date < "2022-12-31") |>
+  map(filter, start_date < "2023-12-31") |>
   map(\(x) table(year(x[["start_date"]]), x[["has_prospective_registration"]])) |>
   map(\(x) tibble(year = rownames(x), no_prosp_reg = x[,1],
                          has_prosp_reg = x[,2], prop_prosp_reg = round(x[,2]/rowSums(x), 3)))
@@ -146,7 +146,7 @@ write_csv(summary_table_prosp_reg, "results/prospective_registration.csv")
 #save table with individual trials to display them in the Shiny app
 prosp_reg_dataset_shiny <- CTgov_sample_Charite[[1]] |>
   filter(start_date >= "2006-01-01",
-         start_date <= "2022-12-31") |>
+         start_date <= "2023-12-31") |>
   mutate(year = year(start_date)) |>
   select(nct_id, year, start_date, study_first_submitted_date,
          days_reg_to_start, has_prospective_registration)
@@ -211,3 +211,14 @@ iv_results_years <- iv_results_2years |>
 
 write_csv(iv_results_years, "./shiny_app/data/IntoValue_Results_years.csv")
 
+
+###### into_value update
+
+iv_trials <- read_csv("C:/my_programs/Trial-landscape-in-Germany/data/raw/into_value_trials.csv")
+
+iv_prospective <- CTgov_sample_full |>
+  filter(nct_id %in% iv_trials$trial_id) |>
+  select(nct_id, start_date, contains(c("study_first_sub", "has_pr")), contains("date"), everything())
+
+
+write_csv(iv_prospective, "C:/my_programs/Trial-landscape-in-Germany/data/processed/into_value_trials_ctgov.csv")

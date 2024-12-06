@@ -100,9 +100,10 @@ for (url in charite_trials$url) {
 scraped_trials <- scraped_trials |>
   mutate(retrieval_date = charite_trials$retrieval_date) |>
   filter(total_trials > 100,
-         retrieval_date > "2024-01-10") |>
-  select(retrieval_date, everything())
+         retrieval_date > "2024-11-04") |>
+  select(retrieval_date, everything()) |>
+  arrange(retrieval_date)
 
-write_csv(scraped_trials, "./results//EU_trialstracker.csv",
+write_csv(scraped_trials, "./results/EU_trialstracker.csv",
           append = TRUE)
 

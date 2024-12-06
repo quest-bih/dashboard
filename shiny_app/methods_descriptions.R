@@ -170,14 +170,11 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        machine readability. As a result complex page layouts may cause sections and columns
                        to be improperly parsed and the data or code availability statements to be overlooked."
                                   ),
-
                     methods_panel("Preprints",
-
                                   "This metric measures how many preprints with authors from the Charité or BIH
                         have been published on a range of preprint servers. Preprints allow
                         rapid and transparent communication of preliminary research results
                         before publication in a peer-reviewed journal.",
-
                                   HTML('To identify preprints published by Charité and BIH authors we used the
                         <a href="https://www.OpenAlex.org">OpenAlex</a> database,
                         which indexes many preprint servers, including arXiv and bioRxiv.
@@ -185,9 +182,24 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         with authors assigned to the Charité or BIH via their ror IDs. The number of preprints
                         found by this search are then summarized by year.
                         The current preprint data were retrieved on: 20.11.2023.'),
-
                                   "Not all relevant preprint servers are currently indexed by OpenAlex.
-                        Thus we likely underestimate the number of published preprints.")),
+                        Thus we likely underestimate the number of published preprints."),
+                  methods_panel("Preprints with journal publications",
+                       "This metric measures how many of the Charité and BIH preprints
+                           were later published in peer-reviewed journals.",
+                       "To identify the correspondence between journal articles and their
+                           preprints we queried the EuropePMC database, where many common
+                           preprints and journal publications are indexed and cross-referenced.
+                           For the remaining non-matched preprints we used a fuzzy matching
+                           algorithm, in order to match prerprint and journal articles by title.",
+                       "The publication process takes time and it may take several years between
+                       the publication of a preprint and its corresponding peer-reviewed publication.
+                       Not all preprint servers are currently indexed by Europe PMC and
+                           indexation may also come with a time delay. In addition, if the titles
+                           are changed considerably between the preprint and the
+                           journal version, the association between them may be missed by our
+                           algorithm. Titles that are nearly identical, but differ by a small
+                       number of crucial symbols may be mismatched.")),
          hr(),
          h2("Clinical trials"),
          bsCollapse(id = "methodsPanels_ClinicalTrials",
@@ -360,7 +372,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        the decision to report author contributions. The current version of the
                        ContriBOT tool only detects the presence of author contribution statements, but its
                        functionality will be expanded to detect adherence to the
-                       <a href="https://credit.niso.org/">CRediT taxonomy<a>.
+                       <a href="https://credit.niso.org/">CRediT taxonomy</a>.
                        The ContriBOT tool takes PDF files as input, which are not optimized for
                        machine readability. As a result complex page layouts may cause sections and columns
                        to be improperly parsed and the author contribution statements to be overlooked.'))
@@ -494,6 +506,13 @@ preprints_tooltip <- strwrap("This metric measures how many preprints with autho
                              were published on a range of preprint servers. Preprints allow
                              rapid and transparent communication of preliminary research results
                              before publication in a peer-reviewed journal.
+                             - Click for methods details.") |>
+  paste(collapse = " ")
+
+preprints_with_pubs_tooltip <- strwrap("This metric measures how many of the preprints with authors
+                             from Charité and BIH were later published in peer-reviewed journals.
+                             Preprints allow rapid and transparent communication of preliminary research
+                             results before publication in a peer-reviewed journal.
                              - Click for methods details.") |>
   paste(collapse = " ")
 

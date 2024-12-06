@@ -90,7 +90,7 @@ plot_contrib_perc <- function(plot_data, color_palette)
                          x = 0.05,
                          y = 1),
            yaxis = list(title = "<b>Publications</b>",
-                        # range = c(0, 100),
+                        range = c(0, 100),
                         ticksuffix = "%"),
            xaxis = list(title = "<b>Year</b>",
                         dtick = 1),

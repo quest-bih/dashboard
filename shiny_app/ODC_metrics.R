@@ -385,7 +385,7 @@ make_oddpub_plot_data <- function(data_table, gr) {
                                                restrictions == "full", na.rm = TRUE),
 
       open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
-      open_code_count = sum(is_open_code, na.rm = TRUE),
+      open_code_count = sum(open_code_manual_check, na.rm = TRUE),
       open_code_neg_count = sum(!open_code_manual_check | (!is_open_code & is.na(open_code_manual_check)), na.rm = TRUE),
       open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
       OC_github_count = sum(open_code_category_manual == "github", na.rm = TRUE),
