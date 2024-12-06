@@ -2,6 +2,7 @@ library(tidyverse)
 library(rtransparent)
 library(oddpub)
 library(furrr)
+library(here)
 
 txt_folder <- "C:/Datenablage/charite_dashboard/2023/PDFs_to_text/"
 
