@@ -15,7 +15,11 @@ txt_corpus <- txt_corpus |>
 res <- furrr::future_map(txt_corpus, rt_all, .progress = TRUE)
 
 results <- res |>
-  list_rbind()
+  set_names(names(txt_corpus)) |>
+  list_rbind(names_to = "filename") |>
+  mutate(doi = str_replace_all(filename, "\\+", "\\/") |>
+           str_remove(".txt")) |>
+  select(doi, everything(), -filename, -article, -pmid) |>
   write_excel_csv(here("results", "rtransparent_2023.csv"))
 
 
