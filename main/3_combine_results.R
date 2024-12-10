@@ -115,7 +115,7 @@ open_data_23_manual <- read_csv2(here("results", "OD_manual_tidy.csv")) |>
   select(doi, open_data_manual_check, open_data_category_manual, data_access)
 
 open_code_23_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
-  select(doi, contains("code")) |>
+  select(doi, contains("code"), language) |>
   mutate(is_open_code = as.logical(is_open_code),
          open_code_manual_check = as.logical(open_code_manual_check)) |>
   filter(doi %in% open_data_23$doi)
@@ -132,7 +132,8 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.
          is_open_data_das = NA, ### missing from previous screenings
          is_open_code_cas = NA, ### missing from previous screenings
          das = as.character(das),
-         cas = as.character(cas)) |>
+         cas = as.character(cas),
+         language = NA_character_) |>
   rows_upsert(open_data_retro, by = "doi") |>
   rows_upsert(open_data_23, by = "doi") |>
   rows_upsert(open_code_23_manual, by = "doi") |>
@@ -155,15 +156,22 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.
   )
   )
 
+######### TODO when updating this table above, make sure is_open_code in past years is not overwritten
+
 open_data_results |>
   left_join(publications |> select(doi, year)) |>
   count(year, is.na(das))
+
+open_data_results |>
+  left_join(publications |> select(doi, year)) |>
+  filter(year > 2020) |>
+  count(year, open_code_manual_check)
 
 # missing_years <- open_data_results |>
 #   left_join(publications |> select(doi, year)) |>
 #   filter(is.na(year))
 
-# when finished update the template to contain the data from previous year
+# when finished update the template to contain the data from previous year !!!!
 # open_data_results |>
 #   write_excel_csv2(here("results", "Open_Data_manual_check_template.csv"))
 

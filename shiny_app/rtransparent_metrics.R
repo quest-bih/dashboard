@@ -122,3 +122,56 @@ plot_coi_total <- function(plot_data, color_palette)
     plotly::config(displayModeBar = FALSE)
 }
 
+
+plot_funding_perc <- function(plot_data, color_palette)
+{
+  plot_output <- plot_ly(plot_data, x = ~year, y = ~perc_has_funding,
+                         name = "Funding Statement", type = "bar",
+                         marker = list(color = color_palette[3],
+                                       line = list(color = "rgb(0,0,0)",
+                                                   width = 1.5)))
+
+  plot_output |>
+    layout(barmode = "stack",
+           legend = list(xanchor = "left",
+                         # font = list(size = 11),
+                         bgcolor = "rgba(0,0,0,0)",
+                         x = 0.05,
+                         y = 1),
+           yaxis = list(title = "<b>Publications</b>",
+                        range = c(0, 100),
+                        ticksuffix = "%"),
+           xaxis = list(title = "<b>Year</b>",
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9]) |>
+    plotly::config(displayModeBar = FALSE)
+
+}
+
+plot_funding_total <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~has_funding,
+          name = "Funding Statement", type = "bar",
+          marker = list(color = color_palette[3],
+                        line = list(color = "rgb(0,0,0)",
+                                    width = 1.5))) |>
+    add_trace(y = ~has_no_funding,
+              name = "No Funding Statement",
+              marker = list(color = color_palette[5],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
+    add_trace(y = ~not_screened,
+              name = "Article<br>not screened",
+              marker = list(color = color_palette[1],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
+    layout(barmode = "stack",
+           yaxis = list(title = "<b>Number of publications</b>"
+           ),
+           xaxis = list(title = "<b>Year</b>",
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9]) |>
+    plotly::config(displayModeBar = FALSE)
+}

@@ -329,6 +329,8 @@ show_dashboard <- function(...) {
                     reactive(RVs$total_bt), color_palette)
     rtransparentServer("plot_coi", dashboard_metrics, "coi",
                        reactive(RVs$total_bt), color_palette)
+    rtransparentServer("plot_funding", dashboard_metrics, "funding",
+                       reactive(RVs$total_bt), color_palette)
 
     output$citation_text <-
       renderUI({
@@ -524,8 +526,8 @@ show_dashboard <- function(...) {
                       value = box_value,
                       value_text = box_text,
                       plot = orcidOutput('plot_orcid_pubs', height = "300px"),
-                      info_id = "infoOrcidPubs",
-                      info_title = "ORCIDpubs",
+                      info_id = "infoOrcid",
+                      info_title = "ORCIDs",
                       info_text = orcid_pubs_tooltip,
                       info_alignment = "right")
     })
@@ -552,10 +554,25 @@ show_dashboard <- function(...) {
       metricBoxOutput(title = "Conflict of Interest (COI) Statements",
                       value = box_value,
                       value_text = box_text,
-                      plot = contribotOutput("plot_coi", height = "300px"),
+                      plot = rtransparentOutput("plot_coi", height = "300px"),
                       info_id = "infoCOI",
                       info_title = "COI",
                       info_text = coi_tooltip,
+                      info_alignment = "left")
+    }) |>
+      bindEvent(reactive(RVs$total_bt))
+
+    output$funding <- renderUI({
+      box_value <- get_current_rtransparent(dashboard_metrics, perc_has_funding)
+      box_text <- paste0("of screened publications had Funding statements in ",
+                         dashboard_metrics$year |> max())
+      metricBoxOutput(title = "Funding Statements",
+                      value = box_value,
+                      value_text = box_text,
+                      plot = rtransparentOutput("plot_funding", height = "300px"),
+                      info_id = "infoFunding",
+                      info_title = "Funding",
+                      info_text = funding_tooltip,
                       info_alignment = "left")
     }) |>
       bindEvent(reactive(RVs$total_bt))
@@ -658,9 +675,14 @@ show_dashboard <- function(...) {
                   column(
                     col_width, uiOutput("authorship") |>
                       shinycssloaders::withSpinner(color = "#007265")
-                  ),
+                  )),
+                fluidRow(
                   column(
                     col_width, uiOutput("coi") |>
+                      shinycssloaders::withSpinner(color = "#007265")
+                  ),
+                  column(
+                    col_width, uiOutput("funding") |>
                       shinycssloaders::withSpinner(color = "#007265")
                   )
                 )
@@ -692,10 +714,10 @@ show_dashboard <- function(...) {
 
     # Create choices for selectInput
     choices <- list(
-      `Repository types` = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) %>% setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
-      `General-purpose repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])) %>%
+      `Repository types` = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) |> setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
+      `General-purpose repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])) |>
         setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])),
-      `Field-specific repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"])) %>%
+      `Field-specific repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"])) |>
         setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]))
     )
 
@@ -944,75 +966,95 @@ show_dashboard <- function(...) {
   }) |>
     bindEvent(input$infoPreprintsPublished)
 
-  observeEvent(input$infoOrcid, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
-    updateCollapse(session, "methodsPanels_persistent_ids", open = "ORCID")
-  })
+    updateCollapse(session, "methodsPanels_broader_transparency", open = "ORCIDs in publications")
+  }) |>
+    bindEvent(input$infoOrcid)
 
-  observeEvent(input$infoCOI, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
-    updateCollapse(session, "methodsPanels_persistent_ids", open = "Conflict of Interest Statements")
-  })
+    updateCollapse(session, "methodsPanels_broader_transparency", open = "Authorship Statements")
+  }) |>
+    bindEvent(input$infoAuthorship)
 
-  observeEvent(input$infoSumRes, {
+  observe({
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_broader_transparency", open = "Conflict of Interest Statements")
+  }) |>
+    bindEvent(input$infoCOI)
+
+  observe({
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_broader_transparency", open = "Funding Statements")
+  }) |>
+    bindEvent(input$infoFunding)
+
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Summary results reporting")
-  })
+  }) |>
+    bindEvent(input$infoSumRes)
 
-  observeEvent(input$infoIntoValue, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Timely publication of results")
-  })
+  }) |>
+    bindEvent(input$infoIntoValue)
 
-  observeEvent(input$infoProspReg, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_ClinicalTrials", open = "Prospective registration")
-  })
+  }) |>
+    bindEvent(input$infoProspReg)
 
-  observeEvent(input$infoVisProblem, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabRessources")
-  })
+  }) |>
+    bindEvent(input$infoVisProblem)
 
-  observeEvent(input$infoVisInform, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabRessources")
-  })
+  }) |>
+    bindEvent(input$infoVisInform)
 
-  observeEvent(input$infoFAIRrepository, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-  })
+  }) |>
+    bindEvent(input$infoFAIRrepository)
 
-    observeEvent(input$infoFAIRrepository, {
+
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-  })
+  }) |>
+    bindEvent(input$infoFAIRprinciples)
 
-  observeEvent(input$infoFAIRprinciples, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-  })
+  }) |>
+    bindEvent(input$infoFAIRlicenses)
 
-  observeEvent(input$infoFAIRlicenses, {
+  observe({
     updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-  })
-
-  observeEvent(input$infoFAIRidentifiers, {
-    updateTabsetPanel(session, "navbarTabs",
-                      selected = "tabMethods")
-    updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
-  })
+  }) |>
+    bindEvent(input$infoFAIRidentifiers)
 
 
   #data table to show the underlying datasets
@@ -1098,7 +1140,7 @@ show_dashboard <- function(...) {
 
   # FAIR identifiers sunburst
 
-  fair_sunburst_plot_data <- fair_dataset %>%
+  fair_sunburst_plot_data <- fair_dataset |>
     make_fair_sunburst_plot_data()
 
   output$plot_fair_sunburst <- renderPlotly({

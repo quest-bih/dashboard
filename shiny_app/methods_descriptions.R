@@ -391,7 +391,23 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        The rtransparent tool takes PDF files as input, which are not optimized for
                        machine readability. As a result complex page layouts may cause sections and columns
                        to be improperly parsed and the relevant statements to be overlooked.')
-                       )
+                       ),
+         methods_panel("Funding Statements",
+                       "This metric measures the percentage of screened publications that
+           included a funding statement. Such statements ideally xcccc.
+           Declarations of funding and conflict of interest are quintessential for transparency.
+           Many publishers now require submitted manuscripts to include funding statements in a dedicated section.",
+                       HTML('Methodssssss'),
+                       HTML('Several limitations apply: The decision whether to include a
+                       Funding Statement largely depends on journal policy.
+                       Only the presence of conflict of interest and funding statements (among others)
+                       is detected with the rtransparent tool, whereas the fidelity and completeness of such
+                       statements <a href="https://doi.org/10.1371/journal.pone.0275380">remains difficult to verify</a>.
+                       The rtransparent tool takes PDF files as input, which are not optimized for
+                       machine readability. As a result complex page layouts may cause sections and columns
+                       to be improperly parsed and the relevant statements to be overlooked.')
+         )
+
          ),
 
 
