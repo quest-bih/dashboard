@@ -480,7 +480,10 @@ check_tbl <- dashboard_metrics |>
 
 
 assert_that(dim(check_tbl)[1] == 0)
- # write_csv(check_tbl, "./results/pdf_update_cases.csv")
+
+check_tbl |>
+  filter(year == 2023) |>
+  write_excel_csv2(here("results", "pdf_update_cases.csv"))
 
 
 #----------------------------------------------------------------------------------------
