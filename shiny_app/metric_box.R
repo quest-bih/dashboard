@@ -11,6 +11,9 @@ metricBoxOutput <- function(style_resp = "padding-top: 0px;
                             info_alignment = "right") {
 
   wellPanel(style = style_resp, #"height: 500px; overflow: scroll; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5", #padding-bottom: 0px;
+                top = 0,
+                height = 500,
+                left = 0,
             fluidRow(
               column(8, align="left", h4(strong(title))),
               column(4, align="right", h4(actionButton(inputId = info_id, label = "", icon = icon("circle-info"),

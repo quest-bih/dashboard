@@ -279,11 +279,16 @@ plot_OC_total <- function(plot_data, color_palette)
 plot_DAS_perc <- function(plot_data, color_palette) {
   yrange <- c(0, 100)
 
-  plot_ly(plot_data, x = ~year, y = ~perc_das_or_cas,
-                         name = "Data Availability Statements", type = "bar",
+  plot_ly(plot_data, x = ~year, y = ~perc_das_or_cas_odc,
+                         name = "DAS or CAS and<br>open data or code", type = "bar",
                          marker = list(color = color_palette[3],
                                        line = list(color = "rgb(0,0,0)",
                                                    width = 1.5))) |>
+    add_trace(y = ~perc_das_or_cas_not_odc,
+              name = "DAS or CAS<br>no external data or code",
+              marker = list(color = color_palette[7],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
     layout(barmode = "stack",
            legend = list(xanchor = "left",
                          # font = list(size = 11),
@@ -302,13 +307,23 @@ plot_DAS_perc <- function(plot_data, color_palette) {
 
 plot_DAS_total <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~has_das_or_cas,
-          name = "DAS or CAS", type = "bar",
+  plot_ly(plot_data, x = ~year, y = ~has_das_or_cas_odc,
+          name = "DAS or CAS and<br>open data or code", type = "bar",
           marker = list(color = color_palette[3],
                         line = list(color = "rgb(0,0,0)",
                                     width = 1.5))) |>
-    add_trace(y = ~no_das_nor_cas,
-              name = "No DAS or CAS",
+    add_trace(y = ~has_das_or_cas_not_odc,
+              name = "DAS or CAS<br>no external data or code",
+              marker = list(color = color_palette[7],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
+    add_trace(y = ~no_das_nor_cas_odc,
+              name = "No DAS or CAS<br>open data or code",
+              marker = list(color = color_palette[6],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
+    add_trace(y = ~no_das_nor_cas_not_odc,
+              name = "No DAS or CAS<br>no external data or code",
               marker = list(color = color_palette[5],
                             line = list(color = "rgb(0,0,0)",
                                         width = 1.5))) |>
@@ -328,32 +343,6 @@ plot_DAS_total <- function(plot_data, color_palette)
     plotly::config(displayModeBar = FALSE)
 }
 
-# das_cas <- dashboard_metrics |>
-#   select(doi, das, cas) |>
-#   filter(!is.na(das)|
-#          !is.na(cas))
-#   filter(is.na(das),
-#          !is.na(cas))
-# has DAS and CAS, DAS only, CAS_only, no DAS nor CAS, not_screened
-# dashboard_metrics |>
-#   group_by(year) |>
-#   summarize(open_data_count = sum(is_open_data, na.rm = TRUE),
-#             open_data_neg_count = sum(!is_open_data, na.rm = TRUE),
-#             open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
-#             open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
-#             open_code_neg_count = sum(!is_open_code | !open_code_manual_check, na.rm = TRUE),
-#             open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
-#             OC_github_count = sum(open_code_category_manual == "github", na.rm = TRUE),
-#             OC_other_count = sum(open_code_category_manual == "other repository/website", na.rm = TRUE),
-#
-#             total = sum(!is.na(is_open_data), na.rm = TRUE),
-#             total_code = sum(!is.na(is_open_code), na.rm = TRUE))  |>
-  # mutate(open_data_perc = round(open_data_count/total * 100, 1),
-  #        open_code_perc = round(open_code_count/total_code * 100, 1),
-  #        OC_github_perc = round(OC_github_count/total_code * 100, 1),
-  #        OC_other_perc = round(OC_other_count/total_code * 100, 1)) |>
-#   filter(year == 2022) |>
-#   glimpse()
 #
 # dashboard_metrics |>
 #   filter(year == 2022) |>
@@ -409,90 +398,6 @@ make_oddpub_plot_data <- function(data_table, gr) {
            OD_disc_and_gen_nonrestricted_perc = round((OD_disciplinary_and_general_count - OD_disc_and_gen_restricted_count)/total * 100, 1),OD_gen_restricted_perc = 0,           # OD_disc_restricted_perc = 0,
            )
 
-
-
-  # oddpub_plot_data <- data_table %>%
-  #   group_by(year) %>%
-  #   summarize(open_data_manual_count = sum(open_data_manual_check, na.rm = TRUE),
-  #             open_data_neg_count = sum(!is_open_data | !open_data_manual_check, na.rm = TRUE),
-  #             open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
-  #
-  #             open_code_manual_count = sum(open_code_manual_check, na.rm = TRUE),
-  #             open_code_neg_count = sum(!is_open_code | !open_code_manual_check, na.rm = TRUE),
-  #             open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
-  #
-  #             OD_disciplinary_count = sum(open_data_category_manual == "disciplinary repository", na.rm = TRUE),
-  #             OD_general_purpose_count = sum(open_data_category_manual == "general-purpose repository", na.rm = TRUE),
-  #             OD_disciplinary_and_general_count = sum(open_data_category_manual == "disciplinary and general-purpose repositories", na.rm = TRUE),
-  #             OD_disc_restricted_count = sum(open_data_category_manual == "disciplinary repository" &
-  #                                              restrictions == "full", na.rm = TRUE),
-  #             OD_gen_restricted_count = sum(open_data_category_manual == "general-purpose repository" &
-  #                                             restrictions == "full", na.rm = TRUE),
-  #             OD_disc_and_gen_restricted_count = sum(open_data_category_manual == "disciplinary and general-purpose repositories" &
-  #                                                      restrictions == "full", na.rm = TRUE),
-  #
-  #             # OD_supplement_count = sum(open_data_category_priority == "supplement", na.rm = TRUE),
-  #             OC_github_count = sum(open_code_category_manual == "github", na.rm = TRUE),
-  #             OC_other_count = sum(open_code_category_manual == "other repository/website", na.rm = TRUE),
-  #             # OC_supplement_count = sum(open_code_category_priority == "supplement", na.rm = TRUE),
-  #             total = sum(!is.na(is_open_data) | (open_data_manual_check == TRUE), na.rm = TRUE)) %>%
-  #
-  #   mutate(open_data_manual_perc = round(open_data_manual_count/total * 100, 1),
-  #          open_code_manual_perc = round(open_code_manual_count/total * 100, 1),
-  #          OD_disciplinary_perc = round(OD_disciplinary_count/total * 100, 1),
-  #          OD_general_purpose_perc = round(OD_general_purpose_count/total * 100, 1),
-  #          OD_disciplinary_and_general_perc = round(OD_disciplinary_and_general_count/total * 100, 1),
-  #          OD_disc_restricted_perc = round(OD_disc_restricted_count/total * 100, 1),
-  #          OD_gen_restricted_perc = round(OD_gen_restricted_count/total * 100, 1),
-  #          OD_disc_and_gen_restricted_perc = round(OD_disc_and_gen_restricted_count/total * 100, 1),
-  #          OD_disc_nonrestricted_perc = round((OD_disciplinary_count - OD_disc_restricted_count)/total * 100, 1),
-  #          OD_gen_nonrestricted_perc = round((OD_general_purpose_count - OD_gen_restricted_count)/total * 100, 1),
-  #          OD_disc_and_gen_nonrestricted_perc = round((OD_disciplinary_and_general_count - OD_disc_and_gen_restricted_count)/total * 100, 1),
-  #          # mutate(OD_supplement_perc = round(OD_supplement_count/total * 100, 1)) %>%
-  #          OC_github_perc = round(OC_github_count/total * 100, 1),
-  #          OC_other_perc = round(OC_other_count/total * 100, 1))
-
-
-
-  # summarize(open_data_count = sum(is_open_data, na.rm = TRUE),
-    #           open_data_neg_count = sum(!is_open_data, na.rm = TRUE),
-    #           open_data_NA_count = sum(is.na(is_open_data), na.rm = TRUE),
-    #
-    #           open_code_count = sum(is_open_code, na.rm = TRUE),
-    #           open_code_neg_count = sum(!is_open_code, na.rm = TRUE),
-    #           open_code_NA_count = sum(is.na(is_open_code), na.rm = TRUE),
-
-              # OD_disciplinary_count = sum(open_data_category_manual == "disciplinary repository", na.rm = TRUE),
-              # OD_general_purpose_count = sum(open_data_category_manual == "general-purpose repository", na.rm = TRUE),
-              # OD_disciplinary_and_general_count = sum(open_data_category_manual == "disciplinary and general-purpose repositories", na.rm = TRUE),
-              # OD_disc_restricted_count = sum(open_data_category_manual == "disciplinary repository" &
-              #                                  restrictions == "full", na.rm = TRUE),
-              # OD_gen_restricted_count = sum(open_data_category_manual == "general-purpose repository" &
-              #                                 restrictions == "full", na.rm = TRUE),
-              # OD_disc_and_gen_restricted_count = sum(open_data_category_manual == "disciplinary and general-purpose repositories" &
-              #                                          restrictions == "full", na.rm = TRUE),
-
-              # OD_supplement_count = sum(open_data_category_priority == "supplement", na.rm = TRUE),
-              # OC_github_count = sum(open_code_category == "github", na.rm = TRUE),
-              # OC_other_count = sum(open_code_category == "other repository/website", na.rm = TRUE),
-              # OC_supplement_count = sum(open_code_category_priority == "supplement", na.rm = TRUE),
-              # total = sum(!is.na(is_open_data), na.rm = TRUE)) |>
-
-    # mutate(open_data_perc = round(open_data_count/total * 100, 1),
-           # open_code_perc = round(open_code_count/total * 100, 1),
-           # OD_disciplinary_perc = round(OD_disciplinary_count/total * 100, 1),
-           # OD_general_purpose_perc = round(OD_general_purpose_count/total * 100, 1),
-           # OD_disciplinary_and_general_perc = round(OD_disciplinary_and_general_count/total * 100, 1),
-           # OD_disc_restricted_perc = round(OD_disc_restricted_count/total * 100, 1),
-           # OD_gen_restricted_perc = round(OD_gen_restricted_count/total * 100, 1),
-           # OD_disc_and_gen_restricted_perc = round(OD_disc_and_gen_restricted_count/total * 100, 1),
-           # OD_disc_nonrestricted_perc = round((OD_disciplinary_count - OD_disc_restricted_count)/total * 100, 1),
-           # OD_gen_nonrestricted_perc = round((OD_general_purpose_count - OD_gen_restricted_count)/total * 100, 1),
-           # OD_disc_and_gen_nonrestricted_perc = round((OD_disciplinary_and_general_count - OD_disc_and_gen_restricted_count)/total * 100, 1),
-           # mutate(OD_supplement_perc = round(OD_supplement_count/total * 100, 1)) |>
-           # OC_github_perc = round(OC_github_count/total * 100, 1),
-           # OC_other_perc = round(OC_other_count/total * 100, 1))
-
   return(oddpub_plot_data)
 }
 
@@ -500,18 +405,33 @@ make_das_cas_plot_data <- function(data_table, gr) {
 
   data_table |>
     group_by({{ gr }}) |>
-    summarize(has_das = sum(das != "", na.rm = TRUE),
+    mutate(is_odc = open_data_manual_check | open_code_manual_check | is_open_data_das | is_open_code_cas,
+           has_das_or_cas = !is.na(coalesce(das, cas))) |>
+    summarize(has_das_or_cas_odc = sum(has_das_or_cas & is_odc, na.rm = TRUE),
+              no_das_nor_cas_odc = sum(!has_das_or_cas & is_odc, na.rm = TRUE),
+              has_das_or_cas = sum(has_das_or_cas, na.rm = TRUE),
+              is_odc = sum(is_odc, na.rm = TRUE),
+              # has_das_or_cas_odc = sum(is_open_data_das | is_open_code_cas, na.rm = TRUE),
+              is_open_data_das = sum(is_open_data_das, na.rm = TRUE),
+              is_open_code_cas = sum(is_open_code_cas, na.rm = TRUE),
+              has_das = sum(das != "", na.rm = TRUE),
               has_cas = sum(cas != "", na.rm = TRUE),
-              has_das_or_cas = sum(cas != "" | das != "", na.rm = TRUE),
+              # has_das_or_cas = sum(cas != "" | das != "", na.rm = TRUE),
+              has_das_or_cas_not_odc = has_das_or_cas - has_das_or_cas_odc,
               total_screened = sum(!is.na(is_open_data), na.rm = TRUE),
               not_screened = sum(is.na(is_open_data), na.rm = TRUE),
               no_das = total_screened - has_das,
               no_cas = total_screened - has_cas,
               no_das_nor_cas = total_screened - has_das_or_cas,
+              no_das_nor_cas_not_odc = no_das_nor_cas - no_das_nor_cas_odc,
               perc_das = round(has_das / total_screened * 100),
               perc_cas = round(has_cas / total_screened * 100),
               perc_das_or_cas = round(has_das_or_cas / total_screened * 100),
+              perc_das_or_cas_odc = round(has_das_or_cas_odc/total_screened * 100),
+              perc_das_or_cas_not_odc = round(has_das_or_cas_not_odc/total_screened * 100),
+              perc_das_or_cas_info = round(has_das_or_cas_odc/has_das_or_cas * 100),
+              perc_das_or_cas_noninfo = round(has_das_or_cas_not_odc/has_das_or_cas * 100),
               total = n())
 }
 
-# make_das_cas_plot_data(dashboard_metrics, year)
+#check <- make_das_cas_plot_data(dashboard_metrics, year)

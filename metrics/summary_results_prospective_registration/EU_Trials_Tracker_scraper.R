@@ -74,7 +74,8 @@ charite_trials <- commits$payload$commitGroups$commits |>
 charite_trials <- charite_trials |>
   mutate(url = paste0("https://github.com/ebmdatalab/euctr-tracker-data/raw/",
                       SHAs,
-                      "/all_sponsors.json"))
+                      "/all_sponsors.json")) |>
+  filter(retrieval_date > "2024-12-11")
 
 scraped_trials <- tibble()
 
@@ -99,8 +100,7 @@ for (url in charite_trials$url) {
 
 scraped_trials <- scraped_trials |>
   mutate(retrieval_date = charite_trials$retrieval_date) |>
-  filter(total_trials > 100,
-         retrieval_date > "2024-11-04") |>
+  filter(total_trials > 100) |>
   select(retrieval_date, everything()) |>
   arrange(retrieval_date)
 

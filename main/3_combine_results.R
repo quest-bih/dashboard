@@ -93,11 +93,22 @@ publications |>
 # results_files <- list.files(here("results"), full.names = TRUE)
 # results_files <- paste0(results_folder, results_files)
 
+
+open_data_22 <- read_csv(here("results", "Open_Data_2022.csv")) |>
+  # mutate(doi = str_replace_all(article, "\\+", "\\/") |>
+  #          str_remove(".txt") |>
+  #          tolower()) |>
+  select(doi, everything(), -article)
+
 open_data_23 <- read_csv(here("results", "Open_Data.csv")) |>
   # mutate(doi = str_replace_all(article, "\\+", "\\/") |>
   #          str_remove(".txt") |>
   #          tolower()) |>
   select(doi, everything(), -article)
+
+open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual_2022.xlsx")) |>
+  select(doi, contains("open_code"), "cas") |>
+  mutate(open_code_manual_check = as.logical(open_code_manual_check))
 
 # open_data_23 |>
 #   filter(is_open_code == TRUE) |>
@@ -106,13 +117,17 @@ open_data_23 <- read_csv(here("results", "Open_Data.csv")) |>
 
 #manually checked Open Data results + additional cases that were not detected by algorithm
 #but found in manual searches or submitted by researchers for the LOM/IOM
-open_data_retro <- read_csv(here("results", "Open_Data_retroactive.csv")) |>
-  mutate(doi = tolower(doi)) |>
-  select(doi, everything(), -article)
+# open_data_retro <- read_csv(here("results", "Open_Data_retroactive.csv")) |>
+#   mutate(doi = tolower(doi)) |>
+#   select(doi, everything(), -article)
 
 open_data_23_manual <- read_csv2(here("results", "OD_manual_tidy.csv")) |>
   mutate(doi = tolower(doi)) |>
-  select(doi, open_data_manual_check, open_data_category_manual, data_access)
+  select(doi, open_data_manual_check, restricted_manual_check, open_data_category_manual, data_access)
+
+open_data_23_manual |>
+  left_join(publications, by = "doi") |>
+  count(year)
 
 open_code_23_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
   select(doi, contains("code"), language) |>
@@ -120,24 +135,69 @@ open_code_23_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xls
          open_code_manual_check = as.logical(open_code_manual_check)) |>
   filter(doi %in% open_data_23$doi)
 
-# dupes <- open_data_22 |>
-#   filter(doi %in% manual_code_results$doi)
-# publications |>
-#   filter(doi %in% dupes$doi,
-#          year == 2022)
-# old template had some MDC papers that were later excluded
+# qa_old_results <- open_data_results |>
+#   rows_upsert(open_data_retro, by = "doi") |>
+#   rows_upsert(open_data_22, by = "doi") |>
+#   rows_upsert(open_data_22_manual, by = "doi") |>
+#   rows_upsert(open_code_22_manual, by = "doi") |>
+#   mutate(open_code_category_manual = case_when(
+#     str_detect(open_code_category_manual, "github") ~ "github",
+#     str_detect(open_code_category_manual, "supplement") ~ "supplement",
+#     open_code_manual_check == TRUE ~ "other repository/website"
+#   ),
+#   open_code_manual_check = case_when(
+#     str_detect(open_code_category_manual, "supplement") ~ FALSE,
+#     .default = open_code_manual_check
+#   ),
+#   open_data_manual_check = case_when(
+#     str_detect(open_data_category_manual, "supplement") ~ FALSE,
+#     .default = open_data_manual_check
+#   ),
+#   restrictions = case_when(
+#     str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
+#     str_detect(data_access, "restricted") ~ "full",
+#     .default = "no restricted data"
+#   ),
+#   restricted_manual_check = case_when(
+#     restrictions == "no restricted data" ~ FALSE,
+#     restrictions == "full" ~ TRUE,
+#     .default = restricted_manual_check
+#   )
+#   ) |>
+#   left_join(dashboard_metrics, by = "doi") |>
+#   # filter(is_open_code.x != is_open_code.y) |>
+#   # select(doi, year, contains("is_open_code"), contains("code"), everything())
+#   filter(is_open_data.x != is_open_data.y) |>
+#   select(doi, year, contains("is_open_data"), contains("data"), everything())
+# |>
+#   # left_join(open_data_retro, by = "doi") |>
+#   # filter(is_open_data.x != is_open_data.y) |>
+#   # filter(is_open_code.x != is_open_code.y | is.na(is_open_code.x)) |>
+#   left_join(publications, by = "doi") |>
+#   select(doi, year, contains("is_open"), contains("data"), everything())
 
-open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.csv")) |>
-  mutate(is_reuse = NA, ### missing from previous screenings
-         is_open_data_das = NA, ### missing from previous screenings
-         is_open_code_cas = NA, ### missing from previous screenings
-         das = as.character(das),
-         cas = as.character(cas),
-         language = NA_character_) |>
-  rows_upsert(open_data_retro, by = "doi") |>
-  rows_upsert(open_data_23, by = "doi") |>
-  rows_upsert(open_code_23_manual, by = "doi") |>
+# qa_old_results |>
+#   count(year, is.na(open_code_manual_check))
+
+open_data_results <- read_csv2(here("results", "Open_Data_manual_check_results.csv")) |>
+  mutate(language = as.character(language)) |>
+  # mutate(
+  #        restricted_manual_check = NA,
+  #        # is_reuse = NA, ### missing from previous screenings
+  #        # is_open_data_das = NA, ### missing from previous screenings
+  #        # is_open_code_cas = NA, ### missing from previous screenings
+  #        is_code_supplement = NA, ### missing from previous screenings
+  #        is_code_reuse = NA, ### missing from previous screenings
+  #        # das = as.character(das),
+  #        # cas = as.character(cas),
+  #        language = NA_character_) |>
+  # rows_upsert(open_data_retro, by = "doi") |>
+  # rows_upsert(open_data_22, by = "doi") |>
+  # rows_upsert(open_code_23_manual, by = "doi") |>
+  # rows_upsert(open_data_22_manual, by = "doi") |>
+  # rows_upsert(open_code_22_manual, by = "doi") |>
   rows_upsert(open_data_23_manual, by = "doi") |>
+  rows_upsert(open_code_23_manual, by = "doi") |>
   mutate(open_code_category_manual = case_when(
     str_detect(open_code_category_manual, "github") ~ "github",
     str_detect(open_code_category_manual, "supplement") ~ "supplement",
@@ -145,22 +205,35 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_template.
   ),
   open_code_manual_check = case_when(
     str_detect(open_code_category_manual, "supplement") ~ FALSE,
-    .default = open_code_manual_check),
+    .default = open_code_manual_check
+    ),
   open_data_manual_check = case_when(
     str_detect(open_data_category_manual, "supplement") ~ FALSE,
-    .default = open_data_manual_check),
+    .default = open_data_manual_check
+    ),
   restrictions = case_when(
     str_detect(data_access, "yes") & str_detect(data_access, "restricted") ~ "partial",
     str_detect(data_access, "restricted") ~ "full",
     .default = "no restricted data"
+  ),
+  restricted_manual_check = case_when(
+    restrictions == "no restricted data" ~ FALSE,
+    restrictions == "full" ~ TRUE,
+    .default = restricted_manual_check
   )
   )
 
-######### TODO when updating this table above, make sure is_open_code in past years is not overwritten
+open_data_results |>
+  write_excel_csv2(here("results", "Open_Data_manual_check_results_new.csv"))
+
 
 open_data_results |>
   left_join(publications |> select(doi, year)) |>
   count(year, is.na(das))
+
+missing_years <- open_data_results |>
+  left_join(publications |> select(doi, year)) |>
+  filter(is.na(year))
 
 open_data_results |>
   left_join(publications |> select(doi, year)) |>
@@ -204,16 +277,17 @@ open_data_results |>
 
 #ContriBOT results
 
-contribot_results <- read_csv(here("results", "ContriBOT_2023.csv"))
+# contribot_results <- read_csv(here("results", "ContriBOT_2023.csv"))
 # contribot_results_retro <- read_csv(here("results", "ContriBOT_retroactive.csv"))
 # contribot_results <- contribot_results_retro |>
 #   rows_upsert(contribot_results, by = "doi")
-contribot_results_old <- read_csv(here("results", "ContriBOT_old.csv"))
-contribot_results <- contribot_results_old |>
-  rows_upsert(contribot_results, by = "doi")
+contribot_results <- read_csv(here("results", "ContriBOT.csv"))
 
-contribot_results |>
-  write_excel_csv(here("results", "ContriBOT_old.csv"))
+# contribot_results <- contribot_results_old |>
+#   rows_upsert(contribot_results, by = "doi")
+
+# contribot_results |>
+#   write_excel_csv(here("results", "ContriBOT.csv"))
 
 orcid_screening_results <- read_csv(here("results", "orcids_extracted_2023.csv"))
 
@@ -253,7 +327,6 @@ missing_dois <- setdiff(contribot_results$doi, publications$doi)
 publications |>
   filter(doi %in% missing_dois)
 
-
 rtransparent_2023 <- read_csv(here("results", "rtransparent_2023.csv")) |>
   transmute(doi = tolower(doi),
             has_coi = is_coi_pred,
@@ -265,8 +338,23 @@ rtransparent_old <- read_csv(here("results", "rtransparent_old.csv"))
 rtransparent_results <- rtransparent_old |>
   rows_upsert(rtransparent_2023, by = "doi")
 
-rtransparent_old |>
+rtransparent_results |>
   write_excel_csv(here("results", "rtransparent_old.csv"))
+
+
+dupes <- rtransparent_old |>
+  distinct(doi, .keep_all = TRUE) |>
+  get_dupes(doi)
+
+limitations_2023 <- read_csv(here("results", "limitations.csv"))
+
+limitations_old <- read_csv(here("results", "limitations_old.csv"))
+
+limitations_results <- limitations_old |>
+  rows_upsert(limitations_2023, by = "doi")
+
+limitations_results |>
+  write_excel_csv(here("results", "limitations_old.csv"))
 
 #----------------------------------------------------------------------------------------
 # combine results
@@ -282,10 +370,43 @@ dashboard_metrics <- publications |>
   left_join(contribot_results, by = "doi") |>
   left_join(orcid_screening_results, by = "doi") |>
   left_join(rtransparent_results, by = "doi") |>
+  left_join(limitations_results, by = "doi") |>
   rename(oa_color = oa_status) |>
   mutate(has_any_orcid = has_orcid | !is.na(orcids)) |>
   left_join(barzooka_results, by = "doi") |>
   mutate(pdf_downloaded = !is.na(bar) | !is.na(has_contrib))
+
+
+
+## set excluded articles that were screened to NA
+junk_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/junk"
+junk_2022_folder <- "C:/Datenablage/charite_dashboard/2022/junk"
+junk_2023_folder <- "C:/Datenablage/charite_dashboard/2023/junk"
+
+junk_unified <- list.files(junk_folder) |>
+  pdfRetrieve::doi_pdf2stripped()
+
+junk_2022 <- list.files(junk_2022_folder) |>
+  pdfRetrieve::doi_pdf2stripped()
+
+junk_2023 <- list.files(junk_2023_folder) |>
+  pdfRetrieve::doi_pdf2stripped()
+
+junk_prior <- dashboard_metrics |>
+  filter(is.na(has_contrib), !is.na(is_open_data),
+       year < 2021) |>
+  pull(doi)
+
+junk_dois <- c(junk_unified, junk_2022, junk_2023, junk_prior)
+
+dashboard_metrics_junk <- dashboard_metrics |>
+  filter(doi %in% junk_dois) |>
+  select(doi, starts_with("is_open"), starts_with("has"), restrictions, orcids) |>
+  mutate(across(!doi, \(x) x = NA))
+
+
+dashboard_metrics <- dashboard_metrics |>
+  rows_update(dashboard_metrics_junk, by = "doi")
 
 dashboard_metrics |>
   filter(pdf_downloaded == TRUE) |>
@@ -299,7 +420,6 @@ nas_orcids |>
 
 orcid_screening_results |>
   count(is.na(orcids))
-
 
 per_year <- dashboard_metrics |>
   count(year, open_data_category_manual) |>
@@ -373,8 +493,8 @@ shiny_table <- dashboard_metrics |>
          publisher, issn, e_issn,
          corresponding_author_charite,
          pdf_downloaded, oa_color,
-         is_open_data, open_data_manual_check, open_data_category_manual,
-         is_open_code, open_code_manual_check, open_code_category_manual,
+         is_open_data, is_open_data_das, open_data_manual_check, open_data_category_manual,
+         is_open_code, is_open_code_cas, open_code_manual_check, open_code_category_manual,
          open_data_statements, open_code_statements,
          das, cas,
          restrictions,
@@ -382,6 +502,7 @@ shiny_table <- dashboard_metrics |>
          has_orcid, orcid_statement,
          orcids, has_any_orcid,
          has_coi, has_funding,
+         has_limitations,
          bar, pie, bardot, box, dot, hist, violin)
 
 shiny_table |>

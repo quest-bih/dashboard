@@ -102,7 +102,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         (Code: <a href="https://github.com/quest-bih/oddpub">
                         https://github.com/quest-bih/oddpub</a>,
                         publication: <a href="https://doi.org/10.5334/dsj-2020-042">
-                        https://doi.org/10.5334/dsj-2020-042</a>),
+                        https://doi.org/10.5334/dsj-2020-042</a>; RRID:SCR_018385),
                         which was developed by QUEST. ODDPub searches the publication full-text
                         for statements indicating sharing of raw data or analysis code.
                         It does however not check the shared data itself.
@@ -139,7 +139,8 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                     methods_panel("Data or Code Availability Statements",
                                   "This metric measures how many publications
                         include a statement about the availability of research data or analysis code in
-                        the publication. Reporting such statements in a dedicated section increases the
+                        the publications, split into whether data or code were actually shared.
+                        Reporting such statements in a dedicated section increases the
                         findability of shared data and code. Openly shared data and code makes research
                         more transparent, as research findings can be reproduced.",
                                   HTML('To identify publications that include availability
@@ -148,7 +149,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         (Code: <a href="https://github.com/quest-bih/oddpub">
                         https://github.com/quest-bih/oddpub</a>,
                         publication: <a href="https://doi.org/10.5334/dsj-2020-042">
-                        https://doi.org/10.5334/dsj-2020-042</a>),
+                        https://doi.org/10.5334/dsj-2020-042</a>; RRID:SCR_018385),
                         which was developed by QUEST. ODDPub searches the publication full-text
                         for statements indicating sharing of raw data or analysis code.
                         A text-mining approach is necessary, as there is not yet a standardized
@@ -158,9 +159,11 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         of the publications that were accessible to us using the unpaywall, crossref, and
                         publisher APIs. Then we screened those full-texts with ODDPub and
                         summarized the results for each publication year.
+                        Finally, we performed a manual check of the publications detected by ODDPub as
+                        potentially open data or open code, in order to exclude false positive detections.
                         We calculated the percentages of data or code availability statements relative to
                         the publications with available full texts, which could indeed be screened.'),
-                                  "Several limitations apply: The decision whether to include a
+                                  "The decision whether to include a
                        Data or Code Availability Statement largely depends on the journal policy.
                        We considered all publications that had at least one author affiliated
                        with the Charité or BIH – in some cases where those were only middle authors
@@ -197,8 +200,8 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        Not all preprint servers are currently indexed by Europe PMC and
                            indexation may also come with a time delay. In addition, if the titles
                            are changed considerably between the preprint and the
-                           journal version, the association between them may be missed by our
-                           algorithm. Titles that are nearly identical, but differ by a small
+                           journal version, the association between them may be missed by both Europe PMC's and our
+                           matching algorithms. Titles that are nearly identical, but differ by a small
                        number of crucial symbols may be mismatched.")),
          hr(),
          h2("Clinical trials"),
@@ -337,7 +340,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        may further refine this metric."),
          methods_panel("Authorship Statements",
                        "This metric measures the percentage of screened publications that
-                       included an authorship statement. Such statements ideally clearly state
+                       included an authorship statement. Such statements ideally clearly list
                        which author made which contributions to the manuscript, following the
                        Contributor Roles Taxonomy.
                        Many publishers now require submitted manuscripts to include authorship
@@ -364,7 +367,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                             We calculated the percentage of articles including
                             Authorship Statements relative to the publications with available
                             full texts, which could indeed be screened.'),
-                       HTML('Several limitations apply: The decision whether to include an
+                       HTML('The decision whether to include an
                        Author Contribution Statement largely depends on the journal policy.
                        We considered all publications that had at least one author affiliated
                        with the Charité or BIH – in some cases where those were only middle authors
@@ -378,12 +381,25 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        to be improperly parsed and the author contribution statements to be overlooked.')),
          methods_panel("Conflict of Interest Statements",
            "This metric measures the percentage of screened publications that
-           included a conflict of interest statement. Such statements ideally clearly state
-           which author has potention conflicts of interest, often following criteria provided by
+           included a conflict of interest statement. Such disclosures ideally clearly state
+           which author has potential conflicts of interest, often following criteria provided by
            the journal. Declarations of funding and conflict of interest are quintessential for transparency.
            Many publishers now require submitted manuscripts to include conflict of interest disclosures.",
-           HTML('Methodssssss'),
-           HTML('Several limitations apply: The decision whether to include a
+           HTML('To identify publications that include Conflict of Interest (COI) statements, we used the
+                <a href="https://github.com/serghiou/rtransparent">rtransparent</a> text-mining R package; RRID:SCR_019276.
+                Rtransparent searches the publication full-text for sections in the manuscript that include statements
+                conflicts of interest or funding, among others.
+                A text-mining approach is necessary, as there is not yet a standardized way of reporting
+                such statements adopted by all journals.
+                To assess COI statements for the Charité and BIH publications,
+                we first downloaded the full-texts of the publications that were
+                accessible to us using the unpaywall and crossref APIs.
+                Then we converted those full-texts from PDF files to plain text files
+                with ODDPub, screened them with rtransparent and summarized the results
+                for each publication year.
+                We calculated the percentage of articles including COI statements relative to the
+                publications with available full texts, which could indeed be screened.'),
+           HTML('The decision whether to include a
                        Conflict of Interest Statement largely depends on journal policy.
                        Only the presence of conflict of interest and funding statements (among others)
                        is detected with the rtransparent tool, whereas the fidelity and completeness of such
@@ -394,11 +410,25 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        ),
          methods_panel("Funding Statements",
                        "This metric measures the percentage of screened publications that
-           included a funding statement. Such statements ideally xcccc.
+           included a funding statement. Such disclosures, ideally in a dedicated section, clearly state if specific funding
+           was obtained, and if yes, from which sources, listing grant numbers if available.
            Declarations of funding and conflict of interest are quintessential for transparency.
            Many publishers now require submitted manuscripts to include funding statements in a dedicated section.",
-                       HTML('Methodssssss'),
-                       HTML('Several limitations apply: The decision whether to include a
+                       HTML('To identify publications that include funding statements, we used the
+                <a href="https://github.com/serghiou/rtransparent">rtransparent</a> text-mining R package; RRID:SCR_019276.
+                Rtransparent searches the publication full-text for sections in the manuscript that include statements
+                conflicts of interest or funding, among others.
+                A text-mining approach is necessary, as there is not yet a standardized way of reporting
+                such statements adopted by all journals.
+                To assess funding statements for the Charité and BIH publications,
+                we first downloaded the full-texts of the publications that were
+                accessible to us using the unpaywall and crossref APIs.
+                Then we converted those full-texts from PDF files to plain text files
+                with ODDPub, screened them with rtransparent and summarized the results
+                for each publication year.
+                We calculated the percentage of articles including funding statements relative to the
+                publications with available full texts, which could indeed be screened.'),
+                       HTML('The decision whether to include a
                        Funding Statement largely depends on journal policy.
                        Only the presence of conflict of interest and funding statements (among others)
                        is detected with the rtransparent tool, whereas the fidelity and completeness of such
@@ -406,8 +436,31 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                        The rtransparent tool takes PDF files as input, which are not optimized for
                        machine readability. As a result complex page layouts may cause sections and columns
                        to be improperly parsed and the relevant statements to be overlooked.')
+         ),
+         methods_panel("Self-acknowledged Limitations",
+                       "This metric measures the percentage of screened publications that include a section in
+                       the discussion that addresses study limitations. Every study has limitations.
+                       Describing these limitations helps readers to understand and contextualize the research.",
+                       HTML('To identify publications that include author-acknowledged limitations, we used the
+                <a href="https://github.com/kilicogluh/limitation-recognizer">limitation-recognizer</a> text-mining algorithm; RRID:SCR_018748.
+                Limitation-recognizer searches the publication discussion for statements acknowledging the limitation of the study.
+                According to the tool developers, the rule-based text-mining approach
+                <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6016608/">performed better than machine learning</a>.
+                To assess limitation acknowledgement for the Charité and BIH publications,
+                we first downloaded the full-texts of the publications that were
+                accessible to us using the unpaywall and crossref APIs.
+                Then we converted those full-texts from PDF files to plain text files and extracted the Discussion sections
+                with a custom-written Python script, screened them with limitation-recognizer and summarized the results
+                for each publication year.
+                We calculated the percentage of articles including author-acknowledged limitations relative to the
+                publications with available full texts, which could indeed be screened.'),
+                       HTML('The limitation-recognizer tool only screens the Discussion section
+                            of the publication. Not all publications include a Discussion section or label it conventionally,
+                            which may cause the section extraction algorithm to miss relevant sentences.
+                            The section extraction takes PDF files as input, which are not optimized for
+                            machine readability. As a result complex page layouts may cause sections and columns
+                            to be improperly parsed and the relevant sentences to be overlooked.')
          )
-
          ),
 
 
@@ -427,8 +480,9 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         histograms can be used instead. The best choice of graph type depends among other
                         things on the size of the dataset.",
 
-                                  "To detect graph types from publications we used the Barzooka algorithm
-                        (unpublished), a deep neural network that was trained to detect graph types on
+                                  HTML('To detect graph types from publications we used the
+                                  <a href="https://quest-barzooka.bihealth.org/">Barzooka algorithm</a>
+                        (RRID:SCR_018508), a deep neural network that was trained to detect graph types on
                         publication pages and that was developed by QUEST. We again only used the publications
                         for which we could retrieve the full texts (see methods for Open Data & Code).
                         Barzooka screens each page of the available publication PDFs
@@ -436,7 +490,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         combined for each publication. For each publication we then report if a certain is
                         present (at least once) or not present. The number of publications with each
                         graph types are then summarized for each publication year. We again reported
-                        the percentages relative to all publications that could indeed be screened.",
+                        the percentages relative to all publications that could indeed be screened.'),
 
                                   "Barzooka detects the graph types with different accuracies and in particular
                         for the categories of bar graphs for continuous data and appropriate bar graphs
@@ -528,8 +582,8 @@ open_code_tooltip <- strwrap("This metric measures the percentage of screened pu
   paste(collapse = " ")
 
 das_tooltip <- strwrap("This metric measures the percentage of screened publications
-                       that included a statement about data or code availability, regardless of
-                       whether data or code were actually shared.
+                       that included a statement about data or code availability, split into whether
+                       data or code were actually shared.
                        Having a dedicated section for data or code availability increases the findability of these resources.
                        - Click for methods details.") |>
   paste(collapse = " ")
@@ -567,7 +621,7 @@ orcid_pubs_tooltip <- strwrap("This metric measures the percentage of screened p
   paste(collapse = " ")
 
 authorship_tooltip <- strwrap("This metric measures the percentage of screened publications that
-                              included an authorship statement. Such statements ideally clearly state
+                              included an authorship statement. Such statements ideally clearly list
                               which author made which contributions to the manuscript, following the
                               Contributor Roles Taxonomy.
                               Many publishers now require submitted manuscripts to include authorship
@@ -576,8 +630,8 @@ authorship_tooltip <- strwrap("This metric measures the percentage of screened p
   paste(collapse = " ")
 
 coi_tooltip <- strwrap("This metric measures the percentage of screened publications that
-                              included a conflict of interest statement. Such statements ideally clearly state
-                              which author has potention conflicts of interest, often following criteria provided by
+                              included a conflict of interest statement. Such disclosures ideally clearly state
+                              which author has potential conflicts of interest, often following criteria provided by
                               the journal. Declarations of funding and conflict of interest are quintessential for transparency.
                               Many publishers now require submitted manuscripts to include conflict of interest disclosures.
                               - Click for methods details.") |>
@@ -588,6 +642,12 @@ funding_tooltip <- strwrap("This metric measures the percentage of screened publ
                               Declarations of funding and conflict of interest are quintessential for transparency.
                               Many publishers now require submitted manuscripts to include funding disclosures in a dedicated
                               funding statement.
+                              - Click for methods details.") |>
+  paste(collapse = " ")
+
+limitations_tooltip <- strwrap("This metric measures the percentage of screened publications that
+                              include a section in the discussion that addresses study limitations. Every study has limitations.
+                              Describing these limitations helps readers to understand and contextualize the research.
                               - Click for methods details.") |>
   paste(collapse = " ")
 
@@ -637,7 +697,7 @@ vis_problem_tooltip <- strwrap("Bar graphs for continuous data are common but ar
                                 such as dot plots, box plots, violin plots or histograms. Pie charts are suboptimal,
                                 as humans have difficulty assessing proportions based on differences in area and angle.
                                 This is especially difficult when a pie chart includes many slices, or groups with similar proportions.
-                                - Click for more info.") |>
+                                - Click for methods details.") |>
   paste(collapse = " ")
 
 
@@ -647,13 +707,13 @@ vis_inform_tooltip <- strwrap("Bar graphs for continuous data are common but are
                                 Bar graphs of continuous data should be replaced with more informative graphs
                                 that provide information about the data distribution and sample size,
                                 such as dot plots, box plots, violin plots or histograms.
-                                - Click for more info.") |>
+                                - Click for methods details.") |>
   paste(collapse = " ")
 
 fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 12 (out of 15) FAIR principles.
 As FAIR principles are abstract and generically defined F-UJI specifies one or more metrics for each assessed FAIR principle.
 Since each metric can be tested in various means depending on data contexts and current best practises F-UJI additionally uses one or more practical tests to evaluate datasets against a particular metric.
-                             - Click for more info.") |>
+                             - Click for methods details.") |>
   paste(collapse = " ")
 
 fair_repositories_tooltip <- strwrap("This metric measures the average FAIR score (in percent) by data repositories
@@ -663,7 +723,7 @@ fair_repositories_tooltip <- strwrap("This metric measures the average FAIR scor
                                 and Reusability of digital assets.
                                 The FAIR score is based on practical tests executed by an automated FAIR data assessment tool
                                 against specific metrics derived from the FAIR principles.
-                                - Click for more info.") |>
+                                - Click for methods details.") |>
   paste(collapse = " ")
 
 fair_principles_tooltip <- strwrap("This metric measures the average FAIR score (in percent)
@@ -671,7 +731,7 @@ fair_principles_tooltip <- strwrap("This metric measures the average FAIR score 
                                 and Reusability for research data published in 2021.
                                 The FAIR score is based on practical tests executed by the automated FAIR data assessment tool
                                 F-UJI against specific metrics derived from the FAIR principles.
-                                - Click for more info.") |>
+                                - Click for methods details.") |>
   paste(collapse = " ")
 
 fair_licenses_tooltip <-
@@ -681,5 +741,5 @@ fair_licenses_tooltip <-
   paste(collapse = " ")
 
 fair_identifiers_tooltip <- strwrap("This metric measures the average FAIR score of the 2021 datasets by the unique identifiers. It is derived from the FAIR principle F1 — (Meta)data are assigned a globally unique and persistent identifier.
-                                - Click for more info.") |>
+                                - Click for methods details.") |>
   paste(collapse = " ")

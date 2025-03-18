@@ -34,6 +34,7 @@ orcidServer <- function(id, data, type, total, color_palette) {
 
 # data_table <- dashboard_metrics
 make_orcid_pubs_plot_data <- function(data_table) {
+  check <-
   data_table |>
     dplyr::mutate(has_orcid_corresponding = has_any_orcid & corresponding_author_charite,
                   screened_corresponding = corresponding_author_charite & !is.na(has_contrib)) |>
@@ -50,7 +51,7 @@ make_orcid_pubs_plot_data <- function(data_table) {
                   not_screened = total - total_screened,
                   not_screened_corresponding =  has_corresponing_charite - total_screened_corresponding,
                   perc_has_any_orcid = round(has_any_orcid / total_screened * 100),
-                  perc_has_orcid_corresponding = round(has_orcid_corresponding / total_screened * 100))
+                  perc_has_orcid_corresponding = round(has_orcid_corresponding / total_screened_corresponding * 100))
 }
 
 

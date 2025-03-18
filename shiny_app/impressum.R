@@ -27,21 +27,12 @@ impressum_text <- HTML('<b>Information according to <a href="https://www.gesetze
 		<p>
 		Prof. Dr. Ulrich Dirnagl<br>
 		<i>Founding Director | BIH Chair | AG Manager</i><br>
-		Phone: +49 30 450 560 134/450 543 060<br>
-		Email:	ulrich.dirnagl@bih-charite.de
-		</p>
-
-		<p><b>Represented By</b>:</p>
-
-		<p>
-		Dr. Stephanie Müller-Ohlraun<br>
 		Berlin Institute of Health (BIH) at Charité<br>
 		BIH QUEST Center for Responsible Research<br>
-		<i>Administrative Head</i><br>
 		Anna-Louisa-Karsch-Straße 2<br>
 		D-10178 Berlin<br>
-		Phone: +49 30 450 543043<br>
-		Email: stephanie.ohlraun@bih-charite.de
+		Phone: +49 30 450 560 134/450 543 060<br>
+		Email:	ulrich.dirnagl@bih-charite.de
 		</p>
 
 		<p><b>Contact</b>:</p>

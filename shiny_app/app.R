@@ -34,6 +34,7 @@ source("vis_metrics.R")
 source("orcid_metrics.R")
 source("contribot_metrics.R")
 source("rtransparent_metrics.R")
+source("limitations_metrics.R")
 source("app_functions_fair.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
@@ -137,7 +138,7 @@ show_dashboard <- function(...) {
                                          'See dataset'),
                             br(),
                             br(),
-                            h4(style = "margin-left:18mm", strong("Latest Update: April 2024")))
+                            h4(style = "margin-left:18mm", strong("Latest Update: January 2025")))
                    ),
                    fluidRow(column(1,
                                    selectInput("citationStyle",
@@ -331,6 +332,8 @@ show_dashboard <- function(...) {
                        reactive(RVs$total_bt), color_palette)
     rtransparentServer("plot_funding", dashboard_metrics, "funding",
                        reactive(RVs$total_bt), color_palette)
+    limitationsServer("plot_limitations", dashboard_metrics,
+                      reactive(RVs$total_bt), color_palette)
 
     output$citation_text <-
       renderUI({
@@ -519,7 +522,7 @@ show_dashboard <- function(...) {
 
     output$orcid_pubs <- renderUI({
       box_value <- get_current_orcids_from_pubs(dashboard_metrics)
-      box_text <- paste0("of publications with a Charité correspondence author", " included at least one ORCID in ",
+      box_text <- paste0("of publications with a Charité or BIH correspondence author", " included at least one ORCID in ",
                          dashboard_metrics$year |> max())
 
       metricBoxOutput(title = "ORCIDs in Publications",
@@ -549,7 +552,7 @@ show_dashboard <- function(...) {
 
     output$coi <- renderUI({
       box_value <- get_current_rtransparent(dashboard_metrics, perc_has_coi)
-      box_text <- paste0("of screened publications had Conflict of Interest (COI) statements in ",
+      box_text <- paste0("of screened publications had COI statements in ",
                          dashboard_metrics$year |> max())
       metricBoxOutput(title = "Conflict of Interest (COI) Statements",
                       value = box_value,
@@ -558,7 +561,7 @@ show_dashboard <- function(...) {
                       info_id = "infoCOI",
                       info_title = "COI",
                       info_text = coi_tooltip,
-                      info_alignment = "left")
+                      info_alignment = "right")
     }) |>
       bindEvent(reactive(RVs$total_bt))
 
@@ -573,6 +576,21 @@ show_dashboard <- function(...) {
                       info_id = "infoFunding",
                       info_title = "Funding",
                       info_text = funding_tooltip,
+                      info_alignment = "right")
+    }) |>
+      bindEvent(reactive(RVs$total_bt))
+
+    output$limitations <- renderUI({
+      box_value <- get_current_limitations(dashboard_metrics, perc_has_limitations)
+      box_text <- paste0("of screened publications acknowledged limitations in ",
+                         dashboard_metrics$year |> max())
+      metricBoxOutput(title = "Self-acknowledged Limitations",
+                      value = box_value,
+                      value_text = box_text,
+                      plot = limitationsOutput("plot_limitations", height = "300px"),
+                      info_id = "infoLimitations",
+                      info_title = "Limitations",
+                      info_text = limitations_tooltip,
                       info_alignment = "left")
     }) |>
       bindEvent(reactive(RVs$total_bt))
@@ -683,6 +701,10 @@ show_dashboard <- function(...) {
                   ),
                   column(
                     col_width, uiOutput("funding") |>
+                      shinycssloaders::withSpinner(color = "#007265")
+                  ),
+                  column(
+                    col_width, uiOutput("limitations") |>
                       shinycssloaders::withSpinner(color = "#007265")
                   )
                 )
@@ -993,6 +1015,13 @@ show_dashboard <- function(...) {
     updateCollapse(session, "methodsPanels_broader_transparency", open = "Funding Statements")
   }) |>
     bindEvent(input$infoFunding)
+
+  observe({
+    updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabMethods")
+    updateCollapse(session, "methodsPanels_broader_transparency", open = "Self-acknowledged Limitations")
+  }) |>
+    bindEvent(input$infoLimitations)
 
   observe({
     updateTabsetPanel(session, "navbarTabs",
