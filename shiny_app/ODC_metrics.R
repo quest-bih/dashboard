@@ -407,7 +407,7 @@ make_das_cas_plot_data <- function(data_table, gr) {
 
   data_table |>
     group_by({{ gr }}) |>
-    mutate(is_odc = open_data_manual_check | open_code_manual_check | is_open_data_das | is_open_code_cas,
+    mutate(is_odc = open_data_manual_check | open_code_manual_check | restrictions == "full",
            has_das_or_cas = !is.na(coalesce(das, cas))) |>
     summarize(has_das_or_cas_odc = sum(has_das_or_cas & is_odc, na.rm = TRUE),
               no_das_nor_cas_odc = sum(!has_das_or_cas & is_odc, na.rm = TRUE),
