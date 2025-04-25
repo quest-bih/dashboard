@@ -138,7 +138,7 @@ show_dashboard <- function(...) {
                                          'See dataset'),
                             br(),
                             br(),
-                            h4(style = "margin-left:18mm", strong("Latest Update: January 2025")))
+                            h4(style = "margin-left:18mm", strong("Latest Update: April 2025")))
                    ),
                    fluidRow(column(1,
                                    selectInput("citationStyle",

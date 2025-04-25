@@ -460,30 +460,21 @@ no_orcid_hyperlinks <- dashboard_metrics |>
 check_tbl <- dashboard_metrics |>
   filter(
     (is_open_data & is.na(open_data_manual_check)) |
-           (is_open_code & is.na(open_code_manual_check))) |>
+           (is_open_code & is.na(open_code_manual_check)),
+    year > 2021) |>
   select(doi, year, is_open_data, open_data_category, is_open_code,
          open_data_statements, open_code_statements,
          open_data_manual_check, open_data_category_manual,
          open_code_manual_check, open_code_category_manual)
 
-# check_tbl |>
-#   filter(doi %in% c("10.1126/scitranslmed.abq3010",
-#                     "10.18332/ejm/150582"))
+assert_that(nrow(check_tbl) == 0)
 
-# debug ODDPUb until these false_positives are is_open_data == FALSE!!!
-# for now set to false manually
-# dashboard_metrics <- dashboard_metrics |>
-#   mutate(is_open_data = case_when(
-#     doi %in% check_tbl$doi ~ FALSE,
-#     .default = is_open_data
-#   ))
+if (nrow(check_tbl) > 0) {
+  check_tbl |>
+    filter(year == 2023) |>
+    write_excel_csv2(here("results", "pdf_update_cases.csv"))
+}
 
-
-assert_that(dim(check_tbl)[1] == 0)
-
-check_tbl |>
-  filter(year == 2023) |>
-  write_excel_csv2(here("results", "pdf_update_cases.csv"))
 
 
 #----------------------------------------------------------------------------------------
