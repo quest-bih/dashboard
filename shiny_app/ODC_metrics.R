@@ -154,8 +154,9 @@ plot_OD_perc <- function(plot_data, color_palette)
               marker = list(color = color_palette[6],
                             pattern = list(shape = "x"),
                             line = list(color = 'rgb(0,0,0)',
-                                        width = 1.5)),
-              showlegend = FALSE) |>
+                                        width = 1.5))
+              # showlegend = FALSE
+              ) |>
     add_trace(y = ~OD_disc_and_gen_nonrestricted_perc,
               name = 'disciplinary and general',
               marker = list(color = color_palette[2],
@@ -382,8 +383,9 @@ make_oddpub_plot_data <- function(data_table, gr) {
 
       total = sum(!is.na(is_open_data), na.rm = TRUE),
       total_code = sum(!is.na(is_open_code), na.rm = TRUE))  |>
-    mutate(open_data_perc = round((open_data_manual_count)/total * 100, 1),
-           # open_data_perc = round((open_data_manual_count + OD_disc_restricted_count)/total * 100, 1),open_data_perc = round((open_data_manual_count + OD_disc_restricted_count)/total * 100, 1),
+    mutate(      # open_data_perc = round((open_data_manual_count)/total * 100, 1),
+           open_data_perc = round((open_data_manual_count + OD_disc_restricted_count +
+                                OD_gen_restricted_count)/total * 100, 1),
            open_code_perc = round(open_code_manual_count/total_code * 100, 1),
            OC_github_perc = round(OC_github_count/total_code * 100, 1),
            OC_other_perc = round(OC_other_count/total_code * 100, 1),
@@ -395,7 +397,7 @@ make_oddpub_plot_data <- function(data_table, gr) {
            OD_disc_and_gen_restricted_perc = round(OD_disc_and_gen_restricted_count/total * 100, 1),
            OD_disc_nonrestricted_perc = round((OD_disciplinary_count - OD_disc_restricted_count)/total * 100, 1),
            OD_gen_nonrestricted_perc = round((OD_general_purpose_count - OD_gen_restricted_count)/total * 100, 1),
-           OD_disc_and_gen_nonrestricted_perc = round((OD_disciplinary_and_general_count - OD_disc_and_gen_restricted_count)/total * 100, 1),OD_gen_restricted_perc = 0,           # OD_disc_restricted_perc = 0,
+           OD_disc_and_gen_nonrestricted_perc = round((OD_disciplinary_and_general_count - OD_disc_and_gen_restricted_count)/total * 100, 1) # OD_disc_restricted_perc = 0,
            )
 
   return(oddpub_plot_data)
