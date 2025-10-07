@@ -104,6 +104,5 @@ scraped_trials <- scraped_trials |>
   select(retrieval_date, everything()) |>
   arrange(retrieval_date)
 
-write_csv(scraped_trials, "./results/EU_trialstracker.csv",
+write_csv(scraped_trials, here("results", "EU_trialstracker.csv"),
           append = TRUE)
-
