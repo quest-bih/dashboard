@@ -4,6 +4,7 @@ library(tidyverse)
 library(readxl)
 library(here)
 library(janitor)
+library(pdfRetrieve)
 
 dashboard_metrics <- read_csv(here("shiny_app", "data", "dashboard_metrics.csv"))
 
@@ -148,6 +149,40 @@ junk_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/junk"
 junk_2022_folder <- "C:/Datenablage/charite_dashboard/2022/junk"
 junk_2023_folder <- "C:/Datenablage/charite_dashboard/2023/junk"
 
+cloud_folder <-  "C:/Users/nachevv/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_dashboard/PDFs"
+cloud_22 <- "C:/Users/nachevv/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22"
+
+files_to_move <- file.path(cloud_folder, list.files(folder_2022))
+
+pdfs_by_year <- dashboard_metrics |>
+  # filter(pdf_downloaded == TRUE) |>
+  mutate(filename = doi_stripped2pdf(doi)) |>
+  select(year, filename) |>
+  group_by(year) |>
+  nest() |>
+  mutate(data = map(data, deframe)) |>
+  deframe()
+
+pdfs_2020 <- pdfs_by_year$`2020`
+pdfs_2021 <- pdfs_by_year$`2021`
+pdfs_2022 <- pdfs_by_year$`2022`
+
+file.rename(from = file.path(cloud_folder, pdfs_2022),
+            to = file.path(cloud_folder, "2022", pdfs_2022))
+
+
+file.rename(from = list.files(cloud_folder, full.names = TRUE),
+            to = list.files(cloud_folder, full.names = TRUE) |> tolower())
+
+
+file.rename(to = files_to_move,
+            from = file.path(cloud_22, list.files(folder_2022)))
+
+
+excess <- setdiff(list.files(cloud_folder), list.files(unified_folder))
+
+file.copy(from = file.path(unified_folder, missing_six),
+          to = file.path(cloud_folder, missing_six))
 
 junk_in_2021 <- list.files(folder_2021)[list.files(folder_2021) %in% list.files(junk_folder)]
 
