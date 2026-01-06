@@ -2,17 +2,19 @@ library(openalexR)
 library(europepmc)
 library(tidyverse)
 library(here)
-library(vroom)
 library(janitor)
 library(fuzzyjoin)
+library(progressr)
 
-query_works_2024 <- oa_query(
+handlers(global = TRUE)
+
+query_works_2025 <- oa_query(
   entity = "works",
   # authorships.institutions.id = "I4210139777", # BIH id at openAlex
   authorships.institutions.ror = c("https://ror.org/001w7jn25", "https://ror.org/0493xsw21"),
   #charite: https://ror.org/001w7jn25
   from_publication_date = "2016-01-01",
-  to_publication_date = "2023-12-31"
+  to_publication_date = "2024-12-31"
   # version = "submittedVersion"
   # type = "preprint"
 )
@@ -80,25 +82,25 @@ parsed <- df |>
   filter(
     !is.na(doi),
     is.na(version) | version == "submittedVersion",
-    !is.na(ab),
+    # !is.na(abstract),
     type == "preprint" ,
     is_retracted == FALSE,
-    !str_detect(url, "ems|10\\.14293|egusphere|morressier|pubmed|espost|10\\.1016|protocols|elife|biofilms")
+    !str_detect(landing_page_url, "ems|10\\.14293|egusphere|morressier|pubmed|espost|10\\.1016|protocols|elife|biofilms")
     ) |>
-  group_by(display_name) |>
-  slice_head(n = 1) |>
-  ungroup() |>
-  mutate(authors = map_chr(author, \(au) pull(au, au_display_name) |> paste0(collapse = "; ")),
-         affils = map_chr(author, \(au) pull(au, au_affiliation_raw) |> paste0(collapse = "; ")),
-         affils_st = map_chr(author, \(au) pull(au, institution_display_name) |> paste0(collapse = "; ")),
-         doi = str_remove(url, ".*\\/(?=10\\.)"),
+  distinct(display_name, .keep_all = TRUE) |>
+  mutate(authors = map_chr(authorships, \(au) pull(au, display_name) |> paste0(collapse = "; ")),
+         affils = map_chr(authorships, \(au) pull(au, affiliation_raw) |> paste0(collapse = "; ")),
+         affils_st = map_chr(authorships, \(aff) pull(aff, affiliations) |> map(\(affil) affil |>
+                                                                                  pull(display_name))  |>
+                               unique() |>
+                               paste0(collapse = "; ")),
+         doi = str_remove(landing_page_url, ".*\\/(?=10\\.)"),
          # url = str_replace(doi, "(?<=v)\\d$", "1")
          url = deversion_doi(doi)
          ) |>
-  group_by(url) |>
-  slice_head(n = 1) |>
-  ungroup() |>
-  select(title = display_name, doi, url, authors, affils, affils_st, publication_date, publication_year, journal = so, license, type, version, is_oa, pdf_url) |>
+  distinct(url, .keep_all = TRUE) |>
+  select(title = display_name, doi, url, authors, affils, affils_st, publication_date, publication_year, journal = source_display_name,
+         license, type, version, is_oa, pdf_url) |>
   mutate(journal_st = case_when(
     str_detect(doi, "10.1101") & str_length(doi) < 27 ~ "bioRxiv (Cold Spring Harbor Laboratory)",
     str_detect(doi, "10.1101") & str_length(doi) > 25 ~ "medRxiv (Cold Spring Harbor Laboratory)",
@@ -135,6 +137,8 @@ unknown_preprints <- parsed |>
 
 parsed |>
   count(journal_st, sort = TRUE)
+
+
 
 parsed |>
   count(publication_year)
@@ -195,7 +199,7 @@ dch <- not_charite |>
 
 not_charite |> filter(str_detect(doi, "10.1101/2021.10.30.21265692")) |>  pull(affils)
 
-aut <- df |>  filter(str_detect(url, "10.1101/2021.10.30.21265692")) |> pull(author) |> list_rbind()
+aut <- df |>  filter(str_detect(landing_page_url, "10.1101/2021.10.30.21265692")) |> pull(authorships) |> list_rbind()
 
 preprints_oa <- parsed |>
   filter(!url %in% not_charite$url,
@@ -203,8 +207,7 @@ preprints_oa <- parsed |>
   select(title, doi, url, research_org_names = affils, research_orgs = affils_st,
          year = publication_year, journal_title = journal_st)
 
-
-parsed_old <- read_csv2(here("results", "preprints_oa_old.csv"))
+parsed_old <- read_csv(here("results", "preprints_oa_old.csv"))
 
 preprints_oa_new <- parsed_old |>
   rows_upsert(preprints_oa, by = "doi") |>
@@ -277,15 +280,15 @@ get_preprint_metadata_by_year <- function(year) {
   get_epmc_metadata(query = query_preprint)
 }
 
-europepmc_preprint_metadata <- 2016:2023 |>
+europepmc_preprint_metadata <- 2016:2024 |>
   map(get_preprint_metadata_by_year)
 
 europepmc_preprints <- europepmc_preprint_metadata |>
   list_rbind()
 
-europepmc_preprints |> saveRDS(here("results", "epmc_metadata_2016_2023.rds"))
+europepmc_preprints |> saveRDS(here("results", "epmc_metadata_2016_2024.rds"))
 
-europepmc_preprints <- readRDS(here("results", "epmc_metadata_2016_2023.rds"))
+europepmc_preprints <- readRDS(here("results", "epmc_metadata_2016_2024.rds"))
 
 epmc_preprints_with_articles <- europepmc_preprints |>
   filter(hasPublishedVersion == TRUE) |>

@@ -1,15 +1,18 @@
 library(tidyverse)
+# devtools::install_github("serghiou/rtransparent")
 library(rtransparent)
 library(oddpub)
 library(furrr)
 library(here)
+library(progressr)
 
-txt_folder <- "C:/Datenablage/charite_dashboard/2023/PDFs_to_text/"
+txt_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_to_text/"
 # txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
 # txt_folder <- "dev/rescreen_txt"
 
 plan(multisession)
 # plan(sequential)
+handlers(global = TRUE)
 
 txt_corpus <- pdf_load(txt_folder, lowercase = FALSE)
 
@@ -88,3 +91,5 @@ write_excel_csv(results, here("results", "rtransparent_full.csv"))
 # read_csv(here("results", "rtransparent_old.csv")) |>
 #   distinct(doi, .keep_all = TRUE) |>
 #   write_excel_csv(here("results", "rtransparent_old.csv"))
+
+results <- rt_all(txt_corpus[["10.1001+jamanetworkopen.2024.25114.txt"]])

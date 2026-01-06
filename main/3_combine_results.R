@@ -1,7 +1,6 @@
 library(assertthat)
 library(haven)
 library(tidyverse)
-library(vroom)
 library(here)
 library(easyRPubMed)
 library(janitor)
@@ -14,15 +13,15 @@ library(readxl)
 # dashboard_metrics |>
 #   filter(year == 2023) |>
 #   count(is_open_data, open_data_manual_check)
-
 publications <- read_csv(here("main", "publication_table_old.csv")) |>
   mutate(doi = tolower(doi))
+
 publications |>
   count(year)
 
 dupes <- get_dupes(publications, doi)
 
-publications_2023 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2023_241119VN.xlsx")) |>
+publications_2024 <- read_xlsx(here("main", "Publikationsdatensatz_Charité_2024_250908VN.xlsx")) |>
   filter(str_detect(Duplikate, "DOI|kein") | is.na(Duplikate),
          is.na(Keine_Charite_Affiliation)
          ) |>
@@ -53,19 +52,19 @@ publications_2023 <- read_xlsx(here("main", "Publikationsdatensatz Charité_2023
          ) |>
   select(all_of(names(publications)))
 
-dupes <- get_dupes(publications_2023, doi) # should only be articles w/o doi
+dupes <- get_dupes(publications_2024, doi) # should only be articles w/o doi
 
-publications_2023 |>
+publications_2024 |>
   count(year)
 
-only_new_dois <- publications_2023 |>
+only_new_dois <- publications_2024 |>
   filter(!doi %in% publications$doi |
         str_detect(doi, "keine") | is.na(doi))
 
 publications <- publications |>
   rows_append(only_new_dois) |>
   # filter(str_detect(doi, "10"), doi %in% publications_2022$doi) |>
-  rows_upsert(publications_2023 |>
+  rows_upsert(publications_2024 |>
                 filter(str_detect(doi, "10")) |>
                 select(doi, oa_status), by = "doi")
 
@@ -85,6 +84,8 @@ write_excel_csv(publications, here("main", "publication_table.csv"))
 
 publications <- read_csv(here("main", "publication_table.csv"))
 
+
+# TODO: fix oa_status for nicht gefunden and kein DOI?
 publications |>
   count(year, oa_status) |>
   pivot_wider(names_from = year, values_from = n)
@@ -92,7 +93,6 @@ publications |>
 #results files
 # results_files <- list.files(here("results"), full.names = TRUE)
 # results_files <- paste0(results_folder, results_files)
-
 
 open_data_22 <- read_csv(here("results", "Open_Data_2022.csv")) |>
   # mutate(doi = str_replace_all(article, "\\+", "\\/") |>
@@ -252,7 +252,7 @@ open_data_results |>
 #   filter(!doi %in% open_data_results$doi)
 
 
-# old_das_cas <- vroom(here("results", "Open_Data_retroactive.csv")) |>
+# old_das_cas <- read_csv(here("results", "Open_Data_retroactive.csv")) |>
 #   select(doi, das, cas)
 #
 # open_data_results <- open_data_results |>
@@ -327,7 +327,7 @@ missing_dois <- setdiff(contribot_results$doi, publications$doi)
 publications |>
   filter(doi %in% missing_dois)
 
-rtransparent_2023 <- read_csv(here("results", "rtransparent_2023.csv")) |>
+rtransparent_2024 <- read_csv(here("results", "rtransparent_full.csv")) |>
   transmute(doi = tolower(doi),
             has_coi = is_coi_pred,
             has_funding = is_funded_pred
@@ -536,29 +536,29 @@ shiny_table |>
 # now for the metrics that are already aggregated by year
 #----------------------------------------------------------------------------------------
 
-preprints_dataset_shiny <- vroom(here("results", "preprints_oa.csv")) |>
+preprints_dataset_shiny <- read_csv(here("results", "preprints_oa.csv")) |>
   select(doi, title, journal_title, year, has_published_version)
 write_csv(preprints_dataset_shiny, here("shiny_app", "data", "preprints_dataset_shiny.csv"))
 
-prosp_reg_dataset_shiny <- vroom(here("results", "prosp_reg_dataset_shiny.csv")) |>
+prosp_reg_dataset_shiny <- read_csv(here("results", "prosp_reg_dataset_shiny.csv")) |>
   rename(registration_date = study_first_submitted_date) |>
   select(nct_id, start_date, registration_date, has_prospective_registration)
 write_csv(prosp_reg_dataset_shiny, here("shiny_app", "data", "prosp_reg_dataset_shiny.csv"))
 
-EU_trialstracker_dataset_shiny <- vroom(here("results", "EU_trialstracker.csv")) |>
+EU_trialstracker_dataset_shiny <- read_csv(here("results", "EU_trialstracker.csv")) |>
   group_by(retrieval_date) |>
   slice(1) |>
   mutate(perc_reported = round(total_reported/total_due, 3)) |>
   arrange(desc(retrieval_date))
 write_csv(EU_trialstracker_dataset_shiny, here("shiny_app", "data", "EU_trialstracker_past_data.csv"))
 
-preprints <- vroom(here("results", "preprints_oa.csv")) |>
+preprints <- read_csv(here("results", "preprints_oa.csv")) |>
   group_by(year) |>
   summarize(n_preprints = n(),
             n_preprints_with_articles = sum(has_published_version, na.rm = TRUE),
             perc_preprints_with_articles = n_preprints_with_articles / n_preprints)
 
-prospective_registration <- vroom(here("results", "prospective_registration.csv"))
+prospective_registration <- read_csv(here("results", "prospective_registration.csv"))
 
 max_year <- max(prospective_registration$year)
 
@@ -572,7 +572,7 @@ write_csv(shiny_table_aggregate_metrics, here("shiny_app", "data", "dashboard_me
 # fair assessment
 #----------------------------------------------------------------------------------------
 
-fair_table <- vroom(here("results", "fair_assessment_2021.csv"), show_col_types = FALSE)
+fair_table <- read_csv(here("results", "fair_assessment_2021.csv"), show_col_types = FALSE)
 write_csv(fair_table, here("shiny_app", "data", "fair_assessment_2021.csv"))
 
 #----------------------------------------------------------------------------------------

@@ -145,9 +145,11 @@ unified_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs"
 folder_2021 <- "C:/Datenablage/charite_dashboard/2021/PDFs"
 folder_2022 <- "C:/Datenablage/charite_dashboard/2022/PDFs"
 folder_2023 <- "C:/Datenablage/charite_dashboard/2023/PDFs"
+folder_2024 <- "C:/Datenablage/charite_dashboard/2024/PDFs"
 junk_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/junk"
 junk_2022_folder <- "C:/Datenablage/charite_dashboard/2022/junk"
 junk_2023_folder <- "C:/Datenablage/charite_dashboard/2023/junk"
+junk_2024_folder <- "C:/Datenablage/charite_dashboard/2024/junk"
 
 cloud_folder <-  "C:/Users/nachevv/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_dashboard/PDFs"
 cloud_22 <- "C:/Users/nachevv/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22"
@@ -198,7 +200,10 @@ junk_2022 <- list.files(junk_2022_folder) |>
 junk_2023 <- list.files(junk_2023_folder) |>
   pdfRetrieve::doi_pdf2stripped()
 
-junk_dois <- c(junk_unified, junk_2022, junk_2023)
+junk_2024 <- list.files(junk_2024_folder) |>
+  pdfRetrieve::doi_pdf2stripped()
+
+junk_dois <- c(junk_unified, junk_2022, junk_2023, junk_2024)
 
 qa_junk <- dashboard_metrics |>
   filter(doi %in% junk_dois) |>
@@ -219,6 +224,8 @@ downloaded_2022 <- list.files(folder_2022) |>
   pdfRetrieve::doi_pdf2stripped()
 
 downloaded_2023 <- list.files(folder_2023) |>
+  pdfRetrieve::doi_pdf2stripped()
+downloaded_2024 <- list.files(folder_2024) |>
   pdfRetrieve::doi_pdf2stripped()
 
 downloaded_unified_dois <- c(downloaded_2023, downloaded_2022, downloaded_2021, downloaded_unified_dois)

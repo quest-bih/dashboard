@@ -5,17 +5,19 @@ library(readxl)
 library(janitor)
 library(furrr)
 library(here)
+library(progressr)
 
+handlers(global = TRUE)
 future::plan(multisession)
 
 print("Open Data detection with oddpub...")
 # pdf_folder <-"S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs/2021/"
 # txt_folder <- "S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs_to_text/2021/"
-pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
-txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
-# pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs/"
+# pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
+# txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
+pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_oa/"
 # pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
-# txt_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_to_text/"
+txt_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_to_text/"
 # txt_folder <- "C:/Users/Vladi/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/"
 # pdf_folder <- "dev/rescreen"
 # txt_folder <- "dev/rescreen_txt"
@@ -35,7 +37,7 @@ if (file.exists("./results/Open_Data.csv"))
   pdf_text_corpus <- pdf_text_corpus[!(names(pdf_text_corpus) %in% already_screened_PDFs$article)]
 
   if (length(pdf_text_corpus) > 0) {
-    oddpub_results <- oddpub::open_data_search(pdf_text_corpus)
+    oddpub_results <- oddpub::open_data_search(pdf_text_corpus, screen_das = "extra")
     oddpub_results <- oddpub_results |>
       mutate(doi = str_remove(article, ".txt") |>
                str_replace_all("\\+", "\\/"), .before = article)
@@ -46,13 +48,14 @@ if (file.exists("./results/Open_Data.csv"))
   pdf_text_corpus <- oddpub::pdf_load(txt_folder)
 
   print("Run oddpub...")
-  oddpub_results <- oddpub::open_data_search(pdf_text_corpus)
-  oddpub_results <-
-  write_csv(oddpub_results, here("results", "Open_Data.csv"))
+  oddpub_results <- oddpub::open_data_search(pdf_text_corpus, screen_das = "extra")
+  oddpub_results |>
+    write_csv(oddpub_results, here("results", "Open_Data.csv"))
 
 }
-
-
+#
+#
+# oddpub_results <- oddpub::open_data_search(pdf_text_corpus[197], screen_das = "extra")
 print("completed!")
 
 #add columns for manual check & write to csv -
