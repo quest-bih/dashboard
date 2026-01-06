@@ -25,14 +25,12 @@ impressum_text <- HTML('<b>Information according to <a href="https://www.gesetze
 		<p><b>Responsible</b></p>
 
 		<p>
-		Prof. Dr. Ulrich Dirnagl<br>
-		<i>Founding Director | BIH Chair | AG Manager</i><br>
+		Dr. Ulf Tölch | <i>QUEST Spokesperson</i><br>
+		Sarah McCann, PhD | <i>QUEST Deputy Spokesperson</i><br>
 		Berlin Institute of Health (BIH) at Charité<br>
 		BIH QUEST Center for Responsible Research<br>
 		Anna-Louisa-Karsch-Straße 2<br>
 		D-10178 Berlin<br>
-		Phone: +49 30 450 560 134/450 543 060<br>
-		Email:	ulrich.dirnagl@bih-charite.de
 		</p>
 
 		<p><b>Contact</b>:</p>
@@ -56,7 +54,7 @@ impressum_text <- HTML('<b>Information according to <a href="https://www.gesetze
 		<i>Data scientist</i><br>
 		Anna-Louisa-Karsch-Straße 2<br>
 		D-10178 Berlin<br>
-		Phone: +49 30 450 543059<br>
+		Phone: +49 30 450 543009<br>
 		Email: vladislav.nachev@charite.de
 		</p>
 
