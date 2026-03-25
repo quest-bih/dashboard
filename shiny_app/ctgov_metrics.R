@@ -30,7 +30,7 @@ plot_prospreg <- function(plot_data, color_palette)
           line = list(color = color_palette[3], width = 3),
           marker = list(color = color_palette[3], size = 8)) |>
     layout(yaxis = list(title = '<b>Trials</b>',
-                        range = c(0, 100),
+                        range = c(0, 105),
                         ticksuffix = "%"),
            xaxis = list(title = '<b>Year</b>',
                         dtick = 1),

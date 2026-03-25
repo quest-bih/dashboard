@@ -309,23 +309,25 @@ orcid_screening_results |>
   write_excel_csv(here("results", "orcids_extracted_old.csv"))
 
 #Barzooka results
-barzooka_results <- read_csv(here("results", "Barzooka.csv"))
+barzooka_results <- read_csv(here("results", "Barzooka_2024.csv"))
 barzooka_old <- read_csv(here("results", "Barzooka_old.csv"))
 
-barzooka_results <- barzooka_old |>
-  rename(flowconcept = flowno,
-         flowinex = flowyes) |>
-  rows_upsert(barzooka_results, by = "paper_id")
 
 barzooka_results <- barzooka_results |>
   rename(doi = paper_id) |>
   select(doi, bar, pie, bardot, box, dot, hist, violin) |>
   distinct(doi, .keep_all = TRUE)
 
-missing_dois <- setdiff(contribot_results$doi, publications$doi)
+barzooka_results <- barzooka_old |>
+  rows_upsert(barzooka_results, by = "doi")
 
-publications |>
-  filter(doi %in% missing_dois)
+barzooka_results |>
+  write_csv(here("results", "Barzooka_old.csv"))
+
+# missing_dois <- setdiff(contribot_results$doi, publications$doi)
+#
+# publications |>
+#   filter(doi %in% missing_dois)
 
 rtransparent_2024 <- read_csv(here("results", "rtransparent_full.csv")) |>
   transmute(doi = tolower(doi),
@@ -336,7 +338,7 @@ rtransparent_2024 <- read_csv(here("results", "rtransparent_full.csv")) |>
 rtransparent_old <- read_csv(here("results", "rtransparent_old.csv"))
 
 rtransparent_results <- rtransparent_old |>
-  rows_upsert(rtransparent_2023, by = "doi")
+  rows_upsert(rtransparent_2024, by = "doi")
 
 rtransparent_results |>
   write_excel_csv(here("results", "rtransparent_old.csv"))
@@ -346,15 +348,7 @@ dupes <- rtransparent_old |>
   distinct(doi, .keep_all = TRUE) |>
   get_dupes(doi)
 
-limitations_2023 <- read_csv(here("results", "limitations.csv"))
-
-limitations_old <- read_csv(here("results", "limitations_old.csv"))
-
-limitations_results <- limitations_old |>
-  rows_upsert(limitations_2023, by = "doi")
-
-limitations_results |>
-  write_excel_csv(here("results", "limitations_old.csv"))
+limitations_results <- read_csv(here("results", "limitations_old.csv"))
 
 #----------------------------------------------------------------------------------------
 # combine results
@@ -425,12 +419,6 @@ per_year <- dashboard_metrics |>
   count(year, open_data_category_manual) |>
   group_by(year) |>
   mutate(perc = n / sum(n) * 100)
-
-per_year <- dashboard_metrics |>
-  count(year, open_code_category_manual) |>
-  group_by(year) |>
-  mutate(perc = n / sum(n) * 100)
-
 
 oc_dois <- open_code_22_manual |>
   filter(open_code_manual_check == TRUE,

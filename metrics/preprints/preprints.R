@@ -8,7 +8,7 @@ library(progressr)
 
 handlers(global = TRUE)
 
-query_works_2025 <- oa_query(
+query_works_2024 <- oa_query(
   entity = "works",
   # authorships.institutions.id = "I4210139777", # BIH id at openAlex
   authorships.institutions.ror = c("https://ror.org/001w7jn25", "https://ror.org/0493xsw21"),
@@ -70,12 +70,9 @@ dedupe_by_col <- function(oa_tib, group_col) {
                     dplyr::pull(doi)
                     ))
   }
-
   oa_tib |>
      dplyr::filter(!{{ group_col }} %in% (dupes_deduped |> dplyr::pull({{ group_col }}))) |>
      dplyr::bind_rows(dupes_deduped)
-
-
 }
 
 parsed <- df |>
@@ -137,7 +134,6 @@ unknown_preprints <- parsed |>
 
 parsed |>
   count(journal_st, sort = TRUE)
-
 
 
 parsed |>
@@ -232,7 +228,7 @@ new_preprints_only <- preprints_oa_new |>
 
 ########### checking which preprints have publications associated with them
 ### function taken from: https://zenodo.org/records/13133119
-get_epmc_metadata <- function(query){
+get_epmc_metadata <- function(query) {
   hits <- epmc_hits(query = query)
   raw <- epmc_search(query = query, output = "raw", limit = hits, sort = "date")
   parsed <- raw %>% {
