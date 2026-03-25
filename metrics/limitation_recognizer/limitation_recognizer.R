@@ -7,7 +7,7 @@ library(jsonlite)
 
 #### processing the json output
 
-limitations <- read_json(here("results", "limitationresults_old.json"))
+limitations <- read_json(here("results", "limitationresults.json"))
 
 lims <- limitations |>
   enframe(name = "filename", value = "sentences") |>
@@ -19,6 +19,13 @@ lims <- limitations |>
 lims |>
   write_excel_csv(here("results", "limitations_old.csv"))
 
+limitations_old <- read_csv(here("results", "limitations_old.csv"))
+
+limitations_results <- limitations_old |>
+  rows_upsert(lims, by = "doi")
+
+limitations_results |>
+  write_excel_csv(here("results", "limitations_old.csv"))
 
 # lims_2022 <- read_json(here("results", "limitationresults_2022.json")) |>
 #   enframe(name = "filename", value = "sentences") |>

@@ -257,17 +257,23 @@ txt_to_remove <- c(list.files(dest_folder), list.files(short_folder)) |>
 txt_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_to_text"
 file.remove(file.path(txt_folder, txt_to_remove))
 
-# delete_one_page_PDFs <- function(PDF_file) {
-#   page_num <- pdftools::pdf_info(PDF_file)$pages
-#   if(page_num == 1) {
-#     file.copy(PDF_file, "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_removed/")
-#     file.remove(PDF_file)
-#     remove_msg <- "PDF removed"
+# target_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_removed/"
+# move_short_page_pdfs <- function(pdf_file, min_page_num = 5, source_folder, target_folder) {
+#   page_num <- pdftools::pdf_info(file.path(source_folder, pdf_file))$pages
+#   if (page_num < min_page_num) {
+#     file.rename(from = file.path(source_folder, pdf_file),
+#                 to = file.path(target_folder, pdf_file))
+#     move_msg <- glue::glue("PDF had only {page_num} pages and was moved to {target_folder}")
 #   } else {
-#     remove_msg <- "PDF valid"
+#     move_msg <- "PDF valid"
 #   }
-#   print(paste0(PDF_file, ": ", remove_msg))
+#   print(paste0(pdf_file, ": ", move_msg))
 #
-#   return(page_num == 1)
+#   return(page_num < min_page_num)
 # }
+#
+# source_folder <- target_folder <- "C:/Datenablage/pdf_test"
+# pdf_file <- "s12916-022-02462-6_supplemental2.pdf"
+#
+# move_short_page_pdfs(pdf_file, source_folder = source_folder, target_folder = target_folder)
 # elsevier_pdf_removed <- elsevier_pdfs |> map_chr(delete_one_page_PDFs)

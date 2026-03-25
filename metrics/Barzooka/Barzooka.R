@@ -3,15 +3,15 @@ library(here)
 library(pdfRetrieve)
 
 
-email <- Sys.getenv("EMAIL")
+# email <- Sys.getenv("EMAIL")
 
 # determine which files to screen in adition to the ODDPUb screened files. As Barzooka
 # screens figures, the German-language articles excluded from ODDPub screening are being
 # added back here
 
-publications <- vroom(here("main", "publications_table.csv"))
+publications <- read_csv(here("main", "publication_table.csv"))
 
-dashboard_metrics <- vroom(here("shiny_app", "data", "dashboard_metrics.csv"))
+dashboard_metrics <- read_csv(here("shiny_app", "data", "dashboard_metrics.csv"))
 
 # how many not screened w/ barzooka after 2020?
 dashboard_metrics |>

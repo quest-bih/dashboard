@@ -15,7 +15,7 @@ print("Open Data detection with oddpub...")
 # txt_folder <- "S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs_to_text/2021/"
 # pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
 # txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
-pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_oa/"
+pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs/"
 # pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
 txt_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_to_text/"
 # txt_folder <- "C:/Users/Vladi/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/"
