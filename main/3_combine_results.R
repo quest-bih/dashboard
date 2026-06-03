@@ -291,21 +291,14 @@ open_data_results |>
 #   rows_upsert(contribot_results_2022, by = "doi") |>
 #   rows_upsert(contribot_results_2023, by = "doi") |>
 #   rows_upsert(contribot_results_2024, by = "doi")
-contribot_results_old <- read_csv(here("results", "ContriBOT_old.csv"))
+contribot_results_old <- read_csv(here("results", "ContriBOT_old.csv")) |>
+  mutate(doi = tolower(doi))
 
 contribot_results <- read_csv(here("results", "ContriBOT_2024.csv"))
 
 contribot_results <- contribot_results_old |>
   rows_upsert(contribot_results |> select(-article), by = "doi")
 
-contribot_results2 <- contribot_results |>
-  filter(doi %in% dashboard_metrics_junk$doi)
-
-# qa_contribot <- dashboard_metrics |>
-#   filter(is.na(has_coi) != is.na(has_contrib))
-# write_csv(qa_contribot, here("results", "missing_contribs.csv"))
-
-qa_contribot |> count(year)
 contribot_results |>
   write_csv(here("results", "ContriBOT_old.csv"))
 
@@ -400,6 +393,7 @@ junk_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/junk"
 junk_2022_folder <- "C:/Datenablage/charite_dashboard/2022/junk"
 junk_2023_folder <- "C:/Datenablage/charite_dashboard/2023/junk"
 junk_2024_folder <- "C:/Datenablage/charite_dashboard/2024/junk"
+# short_2024_folder <- "C:/Datenablage/charite_dashboard/2024/shorts"
 
 junk_unified <- list.files(junk_folder) |>
   pdfRetrieve::doi_pdf2stripped()

@@ -218,7 +218,7 @@ plot_barzooka_bar_total <- function(plot_data, color_palette)
     add_trace(y = ~has_bar_and_informative, name = "both bar and informative graphs", mode = "lines+markers",
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) |>
-    add_trace(y = ~has_bar_or_informative, name = "publications displaying continuous data figures", mode = "lines+markers",
+    add_trace(y = ~has_bar_or_informative, name = "continuous data figures", mode = "lines+markers",
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) |>
     add_trace(y = ~total, name = "publications screened", mode = "lines+markers",
