@@ -10,10 +10,10 @@ handlers(global = TRUE)
 
 print("Detection of Contribution statements with ContriBOT...")
 # converstion to text should have happened in the Open_Data detection already
-txt_folder <- "C:/Datenablage/charite_dashboard/2023/PDFs_to_text/"
+txt_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_to_text/"
 # txt_folder <- "dev/rescreen_txt"
 
-print("Load txt files...")
+message("Load txt files...")
 
 pdf_text_corpus <- oddpub::pdf_load(txt_folder, lowercase = FALSE, remove_regex = NULL)
 append_flag <- FALSE
@@ -39,11 +39,9 @@ if (length(pdf_text_corpus) > 0) {
              stringr::str_remove(".txt")) |>
     select(-article)
 
-    write_csv(unified_results, here("results", "ContriBOT_2023.csv"),
+    write_csv(unified_results, here("results", "ContriBOT_2022.csv"),
               append = append_flag)
 }
 
-print("completed!")
+message("completed!")
 
-
-### TODO: retroactively screen prior years 2016-2023!!!
