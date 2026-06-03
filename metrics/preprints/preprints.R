@@ -3,10 +3,12 @@ library(europepmc)
 library(tidyverse)
 library(here)
 library(janitor)
+library(furrr)
 library(fuzzyjoin)
 library(progressr)
 
 handlers(global = TRUE)
+plan(multisession)
 
 query_works_2024 <- oa_query(
   entity = "works",
@@ -74,15 +76,15 @@ dedupe_by_col <- function(oa_tib, group_col) {
      dplyr::filter(!{{ group_col }} %in% (dupes_deduped |> dplyr::pull({{ group_col }}))) |>
      dplyr::bind_rows(dupes_deduped)
 }
-
+# df |> filter(type == "preprint") |> count(version)
 parsed <- df |>
   filter(
     !is.na(doi),
-    is.na(version) | version == "submittedVersion",
+    is.na(version) | version != "publishedVersion",
     # !is.na(abstract),
     type == "preprint" ,
     is_retracted == FALSE,
-    !str_detect(landing_page_url, "ems|10\\.14293|egusphere|morressier|pubmed|espost|10\\.1016|protocols|elife|biofilms")
+    !str_detect(landing_page_url, "figshare|ems|10\\.14293|10\\.1158|egusphere|morressier|pubmed|espost|10\\.1016|protocols|elife|biofilms|cassyni")
     ) |>
   distinct(display_name, .keep_all = TRUE) |>
   mutate(authors = map_chr(authorships, \(au) pull(au, display_name) |> paste0(collapse = "; ")),
@@ -207,7 +209,8 @@ parsed_old <- read_csv(here("results", "preprints_oa_old.csv"))
 
 preprints_oa_new <- parsed_old |>
   rows_upsert(preprints_oa, by = "doi") |>
-  mutate(has_published_version = FALSE) |>
+  filter(!doi %in% c("https://depositonce.tu-berlin.de/handle/11303/13862",
+                    "https://figshare.com/articles/journal_contribution/MEDICC2_whole-genome_doubling_aware_copy-number_phylogenies_for_cancer_evolution_/21590835")) |>
   dedupe_by_col(title)
 
 preprints_oa_new <- preprints_oa_new |>
@@ -330,17 +333,42 @@ titles_matched <- titles_check |>
   pull(doi)
 
 
-preprints_oa <- read_csv(here("results", "preprints_oa.csv"))
+# preprints_oa <- read_csv(here("results", "preprints_oa.csv"))
 #
 # preprints_oa_not_yet_matched <- preprints_oa |>
 #   filter(has_published_version == FALSE)
 
-preprints_oa_new_matches <- preprints_oa |>
-  mutate(has_published_version = has_published_version == TRUE |
-           doi %in% c(epmc_preprint_dois, titles_matched))
+preprints_oa_new_matches <- preprints_oa_new |>
+  mutate(has_published_version = case_when(
+    doi %in% c(epmc_preprint_dois, titles_matched) ~ TRUE,
+    is.na(has_published_version) ~ FALSE,
+    .default = has_published_version
+  )
+           )
 
 preprints_oa_new_matches |>
   count(has_published_version)
 
-preprints_oa_new_matches |>
+# preprints_2023 <- read_csv(here("results", "preprints_2023.csv"))
+# |>
+
+#   select(-...1)
+
+# preprints_2023  |>  write_csv(here("results", "preprints_2023.csv"))
+
+preprints_updated <- parsed_old |>
+  rows_upsert(preprints_oa_new_matches, by = "doi") |>
+  dedupe_by_col(title)
+
+preprints_updated |>
   write_excel_csv(here("results", "preprints_oa.csv"))
+#
+# preprints_old_not_new <- parsed_old |>
+#   filter(!doi %in% preprints_oa_new_matches$doi)
+#
+# preprints_new_only <- preprints_oa_new_matches |>
+#   filter(!doi %in% preprints_2023$doi)
+#
+# qa_preprints <- preprints_oa_new_matches |>
+#   # filter(is.na(has_published_version))
+#   left_join(parsed_old |> select(doi, pub_vers_old = has_published_version), by = "doi")

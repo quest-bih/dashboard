@@ -75,7 +75,7 @@ charite_trials <- charite_trials |>
   mutate(url = paste0("https://github.com/ebmdatalab/euctr-tracker-data/raw/",
                       SHAs,
                       "/all_sponsors.json")) |>
-  filter(retrieval_date > "2024-12-11")
+  filter(retrieval_date > "2026-01-01")
 
 scraped_trials <- tibble()
 

@@ -710,6 +710,15 @@ vis_inform_tooltip <- strwrap("Bar graphs for continuous data are common but are
                                 - Click for methods details.") |>
   paste(collapse = " ")
 
+vis_bar_tooltip <- strwrap("Bar graphs for continuous data are common but are considered a suboptimal practice,
+                                as they conceal the underlying data points
+                                and many different data distributions can lead to the same bar graph.
+                                Bar graphs of continuous data should be replaced with more informative graphs
+                                that provide information about the data distribution and sample size,
+                                such as dot plots, box plots, violin plots or histograms.
+                                - Click for methods details.") |>
+  paste(collapse = " ")
+
 fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 12 (out of 15) FAIR principles.
 As FAIR principles are abstract and generically defined F-UJI specifies one or more metrics for each assessed FAIR principle.
 Since each metric can be tested in various means depending on data contexts and current best practises F-UJI additionally uses one or more practical tests to evaluate datasets against a particular metric.

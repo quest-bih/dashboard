@@ -44,4 +44,3 @@ if (length(pdf_text_corpus) > 0) {
 }
 
 message("completed!")
-
