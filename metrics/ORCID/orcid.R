@@ -1,10 +1,18 @@
-library(rorcid)
 library(tidyverse)
+library(ContriBOT)
+library(furrr)
+library(progressr)
 
-orcid_id_num <- orcid(query="current-institution-affiliation-name:
-                      (Charité OR Charite OR (Universitätsmedizin AND Berlin)
-                      OR (Berlin AND Institute AND of AND Health))")  |>
-  attr("found")
+plan(multisession)
+handlers(global = TRUE)
 
-write(paste(Sys.Date(), orcid_id_num, sep = ","), file = "results/orcid.csv", append = TRUE)
+message("Extraction of ORCID hyperlinks with with ContriBOT...")
+# converstion to text should have happened in the Open_Data detection already
+pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs"
 
+orcid_hyperlinks <- extract_orcids_from_folder(pdf_folder)
+orcids_extracted <- tibble(doi = list.files(pdf_folder) |>
+                            str_remove(".pdf") |> str_replace_all("\\+", "\\/"),
+                          orcid_hyperlinks)
+orcids_extracted |>
+  write_csv(here("results", "orcids_extracted_2024.csv"))

@@ -94,26 +94,17 @@ publications |>
 # results_files <- list.files(here("results"), full.names = TRUE)
 # results_files <- paste0(results_folder, results_files)
 
-open_data_22 <- read_csv(here("results", "Open_Data_2022.csv")) |>
-  # mutate(doi = str_replace_all(article, "\\+", "\\/") |>
-  #          str_remove(".txt") |>
-  #          tolower()) |>
+# open_data_22 <- read_csv(here("results", "Open_Data_2022.csv")) |>
+#   # mutate(doi = str_replace_all(article, "\\+", "\\/") |>
+#   #          str_remove(".txt") |>
+#   #          tolower()) |>
+#   select(doi, everything(), -article)
+#
+open_data_24 <- read_csv(here("results", "Open_Data.csv")) |>
   select(doi, everything(), -article)
 
-open_data_23 <- read_csv(here("results", "Open_Data.csv")) |>
-  # mutate(doi = str_replace_all(article, "\\+", "\\/") |>
-  #          str_remove(".txt") |>
-  #          tolower()) |>
+open_data_23 <- read_csv(here("results", "Open_Data_2023.csv")) |>
   select(doi, everything(), -article)
-
-open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual_2022.xlsx")) |>
-  select(doi, contains("open_code"), "cas") |>
-  mutate(open_code_manual_check = as.logical(open_code_manual_check))
-
-# open_data_23 |>
-#   filter(is_open_code == TRUE) |>
-#   write_excel_csv2("T:/Dokumente/open_code_2023.csv")
-
 
 #manually checked Open Data results + additional cases that were not detected by algorithm
 #but found in manual searches or submitted by researchers for the LOM/IOM
@@ -121,19 +112,30 @@ open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual_202
 #   mutate(doi = tolower(doi)) |>
 #   select(doi, everything(), -article)
 
-open_data_23_manual <- read_csv2(here("results", "OD_manual_tidy.csv")) |>
+### TODO: data without years, check what's up
+open_data_23_manual <- read_csv2(here("results", "OD_manual_tidy_23.csv")) |>
   mutate(doi = tolower(doi)) |>
   select(doi, open_data_manual_check, restricted_manual_check, open_data_category_manual, data_access)
 
-open_data_23_manual |>
+open_data_24_manual <- read_csv(here("results", "OD_manual_tidy.csv")) |>
+  mutate(doi = tolower(doi)) |>
+  select(doi, open_data_manual_check, restricted_manual_check, open_data_category_manual, data_access)
+
+open_data_24_manual |>
   left_join(publications, by = "doi") |>
   count(year)
 
+open_code_24_manual <- read_xlsx(here("results", "open_code_results_manual_2024.xlsx")) |>
+  select(doi, contains("code"), cas, language) |>
+  mutate(across(all_of(c("is_open_code", "open_code_manual_check",
+         "is_code_supplement", "is_code_reuse", "is_open_code_cas")),
+         as.logical))
+
 open_code_23_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
-  select(doi, contains("code"), language) |>
-  mutate(is_open_code = as.logical(is_open_code),
-         open_code_manual_check = as.logical(open_code_manual_check)) |>
-  filter(doi %in% open_data_23$doi)
+  select(doi, is_open_code, open_code_manual_check,
+         open_code_category_manual, cas, language) |>
+  mutate(across(all_of(c("is_open_code", "open_code_manual_check")),
+                as.logical))
 
 # qa_old_results <- open_data_results |>
 #   rows_upsert(open_data_retro, by = "doi") |>
@@ -193,11 +195,14 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_results.c
   #        language = NA_character_) |>
   # rows_upsert(open_data_retro, by = "doi") |>
   # rows_upsert(open_data_22, by = "doi") |>
-  # rows_upsert(open_code_23_manual, by = "doi") |>
-  # rows_upsert(open_data_22_manual, by = "doi") |>
-  # rows_upsert(open_code_22_manual, by = "doi") |>
+  rows_upsert(open_data_23, by = "doi") |>
+  rows_upsert(open_data_24, by = "doi") |>
   rows_upsert(open_data_23_manual, by = "doi") |>
   rows_upsert(open_code_23_manual, by = "doi") |>
+  # rows_upsert(open_data_22_manual, by = "doi") |>
+  # rows_upsert(open_code_22_manual, by = "doi") |>
+  rows_upsert(open_data_24_manual, by = "doi") |>
+  rows_upsert(open_code_24_manual, by = "doi") |>
   mutate(open_code_category_manual = case_when(
     str_detect(open_code_category_manual, "github") ~ "github",
     str_detect(open_code_category_manual, "supplement") ~ "supplement",
@@ -240,13 +245,13 @@ open_data_results |>
   filter(year > 2020) |>
   count(year, open_code_manual_check)
 
-# missing_years <- open_data_results |>
-#   left_join(publications |> select(doi, year)) |>
-#   filter(is.na(year))
-
+open_data_results |>
+  left_join(publications |> select(doi, year)) |>
+  filter(year > 2020) |>
+  count(year)
 # when finished update the template to contain the data from previous year !!!!
 # open_data_results |>
-#   write_excel_csv2(here("results", "Open_Data_manual_check_template.csv"))
+#   write_excel_csv(here("results", "Open_Data_manual_check_template.csv"))
 
 # template_miss <- template |>
 #   filter(!doi %in% open_data_results$doi)
@@ -258,7 +263,7 @@ open_data_results |>
 # open_data_results <- open_data_results |>
 #   rows_upsert(old_das_cas, by = "doi")
 
-### some LOM articles here, which will not be joined to main table!
+### some LOM articles here, or from 2025, which will not be joined to main table!
 
 open_data_results |>
   filter(is.na(is_open_data),
@@ -276,20 +281,38 @@ open_data_results |>
   count(open_data_manual_check, open_data_category_manual)
 
 #ContriBOT results
-
-# contribot_results <- read_csv(here("results", "ContriBOT_2023.csv"))
+#
+# contribot_results_2024 <- read_csv(here("results", "ContriBOT_2024.csv")) |>
+#   select(-article)
+# contribot_results_2022 <- read_csv(here("results", "ContriBOT_2022.csv"))
+# contribot_results_2023 <- read_csv(here("results", "ContriBOT_2023.csv"))
 # contribot_results_retro <- read_csv(here("results", "ContriBOT_retroactive.csv"))
 # contribot_results <- contribot_results_retro |>
-#   rows_upsert(contribot_results, by = "doi")
-contribot_results <- read_csv(here("results", "ContriBOT.csv"))
+#   rows_upsert(contribot_results_2022, by = "doi") |>
+#   rows_upsert(contribot_results_2023, by = "doi") |>
+#   rows_upsert(contribot_results_2024, by = "doi")
+contribot_results_old <- read_csv(here("results", "ContriBOT_old.csv"))
 
-# contribot_results <- contribot_results_old |>
-#   rows_upsert(contribot_results, by = "doi")
+contribot_results <- read_csv(here("results", "ContriBOT_2024.csv"))
 
-# contribot_results |>
-#   write_excel_csv(here("results", "ContriBOT.csv"))
+contribot_results <- contribot_results_old |>
+  rows_upsert(contribot_results |> select(-article), by = "doi")
 
-orcid_screening_results <- read_csv(here("results", "orcids_extracted_2023.csv"))
+contribot_results2 <- contribot_results |>
+  filter(doi %in% dashboard_metrics_junk$doi)
+
+# qa_contribot <- dashboard_metrics |>
+#   filter(is.na(has_coi) != is.na(has_contrib))
+# write_csv(qa_contribot, here("results", "missing_contribs.csv"))
+
+qa_contribot |> count(year)
+contribot_results |>
+  write_csv(here("results", "ContriBOT_old.csv"))
+
+orcid_screening_results <- read_csv(here("results", "orcids_extracted_2024.csv")) |>
+  mutate(orcids = orcid_hyperlinks,
+         doi,
+         .keep = "none")
 
 # orcid_screening_results_retro <- read_csv(here("results", "orcids_retroactive.csv")) |>
 #   mutate(doi = str_extract(file, "10\\..*") |>
@@ -376,6 +399,7 @@ dashboard_metrics <- publications |>
 junk_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/junk"
 junk_2022_folder <- "C:/Datenablage/charite_dashboard/2022/junk"
 junk_2023_folder <- "C:/Datenablage/charite_dashboard/2023/junk"
+junk_2024_folder <- "C:/Datenablage/charite_dashboard/2024/junk"
 
 junk_unified <- list.files(junk_folder) |>
   pdfRetrieve::doi_pdf2stripped()
@@ -386,18 +410,23 @@ junk_2022 <- list.files(junk_2022_folder) |>
 junk_2023 <- list.files(junk_2023_folder) |>
   pdfRetrieve::doi_pdf2stripped()
 
+junk_2024 <- list.files(junk_2024_folder) |>
+  pdfRetrieve::doi_pdf2stripped()
+
 junk_prior <- dashboard_metrics |>
   filter(is.na(has_contrib), !is.na(is_open_data),
        year < 2021) |>
   pull(doi)
 
-junk_dois <- c(junk_unified, junk_2022, junk_2023, junk_prior)
+junk_dois <- c(junk_unified, junk_2022, junk_2023, junk_2024,
+               junk_prior)
 
 dashboard_metrics_junk <- dashboard_metrics |>
   filter(doi %in% junk_dois) |>
-  select(doi, starts_with("is_open"), starts_with("has"), restrictions, orcids) |>
+  select(doi, starts_with("is_open"), starts_with("has"), contains("statement"),
+         contains("_estimate"),
+         restrictions, orcids) |>
   mutate(across(!doi, \(x) x = NA))
-
 
 dashboard_metrics <- dashboard_metrics |>
   rows_update(dashboard_metrics_junk, by = "doi")
@@ -420,14 +449,14 @@ per_year <- dashboard_metrics |>
   group_by(year) |>
   mutate(perc = n / sum(n) * 100)
 
-oc_dois <- open_code_22_manual |>
-  filter(open_code_manual_check == TRUE,
-         open_code_category_manual != "supplement") |>
-  pull(doi)
-
-dashboard_metrics |>
-  filter(doi %in% oc_dois) |>
-  count(year, open_code_manual_check)
+# oc_dois <- open_code_22_manual |>
+#   filter(open_code_manual_check == TRUE,
+#          open_code_category_manual != "supplement") |>
+#   pull(doi)
+#
+# dashboard_metrics |>
+#   filter(doi %in% oc_dois) |>
+#   count(year, open_code_manual_check)
 
 # missing_dois <- setdiff(oc_dois, dashboard_metrics$doi)
 
@@ -459,10 +488,9 @@ assert_that(nrow(check_tbl) == 0)
 
 if (nrow(check_tbl) > 0) {
   check_tbl |>
-    filter(year == 2023) |>
+    filter(year == 2024) |>
     write_excel_csv2(here("results", "pdf_update_cases.csv"))
 }
-
 
 
 #----------------------------------------------------------------------------------------
@@ -480,8 +508,8 @@ shiny_table <- dashboard_metrics |>
          open_data_statements, open_code_statements,
          das, cas,
          restrictions,
-         has_contrib, contrib_statement,
-         has_orcid, orcid_statement,
+         has_contrib, contrib_statement, credit_estimate,
+         has_orcid, orcids_as_text,
          orcids, has_any_orcid,
          has_coi, has_funding,
          has_limitations,
@@ -570,3 +598,4 @@ write_csv(fair_table, here("shiny_app", "data", "fair_assessment_2021.csv"))
 bss_stata <- read_dta(here("results", "bss-pilot22-char.dta"))
 write_dta(bss_stata, here("shiny_app", "data", "bss-pilot22-char.dta"))
 
+### code language data available only for 2023 and 2024

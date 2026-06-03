@@ -16,12 +16,16 @@ visServer <- function(id, vis_data, type, total, color_palette) {
           Visplot <- plot_barzooka_problem_perc(barzooka_data, color_palette)
         } else if (type == "inform") {
           Visplot <- plot_barzooka_inform_perc(barzooka_data, color_palette)
+        } else if (type == "bar") {
+          Visplot <- plot_barzooka_bar_perc(barzooka_data, color_palette)
         }
       } else { # absolute numbers
         if (type == "problem") {
           Visplot <- plot_barzooka_problem_total(barzooka_data, color_palette)
         } else if (type == "inform") {
           Visplot <- plot_barzooka_inform_total(barzooka_data, color_palette)
+        } else if (type == "bar") {
+          Visplot <- plot_barzooka_bar_total(barzooka_data, color_palette)
         }
       }
       Visplot
@@ -34,6 +38,8 @@ visServer <- function(id, vis_data, type, total, color_palette) {
 make_barzooka_plot_data <- function(data_table) {
   data_table |>
     filter(pdf_downloaded == TRUE) |>
+    mutate(is_informative = bardot > 0 | box > 0 | dot > 0 | hist > 0 |
+             violin > 0) |>
     group_by(year) |>
     summarize(total = n(),
               has_bar = sum(bar > 0, na.rm = TRUE),
@@ -43,8 +49,15 @@ make_barzooka_plot_data <- function(data_table) {
               has_dot = sum(dot > 0, na.rm = TRUE),
               has_hist = sum(hist > 0, na.rm = TRUE),
               has_violin = sum(violin > 0, na.rm = TRUE),
-              has_informative = sum(bardot > 0 | box > 0 | dot > 0 | hist > 0 | violin > 0,
-                                    na.rm = TRUE))
+              has_informative = sum(is_informative == TRUE, na.rm = TRUE),
+              has_only_informative = sum(is_informative == TRUE &
+                                           bar == 0, na.rm = TRUE),
+              has_only_bar = sum(is_informative == FALSE  &
+                                   bar > 0, na.rm = TRUE),
+              has_bar_or_informative = sum(is_informative == TRUE | bar > 0,
+                                    na.rm = TRUE),
+              has_bar_and_informative = sum(is_informative == TRUE &
+                                              bar > 0, na.rm = TRUE))
 }
 
 get_current_vis <- function(data_table, metric) {
@@ -53,11 +66,14 @@ get_current_vis <- function(data_table, metric) {
     # dashboard_metrics |>
     make_barzooka_plot_data() |>
     group_by(year) |>
-    summarise(across(.cols = c(has_bar, has_informative, total),
+    summarise(across(.cols = c(has_bar, contains("informative"), total),
                      \(x) sum(x, na.rm = TRUE))) |>
     filter(year == max(year)) |>
-    mutate(perc_bar = round(has_bar/total, 2) * 100,
-           perc_informative = round(has_informative/total, 2) * 100) |>
+    mutate(perc_bar_from_total = round(has_bar/total, 2) * 100,
+           perc_bar = round(has_bar/has_bar_or_informative, 2) * 100,
+           perc_informative_from_total = round(has_informative/total, 2) * 100,
+           perc_informative = round(has_informative/has_bar_or_informative, 2) * 100,
+           perc_both = round(has_bar_and_informative/has_bar_or_informative, 2) * 100) |>
     pull({{ metric }}) |>
     map_chr(\(x) paste(x, "%"))
 
@@ -154,6 +170,55 @@ plot_barzooka_inform_total <- function(plot_data, color_palette)
               line = list(color = color_palette[6]),
               marker = list(color = color_palette[6])) |>
     add_trace(y = ~has_violin, name = "violin plot", mode = "lines+markers",
+              line = list(color = color_palette[7]),
+              marker = list(color = color_palette[7])) |>
+    add_trace(y = ~total, name = "publications screened", mode = "lines+markers",
+              line = list(color = color_palette[5]),
+              marker = list(color = color_palette[5])) |>
+    layout(yaxis = list(title = "<b>Publications with graph type</b>"),
+           xaxis = list(title = "<b>Year</b>",
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9]) |>
+    plotly::config(displayModeBar = FALSE)
+}
+
+
+plot_barzooka_bar_perc <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~round(has_only_informative/has_bar_or_informative*100, 1),
+          name = "only any informative", type = "scatter", mode = "lines+markers",
+          line = list(color = color_palette[1], width = 3),
+          marker = list(color = color_palette[1], size = 8)) |>
+    add_trace(y = ~round(has_only_bar/has_bar_or_informative*100, 1), name = "only bar graph", mode = "lines+markers",
+              line = list(color = color_palette[2]),
+              marker = list(color = color_palette[2])) |>
+    add_trace(y = ~round(has_bar_and_informative/has_bar_or_informative*100, 1), name = "both bar and informative graphs", mode = "lines+markers",
+              line = list(color = color_palette[3]),
+              marker = list(color = color_palette[3])) |>
+    layout(yaxis = list(title = "<b>Publications with\ncontinuous data figures</b>",
+                        range = c(0, 100),
+                        ticksuffix = "%"),
+           xaxis = list(title = "<b>Year</b>",
+                        dtick = 1),
+           paper_bgcolor = color_palette[9],
+           plot_bgcolor = color_palette[9]) |>
+    plotly::config(displayModeBar = FALSE)
+}
+
+plot_barzooka_bar_total <- function(plot_data, color_palette)
+{
+  plot_ly(plot_data, x = ~year, y = ~has_only_informative,
+          name = "only any informative", type = "scatter", mode = "lines+markers",
+          line = list(color = color_palette[1], width = 3),
+          marker = list(color = color_palette[1], size = 8)) |>
+    add_trace(y = ~has_only_bar, name = "only bar graph", mode = "lines+markers",
+              line = list(color = color_palette[2]),
+              marker = list(color = color_palette[2])) |>
+    add_trace(y = ~has_bar_and_informative, name = "both bar and informative graphs", mode = "lines+markers",
+              line = list(color = color_palette[3]),
+              marker = list(color = color_palette[3])) |>
+    add_trace(y = ~has_bar_or_informative, name = "publications displaying continuous data figures", mode = "lines+markers",
               line = list(color = color_palette[7]),
               marker = list(color = color_palette[7])) |>
     add_trace(y = ~total, name = "publications screened", mode = "lines+markers",

@@ -15,7 +15,7 @@ library(shinythemes)
 library(shinycssloaders)
 library(tidyverse)
 library(assertthat)
-library(vroom)
+# library(vroom)
 
 #----------------------------------------------------------------------------------------------------------------------
 # load data & functions
@@ -45,19 +45,19 @@ source("about_page.R", encoding = "UTF-8")
 source("iv_plot.R", encoding = "UTF-8")
 source("datasets_panel.R")
 
-dashboard_metrics <- vroom("./data/dashboard_metrics.csv")
+dashboard_metrics <- read_csv("./data/dashboard_metrics.csv")
 # dashboard_metrics <- read_csv("./shiny_app/data/dashboard_metrics.csv")
-dashboard_metrics_aggregate <- vroom("./data/dashboard_metrics_aggregate.csv")
+dashboard_metrics_aggregate <- read_csv("./data/dashboard_metrics_aggregate.csv")
 # dashboard_metrics_aggregate <- read_csv("./shiny_app/data/dashboard_metrics_aggregate.csv")
 
 
 # EU_trialstracker_dataset <- read_csv("./data/EU_trialstracker_past_data.csv")
-sumres_data <- vroom("./data/EU_trialstracker_past_data.csv")
-intovalue_dataset <- vroom("./data/IntoValue_Results_years.csv")
+sumres_data <- read_csv("./data/EU_trialstracker_past_data.csv")
+intovalue_dataset <- read_csv("./data/IntoValue_Results_years.csv")
 
 
 #datasets for the datatables
-prosp_reg_dataset_shiny <- vroom("./data/prosp_reg_dataset_shiny.csv") |>
+prosp_reg_dataset_shiny <- read_csv("./data/prosp_reg_dataset_shiny.csv") |>
   # prosp_reg_dataset_shiny <- read_csv("./shiny_app/data/prosp_reg_dataset_shiny.csv") |>
   mutate_at(vars(nct_id, start_date, registration_date,
                  has_prospective_registration),
@@ -324,6 +324,8 @@ show_dashboard <- function(...) {
               reactive(RVs$total_vis), color_palette)
     visServer("plot_barzooka_inform", dashboard_metrics, "inform",
               reactive(RVs$total_vis), color_palette)
+    visServer("plot_barzooka_bar", dashboard_metrics, "bar",
+              reactive(RVs$total_vis), color_palette)
     orcidServer("plot_orcid_pubs", dashboard_metrics, "pubs",
                 reactive(RVs$total_bt), color_palette)
     contribotServer("plot_contrib", dashboard_metrics, "credit",
@@ -492,7 +494,7 @@ show_dashboard <- function(...) {
 
     output$vis_problem <-
       renderUI({
-        box_value <- get_current_vis(dashboard_metrics, perc_bar)
+        box_value <- get_current_vis(dashboard_metrics, perc_bar_from_total)
         box_text <- paste0("of publications from ", dashboard_metrics$year |> max(),
                            " used bar graphs for continuous data")
 
@@ -507,7 +509,7 @@ show_dashboard <- function(...) {
 
     output$vis_inform <-
       renderUI({
-        box_value <- get_current_vis(dashboard_metrics, perc_informative)
+        box_value <- get_current_vis(dashboard_metrics, perc_informative_from_total)
         box_text <- paste0("of publications from ", dashboard_metrics$year |> max(), " used more informative graph types")
 
         metricBoxOutput(title = "More informative graph types for continuous data",
@@ -517,6 +519,22 @@ show_dashboard <- function(...) {
                         info_id = "infoVisInform",
                         info_title = "More informative graph types",
                         info_text = vis_inform_tooltip,
+                        info_alignment = "left")
+      })
+
+    output$vis_bar <-
+      renderUI({
+        box_value <- get_current_vis(dashboard_metrics, perc_informative)
+        box_text <- paste0("of publications from ", dashboard_metrics$year |> max(),
+                           " displaying figures with continuous data used more informative graph types")
+
+        metricBoxOutput(title = "Bar graphs vs more informative graph types for continuous data",
+                        value = box_value,
+                        value_text = box_text,
+                        plot = visOutput("plot_barzooka_bar", height = "300px"),
+                        info_id = "infoVisBar",
+                        info_title = "Bar graphs vs more informative graph types",
+                        info_text = vis_bar_tooltip,
                         info_alignment = "left")
       })
 
@@ -713,9 +731,13 @@ show_dashboard <- function(...) {
 
     output$Visualizations_metrics <- renderUI({
 
-      #always show two tabs in one row for the visualization metrics
-      col_width <- 6
-      alignment <- "left"
+      if(input$width < 1400) {
+        col_width <- 6
+        alignment <- "left"
+      } else {
+        col_width <- 4
+        alignment <- "right"
+      }
 
       wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
                 h2(strong("Visualizations"),
@@ -725,6 +747,8 @@ show_dashboard <- function(...) {
                   column(8, h5(strong("Double-click or select rectangular area inside any panel to zoom in")))
                 ),
                 fluidRow(
+                  column(col_width, uiOutput("vis_bar") |>
+                           shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("vis_problem") |>
                            shinycssloaders::withSpinner(color = "#007265")),
                   column(col_width, uiOutput("vis_inform") |>

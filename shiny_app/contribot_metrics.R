@@ -55,12 +55,16 @@ make_contribot_plot_data <- function(data_table) {
     dplyr::group_by(year) |>
     dplyr::summarize(total_screened = sum(!is.na(has_contrib), na.rm = TRUE),
               has_contrib = sum(has_contrib, na.rm = TRUE),
+              has_credit = sum(credit_estimate, na.rm = TRUE),
+              has_contrib_no_credit = has_contrib - has_credit,
               has_no_contrib = total_screened - has_contrib,
               has_orcid = sum(has_orcid, na.rm = TRUE),
               has_no_orcid = total_screened - has_orcid,
               total = n(),
               not_screened = total - total_screened,
               perc_has_contrib = round(has_contrib / total_screened * 100),
+              perc_has_credit = round(has_credit / total_screened * 100),
+              perc_contrib_no_credit = round(has_contrib_no_credit / total_screened * 100),
               perc_has_orcid = round(has_orcid / total_screened * 100))
 }
 
@@ -72,11 +76,16 @@ make_contribot_plot_data <- function(data_table) {
 
 plot_contrib_perc <- function(plot_data, color_palette)
 {
-  plot_output <- plot_ly(plot_data, x = ~year, y = ~perc_has_contrib,
-                         name = "Authorship Statement", type = "bar",
+  plot_output <- plot_ly(plot_data, x = ~year, y = ~perc_has_credit,
+                         name = "CRediT Statement", type = "bar",
                          marker = list(color = color_palette[3],
                                        line = list(color = "rgb(0,0,0)",
-                                                   width = 1.5)))
+                                                   width = 1.5))) |>
+    add_trace(y = ~perc_contrib_no_credit,
+              name = "non-CRediT Authorship Statement",
+              marker = list(color = color_palette[7]),
+              line = list(color = "rgb(0,0,0)",
+                          width = 1.5))
   #   add_trace(y = ~OC_other_perc,
   #             name = "other repository <br>or website",
   #             marker = list(color = color_palette[6],
@@ -102,11 +111,16 @@ plot_contrib_perc <- function(plot_data, color_palette)
 
 plot_contrib_total <- function(plot_data, color_palette)
 {
-  plot_ly(plot_data, x = ~year, y = ~has_contrib,
-          name = "Authorship Statement", type = "bar",
+  plot_ly(plot_data, x = ~year, y = ~has_credit,
+          name = "CRediT Statement", type = "bar",
           marker = list(color = color_palette[3],
                         line = list(color = "rgb(0,0,0)",
                                     width = 1.5))) |>
+    add_trace(y = ~has_contrib_no_credit,
+              name = "non-CRediT Authorship Statement",
+              marker = list(color = color_palette[7],
+                            line = list(color = "rgb(0,0,0)",
+                                        width = 1.5))) |>
     add_trace(y = ~has_no_contrib,
               name = "No Authorship Statement",
               marker = list(color = color_palette[5],
