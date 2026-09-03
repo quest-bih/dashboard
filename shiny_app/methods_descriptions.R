@@ -62,7 +62,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         delay, such that the OA percentage for a given year typically rises
                         retrospectively. Thus the point in time of data retrieval is
                         important for understanding the OA percentage. The current OA status
-                        data were retrieved in June 2023.'),
+                        data were retrieved in August 2025.'),
 
                                   "Unpaywall only stores information for publications that
                         have a DOI assigned by Crossref. Articles without a Crossref DOI
@@ -95,7 +95,10 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         Note also that data sharing is not possible for all
                         studies, as there is either no dataset to share or as the data
                         cannot be shared, e.g. due to privacy concerns for patient data.
-                        Data sharing under restrictions is only available from the year 2020 onwards.'),
+                        Data sharing under restrictions is only available from the year 2020 onwards.
+                        Code respositories other than GitHub were extracted separately only for data added
+                        from the year 2022 onwards (this includes some older publications
+                        that were previously missed).'),
 
                                   HTML('To identify publications that share research data or analysis code,
                         we use the text-mining algorithm ODDPub
@@ -184,7 +187,7 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
                         We searched for articles of the type \'posted-content\' and version \'submittedVersion\'
                         with authors assigned to the Charité or BIH via their ror IDs. The number of preprints
                         found by this search are then summarized by year.
-                        The current preprint data were retrieved on: 20.11.2023.'),
+                        The current preprint data were retrieved on: 27.03.2026.'),
                                   "Not all relevant preprint servers are currently indexed by OpenAlex.
                         Thus we likely underestimate the number of published preprints."),
                   methods_panel("Preprints with journal publications",

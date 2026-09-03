@@ -127,18 +127,18 @@ show_dashboard <- function(...) {
                             br(),
                             br(),
                             br(),
-                            actionButton(style = "color: white; background-color: #aa1c7d;",
+                            actionButton(style = "color: white; background-color: #B0101C;",
                                          'buttonMethods',
                                          'See methods'),
-                            actionButton(style = "color: white; background-color: #aa1c7d;",
+                            actionButton(style = "color: white; background-color: #B0101C;",
                                          'buttonResources',
                                          'See resources'),
-                            actionButton(style = "color: white; background-color: #aa1c7d;",
+                            actionButton(style = "color: white; background-color: #B0101C;",
                                          'buttonDatasets',
                                          'See dataset'),
                             br(),
                             br(),
-                            h4(style = "margin-left:18mm", strong("Latest Update: April 2025")))
+                            h4(style = "margin-left:18mm", strong("Latest Update: June 2026")))
                    ),
                    fluidRow(column(1,
                                    selectInput("citationStyle",
@@ -156,16 +156,16 @@ show_dashboard <- function(...) {
 
                  # generate Open Science & Clinical trial metrics UI dynamically to determine column width during start of the app
                  uiOutput("OpenScience_metrics") |>
-                   shinycssloaders::withSpinner(color = "#007265"),
+                   shinycssloaders::withSpinner(color = "#009AA9"),
 
                  uiOutput("CT_metrics") |>
-                   shinycssloaders::withSpinner(color = "#007265"),
+                   shinycssloaders::withSpinner(color = "#009AA9"),
 
                  uiOutput("Broader_transparency_metrics") |>
-                   shinycssloaders::withSpinner(color = "#007265"),
+                   shinycssloaders::withSpinner(color = "#009AA9"),
 
                  uiOutput("Visualizations_metrics") |>
-                   shinycssloaders::withSpinner(color = "#007265"),
+                   shinycssloaders::withSpinner(color = "#009AA9"),
                  br(),
                  br(),
                  br(),
@@ -252,12 +252,12 @@ show_dashboard <- function(...) {
                         });
                         ')),
         # Change color of all selectize dropdowns
-        tags$head(tags$style(HTML('.selectize-input.full{background: #DCE3E5; border: #DCE3E5;}'))),
+        tags$head(tags$style(HTML('.selectize-input.full{background: #BCC5D0; border: #BCC5D0;}'))),
         # Change color of selected selectize dropdowns
-        tags$head(tags$style(HTML('#select_repository+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}'))),
-        tags$head(tags$style(HTML('#checkbox_FAIR+ div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}')))
-        #tags$head(tags$style(HTML('#prio-module_status + div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}'))),
-        #tags$head(tags$style(HTML('#prio-module_research + div>.selectize-input{background: #DCE3E5; border: #DCE3E5;}')))
+        tags$head(tags$style(HTML('#select_repository+ div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}'))),
+        tags$head(tags$style(HTML('#checkbox_FAIR+ div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}')))
+        #tags$head(tags$style(HTML('#prio-module_status + div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}'))),
+        #tags$head(tags$style(HTML('#prio-module_research + div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}')))
 
       )
     )
@@ -267,6 +267,15 @@ show_dashboard <- function(...) {
 
   server <- function(input, output, session)
   {
+
+    color_palette <- c("#A4ACB5", "#FFB0AC", "#9D7220", "#B0101C",
+                       "#003754", "#009AA9", "#7876B6", "#000000",
+                       "#CED7DE", "#EA5652")
+
+    color_palette_old <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+                     "#303A3E", "#007265", "#634587", "#000000",
+                     "#DCE3E5")
+    # "#879C9D"
 
     # URI routing
     # (see: https://stackoverflow.com/questions/71541259/uri-routing-with-shiny-router-and-navbarpage-in-a-r-shiny-app/71807248?noredirect=1#comment126924825_71807248)
@@ -447,7 +456,7 @@ show_dashboard <- function(...) {
           # get_current_val(dashboard_metrics_aggregate, n_preprints)
         box_text <- paste0("of preprints published in ",
                            dashboard_metrics_aggregate$year |> max(),
-                           " were also published in peer-reviewed journals as of December 2024"
+                           " were also published in peer-reviewed journals as of March 2026"
                            )
         metricBoxOutput(title = "Any preprints with journal publications",
                         value = box_value,
@@ -504,7 +513,8 @@ show_dashboard <- function(...) {
                         plot = visOutput("plot_barzooka_problem", height = "300px"),
                         info_id = "infoVisProblem",
                         info_title = "Problematic graph types",
-                        info_text = vis_problem_tooltip)
+                        info_text = vis_problem_tooltip,
+                        info_alignment = "left")
       })
 
     output$vis_inform <-
@@ -780,12 +790,12 @@ show_dashboard <- function(...) {
                                       choices = choices,
                                       selected = 1))),
               fluidRow(
-                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#BCC5D0",
                                     fluidRow(
                                       column(8, align="left", h4(strong(title)))
                                     ),
-                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    h1(style = "color: #B0101C;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #B0101C;text-align:left;font-size:18px;", value_text),
                                     plot)),
                 column(4, includeMarkdown("texts/text_FAIR.md"))
               )
@@ -831,12 +841,12 @@ show_dashboard <- function(...) {
                                       selected = "fair_score"))
               ),
               fluidRow(
-                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#BCC5D0",
                                     fluidRow(
                                       column(8, align="left", h4(strong(title)))
                                     ),
-                                    h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-                                    h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                    h1(style = "color: #B0101C;text-align:left;font-size:40px;", value),
+                                    h4(style = "color: #B0101C;text-align:left;font-size:18px;", value_text),
                                     plot)),
                 column(4, includeMarkdown("texts/text_repositories.md"))
               )
@@ -878,11 +888,11 @@ show_dashboard <- function(...) {
     if(input$width < 1400 & input$width > 700) {
       col_width <- 6
       alignment <- "left"
-      style_resp <- "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5" #"overflow: scroll; height = 500px; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5"
+      style_resp <- "padding-top: 0px; padding-bottom: 0px; background-color:#BCC5D0" #"overflow: scroll; height = 500px; padding-top: 0px; padding-bottom: 0px; background-color:#BCC5D0"
     } else {
       col_width <- 4
       alignment <- "right"
-      style_resp <- "padding-top: 0px; padding-bottom: 10px; background-color:#DCE3E5"
+      style_resp <- "padding-top: 0px; padding-bottom: 10px; background-color:#BCC5D0"
     }
 
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
@@ -1082,6 +1092,13 @@ show_dashboard <- function(...) {
 
   observe({
     updateTabsetPanel(session, "navbarTabs",
+                      selected = "tabRessources")
+  }) |>
+    bindEvent(input$infoVisBar)
+
+
+  observe({
+    updateTabsetPanel(session, "navbarTabs",
                       selected = "tabMethods")
     updateCollapse(session, "methodsPanels_FAIR", open = "FAIR data")
   }) |>
@@ -1131,9 +1148,6 @@ show_dashboard <- function(...) {
     make_datatable_BSS(bss_labeled_dataset)
   })
 
-  color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
-                     "#303A3E", "#007265", "#634587", "#000000",   #363457 #533A71 #011638 #634587
-                     "#DCE3E5")
 
   #---------------------------------
   # IntoValue

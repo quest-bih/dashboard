@@ -1,6 +1,6 @@
 metricBoxOutput <- function(style_resp = "padding-top: 0px;
                             padding-bottom: 0px;
-                            background-color:#DCE3E5",
+                            background-color:#CED7DE",
                             title,
                             value,
                             value_text,
@@ -22,8 +22,8 @@ metricBoxOutput <- function(style_resp = "padding-top: 0px;
                                info_alignment, options = list(container = "body")),
                      tags$style(".popover{width: 300px;}"))
             ),
-            h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-            h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+            h1(style = "color: #B0101C;text-align:left;font-size:40px;", value),
+            h4(style = "color: #B0101C;text-align:left;font-size:18px;", value_text),
             plot)
 }
 

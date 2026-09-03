@@ -112,7 +112,6 @@ open_data_23 <- read_csv(here("results", "Open_Data_2023.csv")) |>
 #   mutate(doi = tolower(doi)) |>
 #   select(doi, everything(), -article)
 
-### TODO: data without years, check what's up
 open_data_23_manual <- read_csv2(here("results", "OD_manual_tidy_23.csv")) |>
   mutate(doi = tolower(doi)) |>
   select(doi, open_data_manual_check, restricted_manual_check, open_data_category_manual, data_access)
@@ -132,6 +131,13 @@ open_code_24_manual <- read_xlsx(here("results", "open_code_results_manual_2024.
          as.logical))
 
 open_code_23_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xlsx")) |>
+  select(doi, is_open_code, open_code_manual_check,
+         open_code_category_manual, cas, language) |>
+  mutate(across(all_of(c("is_open_code", "open_code_manual_check")),
+                as.logical))
+
+open_code_22_manual <- read_xlsx(here("results", "oddpub_code_results_manual_2022.xlsx")) |>
+  mutate(language = NA_character_) |>
   select(doi, is_open_code, open_code_manual_check,
          open_code_category_manual, cas, language) |>
   mutate(across(all_of(c("is_open_code", "open_code_manual_check")),
@@ -180,8 +186,10 @@ open_code_23_manual <- read_xlsx(here("results", "oddpub_code_results_manual.xls
 
 # qa_old_results |>
 #   count(year, is.na(open_code_manual_check))
+retro_code_manual <- read_csv(here("dev", "oc_manual_checks.csv")) |>
+  select(doi, contains("manual"), language)
 
-open_data_results <- read_csv2(here("results", "Open_Data_manual_check_results.csv")) |>
+open_data_results <- read_csv(here("results", "Open_Data_manual_check_results_old.csv")) |>
   mutate(language = as.character(language)) |>
   # mutate(
   #        restricted_manual_check = NA,
@@ -200,12 +208,19 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_results.c
   rows_upsert(open_data_23_manual, by = "doi") |>
   rows_upsert(open_code_23_manual, by = "doi") |>
   # rows_upsert(open_data_22_manual, by = "doi") |>
-  # rows_upsert(open_code_22_manual, by = "doi") |>
+  rows_upsert(open_code_22_manual, by = "doi") |>
   rows_upsert(open_data_24_manual, by = "doi") |>
   rows_upsert(open_code_24_manual, by = "doi") |>
-  mutate(open_code_category_manual = case_when(
-    str_detect(open_code_category_manual, "github") ~ "github",
-    str_detect(open_code_category_manual, "supplement") ~ "supplement",
+  rows_upsert(retro_code_manual, by = "doi") |>
+  mutate(open_code_category_manual_raw =
+           na_if(open_code_category_manual_raw, "NA"),
+         open_code_category_manual = case_when(
+    open_code_category_manual_raw == "NA" ~ NA,
+    open_code_category_manual_raw == "github" ~ "github",
+    str_detect(open_code_category_manual_raw, "zenodo") ~ "zenodo",
+    str_detect(open_code_category_manual_raw, "osf") ~ "osf",
+    str_detect(open_code_category_manual_raw, "github") ~ "github and other",
+    str_detect(open_code_category_manual_raw, "supplement") ~ "supplement",
     open_code_manual_check == TRUE ~ "other repository/website"
   ),
   open_code_manual_check = case_when(
@@ -229,8 +244,11 @@ open_data_results <- read_csv2(here("results", "Open_Data_manual_check_results.c
   )
 
 open_data_results |>
-  write_excel_csv2(here("results", "Open_Data_manual_check_results_new.csv"))
+  write_excel_csv(here("results", "Open_Data_manual_check_results_old.csv"))
 
+ocode <-
+open_data_results |>
+  count(open_code_category_manual_raw, open_code_category_manual, sort = TRUE)
 
 open_data_results |>
   left_join(publications |> select(doi, year)) |>
