@@ -207,12 +207,12 @@ show_dashboard <- function(...) {
                                                        DT::dataTableOutput("data_table_prosp_reg"),
                                                        style = "default")),
                             br(),
-                            bsCollapse(id = "datasetPanels_PublicationDataset",
-                                       bsCollapsePanel("Timely publication dataset",
-                                                       HTML('This dataset was already published
-                        <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
-                                                       style = "default")),
-                            br(),
+                        #     bsCollapse(id = "datasetPanels_PublicationDataset",
+                        #                bsCollapsePanel("Timely publication dataset",
+                        #                                HTML('This dataset was already published
+                        # <a href="https://doi.org/10.5281/zenodo.5141343">here</a>.'),
+                        #                                style = "default")),
+                        #     br(),
                             bsCollapse(id = "datasetPanels_PublicationDatasetFAIR",
                                        bsCollapsePanel(title = "Data reusability (FAIR data) dataset",
                                                        DT::dataTableOutput("data_table_FAIR"),
@@ -653,11 +653,11 @@ show_dashboard <- function(...) {
 
     output$CT_metrics <- renderUI({
       req(input$width)
+      col_width <- 6
+
       if(input$width < 1400) {
-        col_width <- 6
         alignment <- "left"
       } else {
-        col_width <- 4
         alignment <- "right"
       }
 
@@ -672,17 +672,17 @@ show_dashboard <- function(...) {
                          fluidRow(
                            column(col_width, uiOutput("sumres") |>
                                     shinycssloaders::withSpinner(color = "#007265")),
-                           column(col_width, metricBoxOutput(title = "Timely publication of results",
-                                                             value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
-                                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
-                                                                                 intovalue_dataset$completion_year |> last(),
-                                                                                 " published results
-                                                                 within 2 years"),
-                                                             plot = plotlyOutput('plot_intovalue', height = "300px"),
-                                                             info_id = "infoIntoValue",
-                                                             info_title = "Timely publication of results",
-                                                             info_text = intovalue_tooltip,
-                                                             info_alignment = alignment)),
+      #                      column(col_width, metricBoxOutput(title = "Timely publication of results",
+      #                                                        value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
+      #                                                        value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
+      #                                                                            intovalue_dataset$completion_year |> last(),
+      #                                                                            " published results
+      #                                                            within 2 years"),
+      #                                                        plot = plotlyOutput('plot_intovalue', height = "300px"),
+      #                                                        info_id = "infoIntoValue",
+      #                                                        info_title = "Timely publication of results",
+      #                                                        info_text = intovalue_tooltip,
+      #                                                        info_alignment = alignment)),
                            column(col_width, uiOutput("prospreg") |>
                                     shinycssloaders::withSpinner(color = "#007265")))))
       )

@@ -45,4 +45,4 @@ The following metrics are currently shown in the dashboard:
 
 ## License
 
-The dashboard code is available under the AGPL license. See the [LICENSE](https://github.com/quest-bih/dashboard/blob/master/LICENSE) file for more info.
+The dashboard code is available under the AGPL license. See the [LICENSE](https://github.com/quest-bih/dashboard/blob/master/LICENSE.md) file for more info.
