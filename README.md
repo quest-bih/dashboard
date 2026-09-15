@@ -20,21 +20,29 @@ The files for the calculation and gathering of the results of the metrics can be
 
 The files for the shiny app can be found in the ‘shiny_app’ folder and are structured as follows:
  - The main app file that includes the main structure (UI, server) of the is ‘app.R’
- - Due to the size of the app, several parts and functions used by the app are outsourced in different files in the ‘shiny_app’ folder and loaded by the main file ‘app.R’ (e.g. app_functions_OA.R or  plots.R for additional functions or ‘methods_descriptions.R’ or ‘impressum.R’ for longer text sections appearing in the Shiny app 
+ - Due to the size of the app, several parts and functions used by the app are outsourced in different files in the ‘shiny_app’ folder and loaded by the main file ‘app.R’ (e.g. modules like metric_box.R, OA_metrics.R, ODC_metrics.R, etc., or ‘methods_descriptions.R’ or ‘impressum.R’ for longer text sections appearing in the Shiny app) 
  - The combined datasets that are visualized by the Shiny app are stored in the ‘data’ subfolder
  
 The following metrics are currently shown in the dashboard:
  - Open Access
- - Open Data & Open Code
- - Preprints
- - ORCIDs
- - Clinical trials - Summary results
- - Clinical trials - Timely publication
+ - Preprints and journal publications
+ - Preprints with journal publications
+ - Data (DAS) or Code Availability Statement (CAS)
+ - Open Data
+ - Open Code
+ - Clinical trials – Summary results
  - Clinical trials – Prospective registration
- - Vizualizations - Bar graphs for continuous data and more informative alternatives
+ - Broader Transparency – ORCIDs in Publications
+ - Broader Transparency – Authorship Statements
+ - Broader Transparency – Conflict of Interest (COI) Statements
+ - Broader Transparency – Funding Statements
+ - Broader Transparency – Self-acknowledged Limitations
+ - Vizualizations – Bar graphs vs more informative graph types for continuous data
+ - Vizualizations – Problematic graph types
+ - Vizualizations – More informative graph types for continuous data 
  - FAIR data
 
 
 ## License
 
-The dashboard code is available under the MIT license. See the [LICENSE](https://github.com/quest-bih/dashboard/blob/master/LICENSE) file for more info.
+The dashboard code is available under the AGPL license. See the [LICENSE](https://github.com/quest-bih/dashboard/blob/master/LICENSE) file for more info.
