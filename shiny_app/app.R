@@ -663,11 +663,13 @@ show_dashboard <- function(...) {
 
     output$CT_metrics <- renderUI({
       req(input$width)
+
+      col_width <- 6
+
       if(input$width < 1400) {
-        col_width <- 6
         alignment <- "left"
       } else {
-        col_width <- 4
+        # col_width <- 4
         alignment <- "right"
       }
 
@@ -682,17 +684,17 @@ show_dashboard <- function(...) {
                          fluidRow(
                            column(col_width, uiOutput("sumres") |>
                                     shinycssloaders::withSpinner(color = "#007265")),
-                           column(col_width, metricBoxOutput(title = "Timely publication of results",
-                                                             value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
-                                                             value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
-                                                                                 intovalue_dataset$completion_year |> last(),
-                                                                                 " published results
-                                                                 within 2 years"),
-                                                             plot = plotlyOutput('plot_intovalue', height = "300px"),
-                                                             info_id = "infoIntoValue",
-                                                             info_title = "Timely publication of results",
-                                                             info_text = intovalue_tooltip,
-                                                             info_alignment = alignment)),
+                           # column(col_width, metricBoxOutput(title = "Timely publication of results",
+                           #                                   value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
+                           #                                   value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
+                           #                                                       intovalue_dataset$completion_year |> last(),
+                           #                                                       " published results
+                           #                                       within 2 years"),
+                           #                                   plot = plotlyOutput('plot_intovalue', height = "300px"),
+                           #                                   info_id = "infoIntoValue",
+                           #                                   info_title = "Timely publication of results",
+                           #                                   info_text = intovalue_tooltip,
+                           #                                   info_alignment = alignment)),
                            column(col_width, uiOutput("prospreg") |>
                                     shinycssloaders::withSpinner(color = "#007265")))))
       )
@@ -741,6 +743,7 @@ show_dashboard <- function(...) {
 
     output$Visualizations_metrics <- renderUI({
 
+      req(input$width)
       if(input$width < 1400) {
         col_width <- 6
         alignment <- "left"
