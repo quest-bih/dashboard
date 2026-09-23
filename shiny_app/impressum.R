@@ -43,7 +43,7 @@ impressum_text <- HTML('<b>Information according to <a href="https://www.gesetze
 
 		</p><p><b>Regulatory Authority</b>:</p>
 
-		<p><a href="https://www.datenschutz-berlin.de/">Berliner Beauftragte für Datenschutz und Informationßicherheit</a> (Berlin Commissioner for Data Protection and Information Security)</p>
+		<p><a href="https://www.datenschutz-berlin.de/">Berliner Beauftragte für Datenschutz und Informationssicherheit</a> (Berlin Commissioner for Data Protection and Information Security)</p>
 
 		<p><b>Responsible for the content according to § 55 Abs. 2 RStV</b>:</p>
 
