@@ -67,21 +67,21 @@ preprints_dataset_shiny <- read_csv("./data/preprints_dataset_shiny.csv")
 orcid_dataset <- read_csv("./data/orcid_results.csv")
 
 # fair dataset
-fair_dataset <- read_csv("./data/fair_assessment_2022.csv", show_col_types = FALSE) |>
-  arrange(repository_re3data, article)
+fair_dataset <- read_csv("./data/fair_assessment_2020_2024.csv", show_col_types = FALSE) |>
+  arrange(doi, repository_re3data)
 
 # fair dataset for datatables
 fair_dataset_datatable <- fair_dataset |>
-  select(-repository) |>
   mutate(repository_type = factor(repository_type,
                                   levels = c("field-specific repository",
                                              "general-purpose repository"),
                                   labels = c("disciplinary repository",
                                              "general-purpose repository"))) |>
-  rename(article_doi = article,
-         dataset_id = best_identifier,
-         repository_name = repository_re3data,
-         guid_scheme = guid_scheme_fuji) |>
+  rename(article_doi = doi,
+         dataset_id = data_identifier,
+         repository_name = repository_re3data #,
+         #guid_scheme = guid_scheme_fuji
+         ) |>
   arrange(repository_name, article_doi)
 
 
@@ -756,15 +756,116 @@ show_dashboard <- function(...) {
                 ))
     })
 
+
+    output$DataReusability_timeline <- renderUI({
+
+      gp_repos <- stringr::str_sort(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"]), locale = "en")
+      fs_repos <- stringr::str_sort(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]), locale = "en")
+
+      # Create choices for selectInput
+      choices <- list(
+        `Repository types` = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) |> setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
+        `General-purpose repositories` = as.list(gp_repos) |>
+          setNames(gp_repos),
+        `Field-specific repositories` = as.list(fs_repos) |>
+          setNames(fs_repos)
+      )
+
+      title <- "FAIR assessment over years"
+      # title <- NULL
+      value <- textOutput("select_perc_timeline")
+      value_text <- textOutput("select_text_timeline")
+      plot <- plotlyOutput('plot_fair_timeline', height = "430px")
+
+      wellPanel(#style = "padding-top: 10px; padding-bottom: 0px;",
+                h2(strong("FAIR assessment over years"), align = "left"),
+                fluidRow(
+                  column(8, selectInput("select_repository_timeline", label = "Select repository type or repository",
+                                        choices = choices,
+                                        selected = 1))),
+                fluidRow(
+                  column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                                      fluidRow(
+                                        column(8, align="left", h4(strong(title)))
+                                      ),
+                                      h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
+                                      h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                      plot)),
+                  column(4, includeMarkdown("texts/text_FAIR_timeline.md"))
+                )
+      )
+
+    })
+
+    fair_data_timeline_plot <- reactive({
+      if (input$select_repository_timeline == "all repositories") {
+        fair_dataset
+      } else if (input$select_repository_timeline == "general-purpose repositories") {
+        fair_dataset %>% filter(repository_type == "general-purpose repository")
+      } else if (input$select_repository_timeline == "field-specific repositories") {
+        fair_dataset %>% filter(repository_type == "field-specific repository")
+      } else {
+        fair_dataset %>% filter(repository_re3data == input$select_repository_timeline)
+      }
+    })
+
+    output$select_perc_timeline <- renderText({
+      glue::glue("{n} %", n = fair_data_timeline_plot() %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    })
+
+    output$select_text_timeline <- renderText({
+      if(input$select_repository_timeline == "field-specific repositories") {
+        "is the average FAIR score of research data objects in disciplinary repositories"
+      } else {
+        glue::glue("is the average FAIR score of research data objects in {input$select_repository_timeline}")
+      }
+    })
+
+    fair_year <- reactive({
+      if (input$select_year == "all") {
+        fair_dataset
+      } else {
+        fair_dataset %>% filter(year == input$select_year)
+      }
+    })
+
+    fair_repository <- reactive({
+      if (input$select_repository == "all repositories") {
+        fair_year()
+      } else if (input$select_repository == "general-purpose repositories") {
+        fair_year() %>% filter(repository_type == "general-purpose repository")
+      } else if (input$select_repository == "field-specific repositories") {
+        fair_year() %>% filter(repository_type == "field-specific repository")
+      } else {
+        fair_year() %>% filter(repository_re3data == input$select_repository)
+      }
+    })
+
+    not_empty <- reactive({
+      data <- fair_repository()
+      nrow(data) > 0 && any(!is.na(data$fuji_percent))
+    })
+
+    # if (nrow(plot_data) == 0) {
+    #   return(
+    #     plotly_empty(type = "scatter", mode = "markers") %>%
+    #       layout(title = list(text = "No data for this selection"),
+    #              paper_bgcolor = color_palette[9])
+    #   )
+    # }
+
   output$DataReusability_2_metrics <- renderUI({
+
+    gp_repos <- stringr::str_sort(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"]), locale = "en")
+    fs_repos <- stringr::str_sort(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]), locale = "en")
 
     # Create choices for selectInput
     choices <- list(
       `Repository types` = as.list(c("all repositories", "general-purpose repositories", "field-specific repositories")) |> setNames(c("All repositories", "All general-purpose repositories", "All disciplinary repositories")),
-      `General-purpose repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])) |>
-        setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "general-purpose repository"])),
-      `Field-specific repositories` = as.list(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"])) |>
-        setNames(unique(fair_dataset$repository_re3data[fair_dataset$repository_type == "field-specific repository"]))
+      `General-purpose repositories` = as.list(gp_repos) |>
+        setNames(gp_repos),
+      `Field-specific repositories` = as.list(fs_repos) |>
+        setNames(fs_repos)
     )
 
     title <- "FAIR assessment by F-UJI"
@@ -776,9 +877,13 @@ show_dashboard <- function(...) {
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
               h2(strong("FAIR assessment"), align = "left"),
               fluidRow(
-                column(8, selectInput("select_repository", label = "Select repository type or repository",
+                column(4, selectInput("select_repository", label = "Select repository type or repository",
                                       choices = choices,
-                                      selected = 1))),
+                                      selected = 1)),
+                column(4, selectInput("select_year", label = "Select journal article year of publication",
+                                      choices = c("All years" = "all", sort(unique(fair_dataset$year))),
+                                      selected = "all",
+                                      multiple = F))),
               fluidRow(
                 column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
                                     fluidRow(
@@ -787,48 +892,80 @@ show_dashboard <- function(...) {
                                     h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
                                     h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
                                     plot)),
-                column(4, includeMarkdown("texts/text_FAIR.md"))
+                column(4, includeMarkdown("texts/text_FAIR_sunburst.md"))
               )
     )
 
   })
 
+
   output$select_perc <- renderText({
-    if(input$select_repository == "all repositories") {
-      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-    } else if (input$select_repository == "general-purpose repositories") {
-      glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "general-purpose repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-    } else if (input$select_repository == "field-specific repositories") {
-      glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-    } else {
-      glue::glue("{n} %", n = fair_dataset %>% filter(repository_re3data == input$select_repository) %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
-    }
+    # if(input$select_repository == "all repositories") {
+    #   glue::glue("{n} %", n = fair_year() %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    # } else if (input$select_repository == "general-purpose repositories") {
+    #   glue::glue("{n} %", n = fair_year() %>% filter(repository_type == "general-purpose repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    # } else if (input$select_repository == "field-specific repositories") {
+    #   glue::glue("{n} %", n = fair_year() %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    # } else {
+    #   glue::glue("{n} %", n = fair_year() %>% filter(repository_re3data == input$select_repository) %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+    # }
+    if (!not_empty()) return("\u00A0")
+    glue::glue("{n} %", n = fair_repository() %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+
   })
 
   output$select_text <- renderText({
-    if(input$select_repository == "field-specific repositories") {
-      "is the average FAIR score of research data objects in disciplinary repositories"
+
+    year <- if (input$select_year == "all")
+      " in 2020-2024"
+    else
+      glue::glue(" articles published in {input$select_year}")
+
+    repository <- if(input$select_repository == "field-specific repositories")
+      "disciplinary repositories"
+    else
+      input$select_repository
+
+    if (!not_empty()) {
+      year_empty <- if(input$select_year == "all")
+        "2020-2024"
+      else
+        input$select_year
+      glue::glue("No data was collected in {year_empty} for {repository}.")
+     # "is the average FAIR score of research data objects in disciplinary repositories in {year}"
     } else {
-      glue::glue("is the average FAIR score of research data objects in {input$select_repository}")
+      glue::glue("is the average FAIR score of research data objects in {repository}{year}")
     }
   })
 
+  fair_year_2 <- reactive({
+    req(input$dropdown_year)
 
+    if (input$dropdown_year == "all") {
+      fair_dataset
+    } else {
+      fair_dataset %>% filter(year == input$dropdown_year)
+    }
+  })
 
   output$DataReusability_1_metrics <- renderUI({
 
     title <- "FAIR scores by repositories"
     # title <- NULL
-    value <- textOutput("var")
-    value_text <- textOutput("text")
+    value <- textOutput("perc_repos")
+    value_text <- textOutput("text_repos")
     plot <- plotlyOutput('plot_fair_treemap', height = "400px")
 
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
               h2(strong("FAIR assessment by repositories"), align = "left"),
               fluidRow(
-                column(8, selectInput("checkbox_FAIR", label = "Select FAIR principle",
+                column(4, selectInput("checkbox_FAIR", label = "Select FAIR principle",
                                       choices = list(`Select all FAIR principles` = list("all FAIR principles" = "fair_score"), `Select individual FAIR principles` = list("Findability" = "f_score", "Accessibility" = "a_score", "Interoperability" = "i_score", "Reusability" = "r_score")),
-                                      selected = "fair_score"))
+                                      selected = "fair_score")),
+                column(4, selectInput("dropdown_year", label = "Select journal article year of publication",
+                                      choices = c("All years" = "all", sort(unique(fair_dataset$year))),
+                                      selected = "all",
+                                      multiple = F))
               ),
               fluidRow(
                 column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
@@ -838,39 +975,56 @@ show_dashboard <- function(...) {
                                     h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
                                     h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
                                     plot)),
-                column(4, includeMarkdown("texts/text_repositories.md"))
+                column(4, includeMarkdown("texts/text_FAIR_repositories.md"))
               )
     )
   })
 
-  output$text <- renderText({
+  output$text_repos <- renderText({
+    req(input$checkbox_FAIR, input$dropdown_year)
+
+    year_label <- if (input$dropdown_year == "all") {
+      ""
+    } else {
+      paste0(" (articles published in ", input$dropdown_year, ")")
+    }
+
     if(input$checkbox_FAIR == "fair_score") {
-      "is the average FAIR score of research data objects"
+      paste0("is the average FAIR score of research data objects", year_label)
     } else if (input$checkbox_FAIR == "f_score") {
-      "is the average Findability score of research data objects"
+      paste0("is the average Findability score of research data objects", year_label)
     } else if (input$checkbox_FAIR == "a_score") {
-      "is the average Accessibility score of research data objects"
+      paste0("is the average Accessibility score of research data objects", year_label)
     } else if (input$checkbox_FAIR == "i_score") {
-      "is the average Interoperability score of research data objects"
+      paste0("is the average Interoperability score of research data objects", year_label)
     } else if (input$checkbox_FAIR == "r_score") {
-      "is the average Reusability score of research data objects"
+      paste0("is the average Reusability score of research data objects", year_label)
     }
   })
 
-  output$var <- renderText({
+  output$perc_repos <- renderText({
     if(input$checkbox_FAIR == "fair_score") {
-      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+      glue::glue("{n} %", n = fair_year_2() %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
     } else if (input$checkbox_FAIR == "f_score") {
-      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_f) %>% mean(na.rm = TRUE) %>% round(0))
+      glue::glue("{n} %", n = fair_year_2() %>% pull(fuji_percent_f) %>% mean(na.rm = TRUE) %>% round(0))
     } else if (input$checkbox_FAIR == "a_score") {
-      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_a) %>% mean(na.rm = TRUE) %>% round(0))
+      glue::glue("{n} %", n = fair_year_2() %>% pull(fuji_percent_a) %>% mean(na.rm = TRUE) %>% round(0))
     } else if (input$checkbox_FAIR == "i_score") {
-      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_i) %>% mean(na.rm = TRUE) %>% round(0))
+      glue::glue("{n} %", n = fair_year_2() %>% pull(fuji_percent_i) %>% mean(na.rm = TRUE) %>% round(0))
     } else if (input$checkbox_FAIR == "r_score") {
-      glue::glue("{n} %", n = fair_dataset %>% pull(fuji_percent_r) %>% mean(na.rm = TRUE) %>% round(0))
+      glue::glue("{n} %", n = fair_year_2() %>% pull(fuji_percent_r) %>% mean(na.rm = TRUE) %>% round(0))
     }
   })
 
+  fair_year_3 <- reactive({
+    req(input$year_three_plots)
+
+    if (input$year_three_plots == "all") {
+      fair_dataset
+    } else {
+      fair_dataset %>% filter(year == input$year_three_plots)
+    }
+  })
 
   output$DataReusability_metrics <- renderUI({
 
@@ -887,13 +1041,21 @@ show_dashboard <- function(...) {
 
     wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
               h2(strong("FAIR assessment (other metrics)"), align = "left"),
-              checkboxInput("checkbox_total_FAIR", strong("Show absolute numbers"), value = FALSE),
               fluidRow(
-
+              column(4, selectInput("year_three_plots", label = "Select journal article year of publication",
+                                      choices = c("All years" = "all", sort(unique(fair_dataset$year))),
+                                      selected = "all",
+                                      multiple = F)),
+              column(4, div(style = "margin-top: 30px;",
+                            checkboxInput("checkbox_total_FAIR", strong("Show absolute numbers"), value = FALSE))
+              )),
+              fluidRow(
                 column(col_width, metricBoxOutput(style_resp = style_resp,
                                              title = "FAIR scores by principles",
-                                             value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
-                                             value_text = "is the average FAIR score of datasets from 2022 in disciplinary repositories",
+                                             #value = glue::glue("{n} %", n = fair_dataset %>% filter(repository_type == "field-specific repository") %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0)),
+                                             value = textOutput("perc_principles"),
+                                             #value_text = "is the average FAIR score of datasets from 2022 in disciplinary repositories",
+                                             value_text = textOutput("text_principles"),
                                              plot = plotlyOutput('plot_fair_principle', height = "300px"),
                                              info_id = "infoFAIRprinciples",
                                              info_title = "FAIR scores by principles",
@@ -902,8 +1064,10 @@ show_dashboard <- function(...) {
 
                 column(col_width, metricBoxOutput(style_resp = style_resp,
                                              title = "Dataset licenses",
-                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository" & fair_dataset$license_fuji != "no license", ])/nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository", ])*100, 0)),
-                                             value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
+                                             # value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository" & fair_dataset$license_fuji != "no license", ])/nrow(fair_dataset[fair_dataset$repository_type == "general-purpose repository", ])*100, 0)),
+                                             # value_text = "of datasets in general-purpose repositories specified a standard, machine readable license under which data can be reused",
+                                             value = textOutput("perc_license"),
+                                             value_text = textOutput("text_license"),
                                              plot = plotlyOutput('plot_fair_license', height = "300px"),
                                              info_id = "infoFAIRlicenses",
                                              info_title = "Dataset licenses",
@@ -911,8 +1075,10 @@ show_dashboard <- function(...) {
                                              info_alignment = "bottom")),
                 column(col_width, metricBoxOutput(style_resp = style_resp,
                                              title = "FAIR scores by identifiers",
-                                             value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
-                                             value_text = "of 2022 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
+                                             # value = glue::glue("{n} %", n = round(nrow(fair_dataset[fair_dataset$guid_scheme_fuji != "url", ])/nrow(fair_dataset)*100, 0)),
+                                             # value_text = "of 2022 datasets have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score",
+                                             value = textOutput("perc_identifiers"),
+                                             value_text = textOutput("text_identifiers"),
                                              plot = plotlyOutput('plot_fair_sunburst', height = "300px"),
                                              info_id = "infoFAIRidentifiers",
                                              info_title = "Dataset identifiers",
@@ -920,6 +1086,48 @@ show_dashboard <- function(...) {
                                              info_alignment = "bottom"))
               )
     )
+  })
+
+  year_label_3 <- reactive({
+    req(input$year_three_plots)
+    if (input$year_three_plots == "all") {
+      " in 2020-2024"
+    } else {
+      paste0(" published in ", input$year_three_plots)
+    }
+  })
+
+  output$perc_principles <- renderText({
+    d <- fair_year_3() %>% filter(repository_type == "field-specific repository")
+    validate(need(nrow(d) > 0, "no data"))
+    glue::glue("{n} %", n = d %>% pull(fuji_percent) %>% mean(na.rm = TRUE) %>% round(0))
+  })
+
+  output$text_principles <- renderText({
+    paste0("is the average FAIR score of datasets from articles", year_label_3(),
+           " in disciplinary repositories")
+  })
+
+  output$perc_license <- renderText({
+    d <- fair_year_3() %>% filter(repository_type == "general-purpose repository")
+    validate(need(nrow(d) > 0, "no data"))
+    glue::glue("{n} %", n = round(mean(d$license_fuji != "no license", na.rm = TRUE) * 100, 0))
+  })
+
+  output$text_license <- renderText({
+    paste0("of datasets from articles", year_label_3(),
+           " in general-purpose repositories specified a standard, machine readable license under which data can be reused")
+  })
+
+  output$perc_identifiers <- renderText({
+    d <- fair_year_3()
+    validate(need(nrow(d) > 0, "no data"))
+    glue::glue("{n} %", n = round(mean(d$guid_scheme_fuji != "url", na.rm = TRUE) * 100, 0))
+  })
+
+  output$text_identifiers <- renderText({
+    paste0("of datasets from articles", year_label_3(),
+           " have a persistent identifier (e.g., DOI, Handle) associated with a higher FAIR score")
   })
 
   #actionButton to switch tabs
@@ -1151,60 +1359,16 @@ show_dashboard <- function(...) {
   # Data reusability (FAIR) plots
   #---------------------------------
 
-  # FAIR license
-
-  fair_license_plot_data <- fair_dataset %>%
-    make_fair_license_plot_data()
-
-  output$plot_fair_license <- renderPlotly({
-    if(input$checkbox_total_FAIR) {
-      return(plot_fair_license_total(fair_license_plot_data, color_palette))
-    } else {
-      return(plot_fair_license_perc(fair_license_plot_data, color_palette))
-    }
-  })
-
-  # FAIR principle
-
-  fair_principle_plot_data <- fair_dataset %>%
-    make_fair_principle_plot_data()
-
-  output$plot_fair_principle <- renderPlotly({
-    plot_fair_principle_perc(fair_principle_plot_data, color_palette)
-  })
-
-
-  # FAIR repository treemap
-
-  fair_treemap_plot_data <- fair_dataset %>%
-    make_fair_treemap_plot_data()
-
-  output$plot_fair_treemap <- renderPlotly({
-    fair_perc <- glue::glue_collapse(input$checkbox_FAIR)
+  # FAIR principles heatmap
+  output$plot_fair_timeline <- renderPlotly({
 
     if(input$checkbox_colorblind){
       color_seq <- c("#440154", "#25858E", "#FDE725")
     } else {
-      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+      color_seq <- c("#8C1D18", "#FFD166", "#00695C")
     }
 
-    plot_fair_treemap(fair_treemap_plot_data, color_palette, fair_perc, color_seq)
-  })
-
-  # FAIR identifiers sunburst
-
-  fair_sunburst_plot_data <- fair_dataset |>
-    make_fair_sunburst_plot_data()
-
-  output$plot_fair_sunburst <- renderPlotly({
-
-    if(input$checkbox_colorblind){
-      color_seq <- c("#440154", "#25858E", "#FDE725")
-    } else {
-      color_seq <- c("#AA493A", "#F1BA50", "#007265")
-    }
-
-    plot_fair_sunburst(fair_sunburst_plot_data, color_palette, color_seq)
+    plot_fair_timeline(make_fair_timeline_plot_data(fair_data_timeline_plot()), color_palette, color_seq)
   })
 
   # FAIR principles sunburst
@@ -1218,8 +1382,75 @@ show_dashboard <- function(...) {
       color_seq <- c("#AA493A", "#F1BA50", "#007265")
     }
 
-    plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository, color_seq)
+    plot_fair_principle_sunburst(fair_year(), color_palette, select_repository, color_seq)
   })
+
+
+  # FAIR repository treemap
+
+  fair_treemap_plot_data <- reactive({
+    fair_year_2() %>%
+      make_fair_treemap_plot_data()
+  })
+
+  output$plot_fair_treemap <- renderPlotly({
+    fair_perc <- glue::glue_collapse(input$checkbox_FAIR)
+
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_treemap(fair_treemap_plot_data(), color_palette, fair_perc, color_seq)
+
+  })
+
+  # FAIR license bar chart
+
+
+  fair_license_plot_data <- reactive({
+    fair_year_3() %>%
+      make_fair_license_plot_data()
+  })
+
+  output$plot_fair_license <- renderPlotly({
+    if(input$checkbox_total_FAIR) {
+      return(plot_fair_license_total(fair_license_plot_data(), color_palette))
+    } else {
+      return(plot_fair_license_perc(fair_license_plot_data(), color_palette))
+    }
+  })
+
+  # FAIR principle violin
+
+  fair_principle_plot_data <- reactive({
+    fair_year_3() %>%
+    make_fair_principle_plot_data()
+  })
+
+  output$plot_fair_principle <- renderPlotly({
+    plot_fair_principle_perc_violin(fair_principle_plot_data(), color_palette)
+  })
+
+  # FAIR identifiers sunburst
+
+  fair_sunburst_plot_data <- reactive({
+    fair_year_3() %>%
+    make_fair_sunburst_plot_data()
+  })
+
+  output$plot_fair_sunburst <- renderPlotly({
+
+    if(input$checkbox_colorblind){
+      color_seq <- c("#440154", "#25858E", "#FDE725")
+    } else {
+      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+    }
+
+    plot_fair_sunburst(fair_sunburst_plot_data(), color_palette, color_seq)
+  })
+
 
   #---------------------------------
   # Berlin Science Survey (BSS) server modules

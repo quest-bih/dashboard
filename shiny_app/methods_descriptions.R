@@ -504,23 +504,39 @@ methods_panel <- tabPanel("Detailed Methods",  value = "tabMethods",
 
                     methods_panel("FAIR data",
 
-                                  HTML("In order for a research data object to be reused, it — and the hosting data repository —
-                                  must meet certain quality criteria that ensure it is <a href = 'https://www.go-fair.org/fair-principles/'>Findable, Accessible, Interoperable, and Reusable (FAIR)</a>.
-                                  For this purpose the data must be stored together with detailed metadata that must conform to a defined standard.
-                                  In addition, datasets are easier to reuse if the corresponding metadata is machine-readable and uses a standardized vocabulary.
+                                  HTML("In order for a research data object to be reused, it — and the hosting data repository — must meet certain quality
+                                  criteria that ensure it is <a href = 'https://www.go-fair.org/fair-principles/'>Findable, Accessible, Interoperable, and Reusable (FAIR)</a>.
+                                  For this purpose the data must be stored together with detailed metadata that must conform to a defined, machine-readable standard.
                                   "),
 
-                                  HTML("Based on the results of the text-mining algorithm <a href = 'https://doi.org/10.5334/dsj-2020-042'>ODDPub</a>
+                                  HTML("Based on the results of the text-mining algorithm <a href = 'https://github.com/quest-bih/oddpub'>ODDPub</a>
+                                  (code: <a href = 'https://doi.org/10.5281/zenodo.3741403'>Nachev & Riedel, 2025</a>; publication: <a href = 'https://doi.org/10.5334/dsj-2020-042'>Riedel, 2022</a>)
                                    — which identifies publications mentioning the generation and sharing of research data objects —
-                                  we manually screened the detected data statements and extracted one research dataset ID per mentioned repository.
-                                  We then used the extracted dataset IDs to query the automated screening tool <a href='https://www.f-uji.net'>F-UJI</a>.
-                                  F-UJI assesses the FAIRness of research data objects based on <a href = 'https://zenodo.org/record/4081213#.YhdU_C8w1pQ'>metrics</a>
+                                   we manually screened the detected data statements and extracted research dataset(s) (see workflow at
+                                   <a href='http://dx.doi.org/10.17504/protocols.io.q26g74p39gwz/v2'>Iarkaeva et al., 2025</a>, and
+                                   publication at <a href='https://doi.org/10.1371/journal.pone.0302787'>Iarkaeva et al., 2024</a>.
+                                  We then used the extracted dataset identifiers to query the automated screening tool <a href='https://www.f-uji.net'>F-UJI</a>.
+                                  F-UJI assesses the FAIRness of research data objects based on 16 metrics
+                                  (<a href='https://doi.org/10.5281/zenodo.15045911'>specification v0.8</a>, software <a href = 'https://doi.org/10.5281/zenodo.22159621'>version 4.0.0</a>)
                                   developed by the <a href = 'https://www.fairsfair.eu'>FAIRsFAIR</a> project.
-                                       The results were then aggregated and enriched with data from <a href = 'https://www.re3data.org'>re3data</a> to include further information about the data repositories in the analysis."),
+                                  The results were then aggregated and enriched with data from <a href = 'https://www.re3data.org'>re3data</a> to include
+                                  further information about the data repositories in the analysis. We then categorised repositories into two groups:
+                                  general-purpose and disciplinary. Institutional data repositories, such as edoc-Server of Humboldt Universität
+                                  zu Berlin or ZFDM repository by Universität Hamburg, belong to the general-purpose group."),
 
-                                  "F-UJI does not provide suitable automatic tests for all FAIR principles. FAIR principles A1.1 and A1.2 are not assessed. The quality of metadata and compliance with FAIR principles depends mainly
-                                  on the repository providers and can therefore only be influenced by the creators of the datasets to a limited extent.
-                                  Furthermore, F-UJI analyzes only the metadata of a research data object. The reusability and quality of the research data itself is not assessed")),
+                                  HTML("F-UJI does not provide suitable automatic tests for all FAIR principles. FUJI metrics' specification v0.8 (published in 2025)
+                                  additionally includes FAIR principles A1.1 and A1.2. The quality of metadata and compliance with FAIR principles
+                                  depends mainly on the repository providers and can therefore only be influenced by the creators of the datasets to
+                                  a limited extent. Furthermore, F-UJI analyzes only the metadata of a research data object. The reusability and quality
+                                  of the research data itself is not assessed, although the FAIR principles refer to both data and metadata. From 2022 onwards,
+                                  the criteria for including datasets as Open Data changed. These criteria exclude:
+
+                                  <ul>
+                                  <li>(i) repositories that do not assign (persistent) unique identifiers (e.g., <a href = 'https://github.com/'>GitHub</a> or similar Git instances)</li>
+                                  <li>(ii) data deposits without a PID (e.g., DOI) in repositories which offer to create a PID (e.g., <a href = 'https://osf.io/'>Open Science Framework (OSF)</a>)</li>
+                                  </ul>
+                                  As a result, the set of included open datasets changed over time, which may affect the development of FAIRness scores and lead to higher/lower scores in later years.
+                                  Trends across years should therefore be interpreted with caution. The data are consistent with the Charité Dashboard Start tab."))),
          hr(),
          h2("Berlin Science Survey (BSS)"),
          bsCollapse(id = "methodsPanels_BSS",
@@ -719,36 +735,41 @@ vis_bar_tooltip <- strwrap("Bar graphs for continuous data are common but are co
                                 - Click for methods details.") |>
   paste(collapse = " ")
 
-fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 12 (out of 15) FAIR principles.
+fair_fuji_tooltip <- strwrap("F-UJI uses 16 metrics to assess 14 (out of 15) FAIR principles.
 As FAIR principles are abstract and generically defined F-UJI specifies one or more metrics for each assessed FAIR principle.
-Since each metric can be tested in various means depending on data contexts and current best practises F-UJI additionally uses one or more practical tests to evaluate datasets against a particular metric.
+Since each metric can be tested in various means depending on data contexts and current best practises F-UJI additionally uses
+one or more practical tests to evaluate datasets against a particular metric.
                              - Click for methods details.") |>
   paste(collapse = " ")
 
-fair_repositories_tooltip <- strwrap("This metric measures the average FAIR score (in percent) by data repositories
-                                for research data published in 2021.
+fair_repositories_tooltip <- strwrap("This metric measures the average FAIR score (in percent) by data repository
+                                for research data published between 2020 and 2024.
                                 Data repositories have a major impact on the FAIR score of research data because
                                 they provide the infrastructure that ensures Findability, Accessibility, Interoperability,
                                 and Reusability of digital assets.
-                                The FAIR score is based on practical tests executed by an automated FAIR data assessment tool
+                                The FAIR score is based on practical tests executed by an automated FAIR data assessment tool F-UJI
                                 against specific metrics derived from the FAIR principles.
                                 - Click for methods details.") |>
   paste(collapse = " ")
 
 fair_principles_tooltip <- strwrap("This metric measures the average FAIR score (in percent)
                                 by the four main principles Findability, Accessibility, Interoperability,
-                                and Reusability for research data published in 2021.
-                                The FAIR score is based on practical tests executed by the automated FAIR data assessment tool
-                                F-UJI against specific metrics derived from the FAIR principles.
+                                and Reusability for research data published between 2020 and 2024.
+                                The FAIR score is based on practical tests executed by the automated FAIR data
+                                assessment tool F-UJI against specific metrics derived from the FAIR principles.
                                 - Click for methods details.") |>
   paste(collapse = " ")
 
 fair_licenses_tooltip <-
   strwrap(
-    "This metric measures if a standard, machine readable license is specified under which research data published in 2021 can be reused. It is derived from the FAIR principle R1.1 — (Meta)data are released with a clear and accessible data usage license. - Click for more info."
+    "This metric measures if a standard, machine readable license is specified under which research data
+    published between 2020 and 2024 can be reused. It is derived from the FAIR principle R1.1 — (Meta)data are
+    released with a clear and accessible data usage license. - Click for more info."
   ) |>
   paste(collapse = " ")
 
-fair_identifiers_tooltip <- strwrap("This metric measures the average FAIR score of the 2021 datasets by the unique identifiers. It is derived from the FAIR principle F1 — (Meta)data are assigned a globally unique and persistent identifier.
+fair_identifiers_tooltip <- strwrap("This metric measures the average FAIR score of the datasets published
+between 2020 and 2024 by the unique identifiers. It is derived from the FAIR principle F1 — (Meta)data are
+assigned a globally unique and persistent identifier.
                                 - Click for methods details.") |>
   paste(collapse = " ")

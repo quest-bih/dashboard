@@ -1,12 +1,14 @@
 ### How to assess FAIR?
 
-<font size="3">The FAIRness (Findability, Accessibility, Interoperability, Reproducibility) of research data objects can be evaluated by automatic tools that aggregate metadata embedded in the data (landing) page or retrieved from other services (e.g. [DataCite content negotiation](https://support.datacite.org/docs/datacite-content-resolver) or [re3data](https://www.re3data.org)).
+<!---<font size="3">The FAIRness (Findability, Accessibility, Interoperability, Reproducibility) of research data objects can be evaluated by automatic tools that aggregate metadata embedded in the data (landing) page or retrieved from other services (e.g. [DataCite content negotiation](https://support.datacite.org/docs/datacite-content-resolver) or [re3data](https://www.re3data.org)).
 
-We used [F‑UJI](https://www.f-uji.net/index.php?action=home) to assess research data objects mentioned in publications by Charité authors from 2022. F‑UJI uses [17 metrics](https://zenodo.org/records/6461229) that are derived from the [FAIRsFAIR project](https://www.fairsfair.eu) to assess 12 (out of 15) FAIR principles.
+We used [F‑UJI](https://www.f-uji.net/index.php?action=home) to assess research data objects mentioned in publications by Charité authors between 2020 and 2024. F‑UJI uses [16 metrics](https://doi.org/10.5281/zenodo.6361400) (v0.8) that are derived from the [FAIRsFAIR project](https://www.fairsfair.eu) to assess 14 (out of 15) FAIR principles.-->
 
-As FAIR principles are abstract and generically defined F‑UJI specifies one or more metrics for each assessed FAIR principle. Since each metric can be tested in various ways depending on data contexts and current best practises F‑UJI additionally uses one or more practical tests to evaluate datasets against a particular metric (click on the chart to see the metrics).
+As FAIR principles are abstract and generically defined, F‑UJI specifies one or more metrics for each assessed FAIR principle. Since each metric can be tested in various ways depending on data contexts and current best practices, F‑UJI additionally uses one or more practical tests to evaluate datasets against a particular metric (click on the chart to see the metrics).
 
 Based on the weighted metrics (the weight is represented by the size of the chart wedges), the FAIRness of a research data object can be calculated.</font>
+
+To note: Repositories are represented unevenly, with some repositories appearing more than 600 times (e.g. NCBI Gene Expression Omnibus (GEO)), others only once in five years and should be interpreted with caution. For some combinations of year and repository no datasets were available (n = 0). These are shown as empty in the dashboard and should not be interpreted as a score of zero.</font>
 
 <!---The FAIRness (Findability, Accessibility, Interoperability, Reproducibility) of research data objects can be evaluated by automatic tools that aggregate metadata embedded in the data (landing) page or retrieved from a persistent identifier provider (e.g. [DataCite content negotiation](https://support.datacite.org/docs/datacite-content-resolver)) and other services (e.g. [re3data](https://www.re3data.org)).-->
 
