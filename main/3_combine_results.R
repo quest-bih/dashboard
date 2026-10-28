@@ -21,8 +21,9 @@ publications |>
 
 dupes <- get_dupes(publications, doi)
 
-publications_2024 <- read_xlsx(here("main", "Publikationsdatensatz_Charité_2024_250908VN.xlsx")) |>
-  filter(str_detect(Duplikate, "DOI|kein") | is.na(Duplikate),
+publications_2025 <- read_xlsx(here("main", "Publikationsdatensatz_Charité_2025_260928VN.xlsx")) |>
+  filter(# str_detect(Duplikate, "DOI|kein"),
+         # | is.na(Duplikate),
          is.na(Keine_Charite_Affiliation)
          ) |>
   transmute(doi = tolower(DOI),
@@ -45,39 +46,28 @@ publications_2024 <- read_xlsx(here("main", "Publikationsdatensatz_Charité_2024
          issn = ISSN,
          e_issn = eISSN,
          oa_indicator = `Open Access Designations`,
-         oa_status = `OA-Status`,
+         oa_status = str_remove(`OA-Status`, "-oa"),
          corresponding_author_charite = !is.na(CA)
-         # ,
-         # orcids_lib = ORCIDs # ORCIDs that library has are not necessarily in the paper!
+         # orcids_lib = ORCIDs # ORCIDs that library lists are not necessarily in the paper!
          ) |>
   select(all_of(names(publications)))
 
-dupes <- get_dupes(publications_2024, doi) # should only be articles w/o doi
+dupes <- get_dupes(publications_2025, doi) # should only be articles w/o doi
 
-publications_2024 |>
+publications_2025 |>
   count(year)
 
-only_new_dois <- publications_2024 |>
+only_new_dois <- publications_2025 |>
   filter(!doi %in% publications$doi |
         str_detect(doi, "keine") | is.na(doi))
 
 publications <- publications |>
   rows_append(only_new_dois) |>
-  # filter(str_detect(doi, "10"), doi %in% publications_2022$doi) |>
-  rows_upsert(publications_2024 |>
+  rows_upsert(publications_2025 |>
                 filter(str_detect(doi, "10")) |>
                 select(doi, oa_status), by = "doi")
 
 count(publications, year)
-
-# old_dupes <- publications_2023 |>
-#   filter(doi %in% publications_2022$doi)
-
-# corresponding_authorship <- read_csv("T:/Dokumente/publications_CA.csv")
-
-# publications <- publications |>
-#   left_join(corresponding_authorship, by = "doi")
-
 
 write_excel_csv(publications, here("main", "publication_table.csv"))
 
@@ -85,7 +75,6 @@ write_excel_csv(publications, here("main", "publication_table.csv"))
 publications <- read_csv(here("main", "publication_table.csv"))
 
 
-# TODO: fix oa_status for nicht gefunden and kein DOI?
 publications |>
   count(year, oa_status) |>
   pivot_wider(names_from = year, values_from = n)
@@ -99,11 +88,11 @@ publications |>
 #   #          str_remove(".txt") |>
 #   #          tolower()) |>
 #   select(doi, everything(), -article)
-#
-open_data_24 <- read_csv(here("results", "Open_Data.csv")) |>
+
+open_data_25 <- read_csv(here("results", "Open_Data.csv")) |>
   select(doi, everything(), -article)
 
-open_data_23 <- read_csv(here("results", "Open_Data_2023.csv")) |>
+open_data_24 <- read_csv(here("results", "Open_Data_2024.csv")) |>
   select(doi, everything(), -article)
 
 #manually checked Open Data results + additional cases that were not detected by algorithm
@@ -112,7 +101,7 @@ open_data_23 <- read_csv(here("results", "Open_Data_2023.csv")) |>
 #   mutate(doi = tolower(doi)) |>
 #   select(doi, everything(), -article)
 
-### TODO: data without years, check what's up
+
 open_data_23_manual <- read_csv2(here("results", "OD_manual_tidy_23.csv")) |>
   mutate(doi = tolower(doi)) |>
   select(doi, open_data_manual_check, restricted_manual_check, open_data_category_manual, data_access)
