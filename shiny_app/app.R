@@ -85,6 +85,20 @@ fair_dataset_datatable <- fair_dataset |>
   arrange(repository_name, article_doi)
 
 
+color_palette_bih <- c("#A4ACB5", "#FFB0AC", "#9D7220", "#B0101C",
+                       "#003754", "#009AA9", "#7876B6", "#000000",
+                       "#CED7DE", "#EA5652")
+
+color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+                   "#303A3E", "#007265", "#634587", "#000000",
+                   "#DCE3E5")
+
+color_palette_old <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+                       "#303A3E", "#007265", "#634587", "#000000",
+                       "#DCE3E5")
+# "#879C9D"
+
+
 show_dashboard <- function(...) {
   #----------------------------------------------------------------------------------------------------------------------
   # ui
@@ -156,16 +170,16 @@ show_dashboard <- function(...) {
 
                  # generate Open Science & Clinical trial metrics UI dynamically to determine column width during start of the app
                  uiOutput("OpenScience_metrics") |>
-                   shinycssloaders::withSpinner(color = "#009AA9"),
+                   shinycssloaders::withSpinner(color = color_palette[6]),
 
                  uiOutput("CT_metrics") |>
-                   shinycssloaders::withSpinner(color = "#009AA9"),
+                   shinycssloaders::withSpinner(color = color_palette[6]),
 
                  uiOutput("Broader_transparency_metrics") |>
-                   shinycssloaders::withSpinner(color = "#009AA9"),
+                   shinycssloaders::withSpinner(color = color_palette[6]),
 
                  uiOutput("Visualizations_metrics") |>
-                   shinycssloaders::withSpinner(color = "#009AA9"),
+                   shinycssloaders::withSpinner(color = color_palette[6]),
                  br(),
                  br(),
                  br(),
@@ -267,15 +281,6 @@ show_dashboard <- function(...) {
 
   server <- function(input, output, session)
   {
-
-    color_palette <- c("#A4ACB5", "#FFB0AC", "#9D7220", "#B0101C",
-                       "#003754", "#009AA9", "#7876B6", "#000000",
-                       "#CED7DE", "#EA5652")
-
-    color_palette_old <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
-                     "#303A3E", "#007265", "#634587", "#000000",
-                     "#DCE3E5")
-    # "#879C9D"
 
     # URI routing
     # (see: https://stackoverflow.com/questions/71541259/uri-routing-with-shiny-router-and-navbarpage-in-a-r-shiny-app/71807248?noredirect=1#comment126924825_71807248)
@@ -643,18 +648,18 @@ show_dashboard <- function(...) {
                 ),
                 fluidRow(
                   column(col_width, uiOutput("OA") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
+                           shinycssloaders::withSpinner(color = color_palette[6])),
                   column(col_width, uiOutput("preprints") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
+                           shinycssloaders::withSpinner(color = color_palette[6])),
                   column(col_width, uiOutput("preprints_published") |>
-                           shinycssloaders::withSpinner(color = "#007265"))
+                           shinycssloaders::withSpinner(color = color_palette[6]))
                 ),
                 fluidRow(column(col_width, uiOutput("DAS") |>
-                                  shinycssloaders::withSpinner(color = "#007265")),
+                                  shinycssloaders::withSpinner(color = color_palette[6])),
                          column(col_width, uiOutput("OD") |>
-                                  shinycssloaders::withSpinner(color = "#007265")),
+                                  shinycssloaders::withSpinner(color = color_palette[6])),
                          column(col_width, uiOutput("OC") |>
-                                  shinycssloaders::withSpinner(color = "#007265"))
+                                  shinycssloaders::withSpinner(color = color_palette[6]))
                 )
       )
     })
@@ -683,7 +688,7 @@ show_dashboard <- function(...) {
                          ),
                          fluidRow(
                            column(col_width, uiOutput("sumres") |>
-                                    shinycssloaders::withSpinner(color = "#007265")),
+                                    shinycssloaders::withSpinner(color = color_palette[6])),
                            # column(col_width, metricBoxOutput(title = "Timely publication of results",
                            #                                   value = paste(round(intovalue_dataset$percentage_published_2_years |> last() * 100, 0), "%"),
                            #                                   value_text = paste0("of trials registered on CT.gov or DRKS that ended in ",
@@ -696,7 +701,7 @@ show_dashboard <- function(...) {
                            #                                   info_text = intovalue_tooltip,
                            #                                   info_alignment = alignment)),
                            column(col_width, uiOutput("prospreg") |>
-                                    shinycssloaders::withSpinner(color = "#007265")))))
+                                    shinycssloaders::withSpinner(color = color_palette[6])))))
       )
     })
 
@@ -718,24 +723,24 @@ show_dashboard <- function(...) {
                 fluidRow(
                   column(
                     col_width, uiOutput("orcid_pubs") |>
-                      shinycssloaders::withSpinner(color = "#007265")
+                      shinycssloaders::withSpinner(color = color_palette[6])
                   ),
                   column(
                     col_width, uiOutput("authorship") |>
-                      shinycssloaders::withSpinner(color = "#007265")
+                      shinycssloaders::withSpinner(color = color_palette[6])
                   )),
                 fluidRow(
                   column(
                     col_width, uiOutput("coi") |>
-                      shinycssloaders::withSpinner(color = "#007265")
+                      shinycssloaders::withSpinner(color = color_palette[6])
                   ),
                   column(
                     col_width, uiOutput("funding") |>
-                      shinycssloaders::withSpinner(color = "#007265")
+                      shinycssloaders::withSpinner(color = color_palette[6])
                   ),
                   column(
                     col_width, uiOutput("limitations") |>
-                      shinycssloaders::withSpinner(color = "#007265")
+                      shinycssloaders::withSpinner(color = color_palette[6])
                   )
                 )
       )
@@ -761,11 +766,11 @@ show_dashboard <- function(...) {
                 ),
                 fluidRow(
                   column(col_width, uiOutput("vis_bar") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
+                           shinycssloaders::withSpinner(color = color_palette[6])),
                   column(col_width, uiOutput("vis_problem") |>
-                           shinycssloaders::withSpinner(color = "#007265")),
+                           shinycssloaders::withSpinner(color = color_palette[6])),
                   column(col_width, uiOutput("vis_inform") |>
-                           shinycssloaders::withSpinner(color = "#007265"))
+                           shinycssloaders::withSpinner(color = color_palette[6]))
                 ))
     })
 
@@ -1156,13 +1161,13 @@ show_dashboard <- function(...) {
   # IntoValue
   #---------------------------------
 
-  output$plot_intovalue <- renderPlotly({
-    if(input$checkbox_total_CT) {
-      return(plot_intovalue_total(intovalue_dataset, color_palette))
-    } else {
-      return(plot_intovalue_perc(intovalue_dataset, color_palette))
-    }
-  })
+  # output$plot_intovalue <- renderPlotly({
+  #   if(input$checkbox_total_CT) {
+  #     return(plot_intovalue_total(intovalue_dataset, color_palette))
+  #   } else {
+  #     return(plot_intovalue_perc(intovalue_dataset, color_palette))
+  #   }
+  # })
 
   #---------------------------------
   # Data reusability (FAIR) plots
@@ -1202,7 +1207,7 @@ show_dashboard <- function(...) {
     if(input$checkbox_colorblind){
       color_seq <- c("#440154", "#25858E", "#FDE725")
     } else {
-      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+      color_seq <- c(color_palette[4], color_palette[3], color_palette[6])
     }
 
     plot_fair_treemap(fair_treemap_plot_data, color_palette, fair_perc, color_seq)
@@ -1218,7 +1223,7 @@ show_dashboard <- function(...) {
     if(input$checkbox_colorblind){
       color_seq <- c("#440154", "#25858E", "#FDE725")
     } else {
-      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+      color_seq <- c(color_palette[4], color_palette[3], color_palette[6])
     }
 
     plot_fair_sunburst(fair_sunburst_plot_data, color_palette, color_seq)
@@ -1230,9 +1235,9 @@ show_dashboard <- function(...) {
     select_repository <- input$select_repository
 
     if(input$checkbox_colorblind){
-      color_seq <- c("#440154", "#25858E", "#FDE725") # db colors c("#634587", "#F1BA50", "#007265") # viridis c("#440154", "#25858E", "#FDE725")
+      color_seq <- c("#440154", "#25858E", "#FDE725") # db colors c("#634587", color_palette[3], "#007265") # viridis c("#440154", "#25858E", "#FDE725")
     } else {
-      color_seq <- c("#AA493A", "#F1BA50", "#007265")
+      color_seq <- c(color_palette[4], color_palette[3], color_palette[6])
     }
 
     plot_fair_principle_sunburst(fair_dataset, color_palette, select_repository, color_seq)
