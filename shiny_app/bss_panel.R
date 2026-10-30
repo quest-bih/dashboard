@@ -1163,8 +1163,8 @@ moduleUI_status_research_prio <- function(id) {
         style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
         fluidRow(column(12, align = "left", h4(strong("How important do you think the following goals should be in the science system? – Regarding these goals, how much do you feel a pressure of expectations in your scientific work? – How do you prioritize these goals in your own work?"
         )))),
-        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", textOutput(ns("module_number_prio"))),
-        h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", textOutput(ns("module_text"))),
+        h1(style = paste0("color:", font_color, ";text-align:left;font-size:40px;"), textOutput(ns("module_number_prio"))),
+        h4(style = paste0("color:", font_color, ";text-align:left;font-size:18px;"), textOutput(ns("module_text"))),
         plotlyOutput(ns("module_plot"), height = "400px")
       )
     ),
@@ -1240,8 +1240,8 @@ moduleUI_status_research_practices <- function(id) {
           "How often have you applied the following open science practices in your research? – Do you see difficulties implementing the following open science practices in your current research practice?"
         )))
         ),
-        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", textOutput(ns("module_number_practices"))),
-        h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", textOutput(ns("module_text_practices"))),
+        h1(style = paste0("color:", font_color, ";text-align:left;font-size:40px;"), textOutput(ns("module_number_practices"))),
+        h4(style = paste0("color:", font_color, ";text-align:left;font-size:18px;"), textOutput(ns("module_text_practices"))),
         plotlyOutput(ns("module_plot_practices"), height = "400px")
       )
     ),
@@ -1315,8 +1315,8 @@ moduleUI_status_research_environment <- function(id) {
         fluidRow(column(12, align = "left", h4(strong(
           "How would you rate the Berlin research environment with regard to the following aspects?"
         )))),
-        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", textOutput(ns("module_number_environment"))),
-        h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", textOutput(ns("module_text_environment"))),
+        h1(style = paste0("color:", font_color, ";text-align:left;font-size:40px;"), textOutput(ns("module_number_environment"))),
+        h4(style = paste0("color:", font_color, ";text-align:left;font-size:18px;"), textOutput(ns("module_text_environment"))),
         plotlyOutput(ns("module_plot_environment"), height = "500px")
       )
     ),
@@ -1340,8 +1340,8 @@ moduleUI_status_research_importance <- function(id) {
         fluidRow(column(12, align = "left", h4(strong(
           "How important is the expansion of open science practices for science as a whole?"
         )))),
-        h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", "86%"),
-        h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", "of Charité scientists consider the expansion of open science practices fairly important or very important"),
+        h1(style = paste0("color:", font_color, ";text-align:left;font-size:40px;"), "86%"),
+        h4(style = paste0("color:", font_color, ";text-align:left;font-size:18px;"), "of Charité scientists consider the expansion of open science practices fairly important or very important"),
         data_plot_importance()
       )
     ),
@@ -1565,10 +1565,10 @@ bss_panel <-
                       br(),
                       actionButton(inputId = 'buttonMethodsBSS',
                                    label = 'See methods',
-                                   style = "color: white; background-color: #aa1c7d;"),
+                                   style = paste0("color: white; background-color: ", button_bg_color)),
                       actionButton(inputId = 'buttonDatasetBSS',
                                    label = 'See dataset',
-                                   style = "color: white; background-color: #aa1c7d;")
+                                   style = paste0("color: white; background-color: ", button_bg_color))
                ),
              )
            ),

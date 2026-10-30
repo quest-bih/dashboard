@@ -22,10 +22,10 @@ fair_panel <-
                       br(),
                       actionButton(inputId = 'buttonMethodsFAIR',
                                    label = 'See methods',
-                                   style = "margin-left:20mm; color: white; background-color: #aa1c7d;"),
+                                   style = paste0("margin-left:20mm; color: white; background-color:", button_bg_color)),
                       actionButton(inputId = 'buttonDatasetFAIR',
                                    label = 'See dataset',
-                                   style = "color: white; background-color: #aa1c7d;"),
+                                   style = paste0("color: white; background-color:", button_bg_color)),
                       br(),
                       br(),
                       h4(style = "margin-left:18mm", strong("Latest Update: October 2026"))

@@ -23,6 +23,26 @@ library(assertthat)
 
 Sys.setlocale("LC_TIME", "English_Germany.utf8")
 
+
+
+color_palette_bih <- c("#A4ACB5", "#FFB0AC", "#9D7220", "#B0101C",
+                       "#003754", "#009AA9", "#7876B6", "#000000",
+                       "#CED7DE", "#EA5652")
+
+color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+                   "#303A3E", "#007265", "#634587", "#000000",
+                   "#DCE3E5")
+
+color_palette_old <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
+                       "#303A3E", "#007265", "#634587", "#000000",
+                       "#DCE3E5")
+# "#879C9D"
+button_bg_color <- color_palette_bih[4]
+
+font_color <- button_bg_color
+
+panel_bg_color <- dropdown_color <- color_palette[9]
+
 source("impressum.R", encoding="UTF-8")
 source("metric_box.R")
 source("OA_metrics.R")
@@ -39,8 +59,8 @@ source("app_functions_fair.R")
 source("ui_elements.R")
 source("methods_descriptions.R", encoding = "UTF-8")
 source("resources_descriptions.R", encoding = "UTF-8")
-source("fair_panel.R", encoding = "UTF-8")
-source("bss_panel.R", encoding = "UTF-8")
+source("fair_panel.R", encoding = "UTF-8", local = TRUE)
+source("bss_panel.R", encoding = "UTF-8", local = TRUE)
 source("about_page.R", encoding = "UTF-8")
 source("iv_plot.R", encoding = "UTF-8")
 source("datasets_panel.R")
@@ -64,23 +84,6 @@ prosp_reg_dataset_shiny <- read_csv("./data/prosp_reg_dataset_shiny.csv") |>
 
 preprints_dataset_shiny <- read_csv("./data/preprints_dataset_shiny.csv")
 orcid_dataset <- read_csv("./data/orcid_results.csv")
-
-
-color_palette_bih <- c("#A4ACB5", "#FFB0AC", "#9D7220", "#B0101C",
-                       "#003754", "#009AA9", "#7876B6", "#000000",
-                       "#CED7DE", "#EA5652")
-
-color_palette <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
-                   "#303A3E", "#007265", "#634587", "#000000",
-                   "#DCE3E5")
-
-color_palette_old <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
-                       "#303A3E", "#007265", "#634587", "#000000",
-                       "#DCE3E5")
-# "#879C9D"
-button_bg_color <- color_palette_bih[4]
-
-dropdown_color <- color_palette_bih[9]
 
 show_dashboard <- function(...) {
   #----------------------------------------------------------------------------------------------------------------------
@@ -784,12 +787,12 @@ show_dashboard <- function(...) {
                                 choices = choices,
                                 selected = 1))),
         fluidRow(
-          column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+          column(8, wellPanel(style = paste0("padding-top: 0px; padding-bottom: 0px; background-color:", panel_bg_color),
                               fluidRow(
                                 column(8, align="left", h4(strong(title)))
                               ),
-                              h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-                              h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                              h1(style = paste0("color:", font_color, ";text-align:left;font-size:40px;"), value),
+                              h4(style = paste0("color:", font_color, ";text-align:left;font-size:18px;"), value_text),
                               plot)),
           column(4, includeMarkdown("texts/text_FAIR_timeline.md"))
         )
@@ -885,12 +888,12 @@ show_dashboard <- function(...) {
                                         selected = "all",
                                         multiple = F))),
                 fluidRow(
-                  column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                  column(8, wellPanel(style = paste0("padding-top: 0px; padding-bottom: 0px; background-color: ", panel_bg_color),
                                       fluidRow(
                                         column(8, align="left", h4(strong(title)))
                                       ),
-                                      h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-                                      h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                      h1(style = paste0("color: ", font_color, ";text-align:left;font-size:40px;"), value),
+                                      h4(style = paste0("color: ", font_color, ";text-align:left;font-size:18px;"), value_text),
                                       plot)),
                   column(4, includeMarkdown("texts/text_FAIR_sunburst.md"))
                 )
@@ -968,12 +971,12 @@ show_dashboard <- function(...) {
                                         multiple = F))
                 ),
                 fluidRow(
-                  column(8, wellPanel(style = "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5",
+                  column(8, wellPanel(style = paste0("padding-top: 0px; padding-bottom: 0px; background-color:", panel_bg_color),
                                       fluidRow(
                                         column(8, align="left", h4(strong(title)))
                                       ),
-                                      h1(style = "color: #aa1c7d;text-align:left;font-size:40px;", value),
-                                      h4(style = "color: #aa1c7d;text-align:left;font-size:18px;", value_text),
+                                      h1(style = paste0("color: ", font_color, ";text-align:left;font-size:40px;"), value),
+                                      h4(style = paste0("color: ", font_color, ";text-align:left;font-size:18px;"), value_text),
                                       plot)),
                   column(4, includeMarkdown("texts/text_FAIR_repositories.md"))
                 )
@@ -1032,11 +1035,11 @@ show_dashboard <- function(...) {
       if(input$width < 1400 & input$width > 700) {
         col_width <- 6
         alignment <- "left"
-        style_resp <- "padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5" #"overflow: scroll; height = 500px; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5"
+        style_resp <- paste0("padding-top: 0px; padding-bottom: 0px;") #"overflow: scroll; height = 500px; padding-top: 0px; padding-bottom: 0px; background-color:#DCE3E5"
       } else {
         col_width <- 4
         alignment <- "right"
-        style_resp <- "padding-top: 0px; padding-bottom: 10px; background-color:#DCE3E5"
+        style_resp <- paste0("padding-top: 0px; padding-bottom: 10px;")
       }
 
       wellPanel(style = "padding-top: 10px; padding-bottom: 0px;",
