@@ -189,8 +189,8 @@ show_dashboard <- function(...) {
                    resources_panel,
                    tabPanel("Datasets", value = "tabDatasets",
                             h1("Datasets"),
-                            h4("The following tables contain the datasets underlying the numbers and plots
-              shown for the metrics included in this Shiny app."),
+                            HTML("The following tables contain the datasets underlying the numbers and plots
+              shown for the metrics included in this Shiny app. The datasets are released under a <a href = 'https://creativecommons.org/licenses/by/4.0/'>Creative Commons Attribution 4.0 International License.</a>"),
                             br(),
                             bsCollapse(id = "datasetPanels_PublicationDataset",
                                        bsCollapsePanel("Publication dataset",
