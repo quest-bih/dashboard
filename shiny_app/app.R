@@ -50,7 +50,6 @@ dashboard_metrics <- read_csv("./data/dashboard_metrics.csv")
 dashboard_metrics_aggregate <- read_csv("./data/dashboard_metrics_aggregate.csv")
 # dashboard_metrics_aggregate <- read_csv("./shiny_app/data/dashboard_metrics_aggregate.csv")
 
-
 # EU_trialstracker_dataset <- read_csv("./data/EU_trialstracker_past_data.csv")
 sumres_data <- read_csv("./data/EU_trialstracker_past_data.csv")
 intovalue_dataset <- read_csv("./data/IntoValue_Results_years.csv")
@@ -97,7 +96,9 @@ color_palette_old <- c("#B6B6B6", "#879C9D", "#F1BA50", "#AA493A",
                        "#303A3E", "#007265", "#634587", "#000000",
                        "#DCE3E5")
 # "#879C9D"
+button_bg_color <- color_palette_bih[4]
 
+dropdown_color <- color_palette_bih[9]
 
 show_dashboard <- function(...) {
   #----------------------------------------------------------------------------------------------------------------------
@@ -141,13 +142,13 @@ show_dashboard <- function(...) {
                             br(),
                             br(),
                             br(),
-                            actionButton(style = "color: white; background-color: #B0101C;",
+                            actionButton(style = paste0("color: white; background-color: ", button_bg_color),
                                          'buttonMethods',
                                          'See methods'),
-                            actionButton(style = "color: white; background-color: #B0101C;",
+                            actionButton(style = paste0("color: white; background-color: ", button_bg_color),
                                          'buttonResources',
                                          'See resources'),
-                            actionButton(style = "color: white; background-color: #B0101C;",
+                            actionButton(style = paste0("color: white; background-color: ", button_bg_color),
                                          'buttonDatasets',
                                          'See dataset'),
                             br(),
@@ -266,12 +267,12 @@ show_dashboard <- function(...) {
                         });
                         ')),
         # Change color of all selectize dropdowns
-        tags$head(tags$style(HTML('.selectize-input.full{background: #BCC5D0; border: #BCC5D0;}'))),
+        tags$head(tags$style(HTML(paste0(".selectize-input.full{background: ", dropdown_color, "; border: ", dropdown_color, ";}")))),
         # Change color of selected selectize dropdowns
-        tags$head(tags$style(HTML('#select_repository+ div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}'))),
-        tags$head(tags$style(HTML('#checkbox_FAIR+ div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}')))
-        #tags$head(tags$style(HTML('#prio-module_status + div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}'))),
-        #tags$head(tags$style(HTML('#prio-module_research + div>.selectize-input{background: #BCC5D0; border: #BCC5D0;}')))
+        tags$head(tags$style(HTML(paste0("#select_repository+ div>.selectize-input{background: ", dropdown_color, "; border: ", dropdown_color, ";}")))),
+        tags$head(tags$style(HTML(paste0("#checkbox_FAIR+ div>.selectize-input{background: ", dropdown_color, "; border: ", dropdown_color, ";}"))))
+
+
 
       )
     )
