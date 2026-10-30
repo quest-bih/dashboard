@@ -6,8 +6,7 @@ email <- Sys.getenv("EMAIL")
 
 publications <- read_csv("./main/publication_table.csv")
 
-# pdf_folder <- "S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs/2021/"
-pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_oa/"
+pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs/"
 
 #need doi for download
 publications_download <- publications |>
@@ -161,11 +160,8 @@ move_short_papers <- function(pdf_folder, destination_folder, min_page_num) {
     })
 }
 
-pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_oa"
+pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs"
 pdf_folder <- "C:/Datenablage/charite_dashboard/2024/shorts"
-dest_folder <- "C:/Datenablage/charite_dashboard/2024/shorts2"
-# list.files(pdf_folder, full.names = TRUE)[62]
-# file.path(pdf_folder)
 
 
 library(easyRPubMed)
@@ -179,15 +175,11 @@ meta_shorts <- dois_shorts |>
 
 dois <- tibble(doi = list.files(pdf_folder) |>
                  doi_pdf2stripped())
-3270/2/2
-820/2
-dois |> slice(168)
+
 meta_all <- dois |>
-  # slice(168) |>
   get_metadata(doi, chunksize = 50, api_key = Sys.getenv("NCBI_KEY"))
 
 plan(multisession)
-# plan(sequential)
 progressr::handlers(global = TRUE)
 shorties <- move_short_papers(pdf_folder, dest_folder, min_page_num = 4)
 
@@ -256,24 +248,3 @@ txt_to_remove <- c(list.files(dest_folder), list.files(short_folder)) |>
 
 txt_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_to_text"
 file.remove(file.path(txt_folder, txt_to_remove))
-
-# target_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_removed/"
-# move_short_page_pdfs <- function(pdf_file, min_page_num = 5, source_folder, target_folder) {
-#   page_num <- pdftools::pdf_info(file.path(source_folder, pdf_file))$pages
-#   if (page_num < min_page_num) {
-#     file.rename(from = file.path(source_folder, pdf_file),
-#                 to = file.path(target_folder, pdf_file))
-#     move_msg <- glue::glue("PDF had only {page_num} pages and was moved to {target_folder}")
-#   } else {
-#     move_msg <- "PDF valid"
-#   }
-#   print(paste0(pdf_file, ": ", move_msg))
-#
-#   return(page_num < min_page_num)
-# }
-#
-# source_folder <- target_folder <- "C:/Datenablage/pdf_test"
-# pdf_file <- "s12916-022-02462-6_supplemental2.pdf"
-#
-# move_short_page_pdfs(pdf_file, source_folder = source_folder, target_folder = target_folder)
-# elsevier_pdf_removed <- elsevier_pdfs |> map_chr(delete_one_page_PDFs)

@@ -8,6 +8,7 @@ library(pdfRetrieve)
 
 dashboard_metrics <- read_csv(here("shiny_app", "data", "dashboard_metrics.csv"))
 
+dm_2023 <- read_csv("C:/Users/nachevv/Downloads/dashboard_metrics.csv")
 
 od_2021 <- dashboard_metrics |>
   filter(year == 2021, open_data_manual_check == TRUE)
@@ -130,8 +131,8 @@ qa_oddpub_results <- oddpub_results |>
 
 
 qa_limitations <- dashboard_metrics |>
-  # filter(year == 2021) |>
-  count(has_contrib, has_limitations, has_coi, is_open_data)
+  # filter(year > 2020) |>
+  count(year, has_limitations)
 
 qa_lims <- dashboard_metrics |>
   filter(has_limitations == FALSE,
@@ -270,3 +271,82 @@ Open_Data_manual_check_template <- read_delim("results/Open_Data_manual_check_te
   select(line_n, everything())
 
 
+#### check which DOIs missing from ContriBOT
+
+qa_contribot <- dashboard_metrics |>
+  filter(is.na(has_coi) != is.na(has_contrib))
+
+contribot_results2 <- contribot_results |>
+  filter(doi %in% dashboard_metrics_junk$doi)
+
+dashboard_metrics |>
+  filter(year > 2020, year < 2024) |>
+  anti_join(contribot_results_old, by = "doi")
+
+pdfs_2023 <- "C:/Datenablage/charite_dashboard/2023/PDFs"
+txt_2023 <- "C:/Datenablage/charite_dashboard/2023/PDFs_to_text"
+excessive_txt <- list.files(txt_2023) |>
+  str_replace("txt", "pdf") |>
+  setdiff(list.files(pdfs_2023))
+
+
+fact_not_screened <- read_tsv("../not_screened_fact_science.tsv")
+
+fact_not_screened |>
+  anti_join(publications, by = "doi")
+
+fact_not_screened |>
+  semi_join(publications, by = "doi")
+
+
+qa_lims <- limitations_results |>
+  left_join(dm_2023, by = "doi") |>
+  # left_join(dashboard_metrics, by = "doi") |>
+  select(doi, year, contains("sentence"), contains("has_limitations"))
+
+qa_lims_discrp <- qa_lims |>
+  filter(has_limitations.x != has_limitations.y |
+           is.na(has_limitations.y))
+
+qa_lims |>
+  count(year, has_limitations.x)
+
+neg_2024_lims <- qa_lims |>
+  filter(has_limitations.x == FALSE, year == 2024)
+
+
+qa_osf_zenodo <- dashboard_metrics |>
+  select(doi, year, is_open_code, open_code_statements, contains("code")) |>
+  filter(is_open_code == TRUE) |>
+  mutate(has_osf = str_detect(open_code_statements, "osf|open science framework"),
+         has_zenodo = str_detect(open_code_statements, "zenodo"))
+
+
+qa_osf_zenodo |>
+  count(has_osf, has_zenodo, open_code_category_manual)
+
+qa_osf_zenodo |>
+  count(year, has_osf, has_zenodo, open_code_category_manual) |>
+  filter(has_osf | has_zenodo,
+         is.na(open_code_category_manual) | !str_detect(open_code_category_manual, "osf|zenodo"))
+
+review_osf_zenodo <- qa_osf_zenodo |>
+  filter(has_osf | has_zenodo,
+         is.na(open_code_category_manual) | !str_detect(open_code_category_manual, "osf|zenodo"))
+
+open_code_additions <- open_data_results |>
+  filter(doi %in% review_osf_zenodo$doi) |>
+  write_excel_csv(here("dev", "oc_manual_checks.csv"))
+
+
+open_code_unchecked <- dashboard_metrics |>
+  filter(is_open_code, is.na(open_code_manual_check)) |>
+  mutate(has_osf = str_detect(open_code_statements, "osf|open science framework"),
+         has_zenodo = str_detect(open_code_statements, "zenodo"))
+
+open_code_unchecked |>
+  count(year)
+
+open_code_additions <- open_data_results |>
+  filter(doi %in% open_code_unchecked$doi) |>
+  write_excel_csv(here("dev", "oc_manual_checks.csv"), append = TRUE)

@@ -3,32 +3,32 @@
 #------------------------------------------------------------------------------------------------------------------
 
 overall_design_options <- tags$head(
-  tags$style(HTML("@import url('//fonts.googleapis.com/css?family=Fira+Sans+Condensed');
+  tags$style(HTML("@import url('//fonts.googleapis.com/css?family=Trebuchet+MS');
 
                    h1 {
-                   font-family: 'Calibri', bold;
+                   font-family: 'Trebuchet MS', bold;
                    font-weight: 500;
                    line-height: 1.1;
-                   color: #aa1c7d;
+                   color: #B0101C;
                    }
 
                    h4 {
-                   font-family: 'Calibri', bold;
+                   font-family: 'Trebuchet MS', bold;
                    font-weight: 500;
                    line-height: 1.1;
-                   color: #3C5D70;
+                   color: #003754;
                    }
 
                    h5 {
-                   font-family: 'Calibri', bold;
+                   font-family: 'Trebuchet MS', bold;
                    font-weight: 500;
                    line-height: 1.1;
-                   color: #3C5D70;
+                   color: #003754;
                    }
 
                    .navbar-default {
-                       color: #3C5D70;
-                       background-color: #3C5D70;
+                       color: #003754;
+                       background-color: #003754;
                    }
 
                    body {

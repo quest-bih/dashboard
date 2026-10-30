@@ -11,14 +11,11 @@ handlers(global = TRUE)
 future::plan(multisession)
 
 print("Open Data detection with oddpub...")
-# pdf_folder <-"S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs/2021/"
-# txt_folder <- "S:/Partner/BIH/QUEST/CENTER/3-Service-Infra-Governance/Data Science/PDFs_to_text/2021/"
 # pdf_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs/"
 # txt_folder <- "C:/Datenablage/charite_dashboard/unified_dataset/PDFs_to_text/"
-pdf_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs/"
+pdf_folder <- "C:/Datenablage/charite_dashboard/2025/PDFs/"
 # pdf_folder <- "C:/Datenablage/charite_dashboard/2022/PDFs_last_chunk/"
-txt_folder <- "C:/Datenablage/charite_dashboard/2024/PDFs_to_text/"
-# txt_folder <- "C:/Users/Vladi/OneDrive - Charité - Universitätsmedizin Berlin/PDFs_22_to_text/"
+txt_folder <- "C:/Datenablage/charite_dashboard/2025/PDFs_to_text/"
 # pdf_folder <- "dev/rescreen"
 # txt_folder <- "dev/rescreen_txt"
 

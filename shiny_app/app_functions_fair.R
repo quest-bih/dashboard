@@ -2,11 +2,32 @@
 # FAIR assessment data loading & preprocessing functions
 #----------------------------------------------------------------------
 
+# Load fair dataset
+fair_dataset <- read_csv("./data/fair_assessment_2020_2024.csv", show_col_types = FALSE) |>
+  arrange(doi, repository_re3data)
+# fair_dataset <- read_csv(here::here("shiny_app", "data", "fair_assessment_2020_2024.csv"), show_col_types = FALSE) |>
+#   arrange(doi, repository_re3data)
+# names(fair_dataset)
+# Prepare fair dataset for datatables
+fair_dataset_datatable <- fair_dataset |>
+  mutate(repository_type = factor(repository_type,
+                                  levels = c("field-specific repository",
+                                             "general-purpose repository"),
+                                  labels = c("disciplinary repository",
+                                             "general-purpose repository"))) |>
+  rename(article_doi = doi,
+         dataset_id = data_identifier,
+         repository_name = repository_re3data #,
+         #guid_scheme = guid_scheme_fuji
+  ) |>
+  arrange(repository_name, article_doi)
+
+
 repo_disclaimers <- c(
   "GitHub" = "Note: GitHub outputs are identified only<br>by URLs which is not a persistent<br>identifier.Thus, data is not persistently<br>findable. These are not included<br>from 2022 onwards, when this<br>became a requirement for inclusion.",
   "Open Science Framework (OSF)" = "Note: OSF outputs receive DOIs only<br>in some cases. From 2022 onwards,<br>only deposits with DOIs are included.",
   "GitLab" = "Note: GitLab outputs are identified only<br>by URLs which is not a persistent<br>identifier.Thus, data is not persistently<br>findable. These are not included<br>from 2022 onwards, when this<br>became a requirement for inclusion."
-  )
+)
 
 # Data for FAIR repository timeline chart
 make_fair_timeline_plot_data <- function(data_table)
@@ -188,7 +209,7 @@ make_fair_principle_plot_data <- function(data_table)
 # Data for FAIR license bar chart
 
 make_fair_license_plot_data <- function(data_table)
-  {
+{
 
   fair_license_plot_data <- data_table %>%
     mutate(license_fuji = factor(
@@ -209,7 +230,7 @@ make_fair_license_plot_data <- function(data_table)
     group_by(license_fuji, repository_type) %>%
     count() %>%
     ungroup() %>%
-   # complete(license_fuji, repository_type, fill = list(n = 0)) %>%
+    # complete(license_fuji, repository_type, fill = list(n = 0)) %>%
     group_by(repository_type) %>%
     mutate(perc = round(n / sum(n), 3)) %>%
     ungroup() %>%
@@ -232,7 +253,7 @@ plot_fair_timeline <- function(plot_data, color_palette, color_seq)
 {
   # Prepare hovertext for str_glue()
   hovertext <-
-  c("<b>{principle}</b> ({year})
+    c("<b>{principle}</b> ({year})
       n = {n}
       FAIR = {fairness}%"
     )

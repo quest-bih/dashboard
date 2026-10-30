@@ -193,7 +193,7 @@ plot_barzooka_bar_perc <- function(plot_data, color_palette)
     add_trace(y = ~round(has_only_bar/has_bar_or_informative*100, 1), name = "only bar graph", mode = "lines+markers",
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) |>
-    add_trace(y = ~round(has_bar_and_informative/has_bar_or_informative*100, 1), name = "both bar and informative graphs", mode = "lines+markers",
+    add_trace(y = ~round(has_bar_and_informative/has_bar_or_informative*100, 1), name = "both bar and<br>informative graphs", mode = "lines+markers",
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) |>
     layout(yaxis = list(title = "<b>Publications with\ncontinuous data figures</b>",
@@ -215,7 +215,7 @@ plot_barzooka_bar_total <- function(plot_data, color_palette)
     add_trace(y = ~has_only_bar, name = "only bar graph", mode = "lines+markers",
               line = list(color = color_palette[2]),
               marker = list(color = color_palette[2])) |>
-    add_trace(y = ~has_bar_and_informative, name = "both bar and informative graphs", mode = "lines+markers",
+    add_trace(y = ~has_bar_and_informative, name = "both bar and<br>informative graphs", mode = "lines+markers",
               line = list(color = color_palette[3]),
               marker = list(color = color_palette[3])) |>
     add_trace(y = ~has_bar_or_informative, name = "continuous data figures", mode = "lines+markers",

@@ -15,21 +15,21 @@ fair_panel <-
                          HTML("FAIR metrics are not to be understood as evaluations, but rather as assistance. This is particularly true at the repository level, as individual
                               researchers have limited influence on the FAIRness of research data objects.")),
                       checkboxInput("checkbox_colorblind", "Click for colorblind-friendly charts", value = FALSE)
-                      ),
+               ),
                column(4,
                       hr(),
                       br(),
                       br(),
                       actionButton(inputId = 'buttonMethodsFAIR',
                                    label = 'See methods',
-                                   style = "margin-left:20mm; color: white; background-color: #aa1c7d;"),
+                                   style = paste0("margin-left:20mm; color: white; background-color:", button_bg_color)),
                       actionButton(inputId = 'buttonDatasetFAIR',
                                    label = 'See dataset',
-                                   style = "color: white; background-color: #aa1c7d;"),
+                                   style = paste0("color: white; background-color:", button_bg_color)),
                       br(),
                       br(),
                       h4(style = "margin-left:18mm", strong("Latest Update: October 2026"))
-                      ),
+               ),
              )
            ),
 
@@ -48,4 +48,4 @@ fair_panel <-
            bsCollapsePanel(strong("Datenschutz"),
                            datenschutz_text,
                            style = "default")
-           )
+  )
